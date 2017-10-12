@@ -43,9 +43,9 @@ func TestBlog(t *testing.T) {
 	for _, blogTest := range BlogTests {
 		buf := new(bytes.Buffer)
 
-		enc := NewEncoder(buf)
+		writer := NewWriter(buf)
 		for _, s := range blogTest.Packets {
-			enc.Encode(s)
+			writer.Write(s)
 		}
 
 		bufRead := bytes.NewReader(buf.Bytes())
@@ -73,9 +73,9 @@ func TestBlog(t *testing.T) {
 func TestBlogReadZero(t *testing.T) {
 	buf := new(bytes.Buffer)
 
-	enc := NewEncoder(buf)
+	writer := NewWriter(buf)
 	for _, s := range BlogTests[0].Packets {
-		enc.Encode(s)
+		writer.Write(s)
 	}
 
 	bufRead := bytes.NewReader(buf.Bytes())

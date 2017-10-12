@@ -20,10 +20,17 @@ func NewWriter(w io.Writer) *Writer {
 
 // Write writes b to the .blog packet stream
 // Acts like an io.Writer, but writes packets discretely
-func (tw *Writer) Write(b []byte) (n int, err error) {
+func (tw *Writer) Write(b []byte) (int, error) {
 	var packetSize uint16 = uint16(binary.Size(b))
-	binary.Write(enc.writer, binary.BigEndian, packetSize)
-	binary.Write(enc.writer, binary.BigEndian, b)
+	err := binary.Write(tw.writer, binary.BigEndian, packetSize)
+	if err != nil {
+		return 0, err
+	}
+	err = binary.Write(tw.writer, binary.BigEndian, b)
+	if err != nil {
+		return 0, err
+	}
+	return int(packetSize), nil
 }
 
 // A Reader provides sequential access to the binary stream file format used for
