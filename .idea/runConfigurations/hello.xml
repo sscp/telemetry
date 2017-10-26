@@ -1,0 +1,13 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="hello" type="GoApplicationRunConfiguration" factoryName="Go Application">
+    <module name="naturallight-telemetry" />
+    <working_directory value="$USER_HOME$/go" />
+    <go_parameters value="-i" />
+    <kind value="DIRECTORY" />
+    <filePath value="$PROJECT_DIR$/cmd/hello/main.go" />
+    <package value="cmd/hello" />
+    <directory value="$PROJECT_DIR$/cmd/hello" />
+    <output_directory value="$PROJECT_DIR$/out" />
+    <method />
+  </configuration>
+</component>
