@@ -10,6 +10,11 @@ test:
 	go test ./...
 
 # Build all the binaries in cmd
+.PHONY: update-deps
+update-deps:
+	dep ensure && dep prune
+
+# Build all the binaries in cmd
 .PHONY: build
 build:
 	go install ./cmd/...

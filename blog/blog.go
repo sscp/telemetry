@@ -3,6 +3,7 @@ package blog
 import (
 	"encoding/binary"
 	"io"
+	"io/ioutil"
 )
 
 // A Writer provides sequential writing in the .blog format used for Sundae.
@@ -46,6 +47,21 @@ type Reader struct {
 // NewReader creates a new Reader reading from r.
 func NewReader(r io.Reader) *Reader {
 	return &Reader{reader: r}
+}
+
+// NextPacket returns the next packet in the file
+//
+// io.EOF is returned as an error if there are no more packets
+func (br *Reader) NextPacket() ([]byte, error) {
+	err := br.Next()
+	if err != nil {
+		return nil, err
+	}
+	readPacket, err := ioutil.ReadAll(br)
+	if err != nil {
+		return nil, err
+	}
+	return readPacket, nil
 }
 
 // Next advances the reader to the next packet in the stream.

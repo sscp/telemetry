@@ -8,34 +8,14 @@ import (
 	"testing"
 )
 
-var TEST_STRINGS = [][]byte{[]byte("hello"), []byte("i am a packet"), []byte("im another packet")}
-
 type BlogTest struct {
-	Packets           [][]byte
-	PacketsToRead     int
-	ExpectedNextError error
-	ExpectedReadError error
+	Packets [][]byte
 }
 
 var BlogTests = []BlogTest{
 	BlogTest{
-		Packets:           TEST_STRINGS,
-		PacketsToRead:     len(TEST_STRINGS),
-		ExpectedNextError: nil,
-		ExpectedReadError: nil,
+		Packets: [][]byte{[]byte("hello"), []byte("i am a packet"), []byte("im another packet")},
 	},
-	BlogTest{
-		Packets:           TEST_STRINGS,
-		PacketsToRead:     len(TEST_STRINGS) + 1,
-		ExpectedNextError: io.EOF,
-		ExpectedReadError: nil,
-	},
-}
-
-func checkError(t *testing.T, expected error, actual error) {
-	if expected != actual {
-		t.Errorf("Expected error, %v, but got error %v instead", expected, actual)
-	}
 }
 
 func TestBlog(t *testing.T) {
@@ -51,21 +31,44 @@ func TestBlog(t *testing.T) {
 		bufRead := bytes.NewReader(buf.Bytes())
 		rdr := NewReader(bufRead)
 
-		for i := 0; i < blogTest.PacketsToRead; i++ {
+		for i := 0; i < len(blogTest.Packets)+1; i++ {
 			err := rdr.Next()
 			if err != nil {
-				checkError(t, blogTest.ExpectedNextError, err)
-				break
+				if i == len(blogTest.Packets) && err == io.EOF {
+					// End of stream
+					break
+				} else {
+					t.Errorf("Unexpected error while advancing packet: %v", err)
+				}
 			}
 			readPacket, err := ioutil.ReadAll(rdr)
 			if err != nil {
-				checkError(t, blogTest.ExpectedReadError, err)
-				break
+				t.Errorf("Unexpected error while reading packet %v", err)
 			}
-
 			if !reflect.DeepEqual(blogTest.Packets[i], readPacket) {
 				t.Errorf("Output packet, %v, does not match input packet %s", readPacket, blogTest.Packets[i])
 			}
+		}
+
+		// Reset reader
+		bufRead.Seek(0, io.SeekStart)
+
+		for i := 0; i < len(blogTest.Packets)+1; i++ {
+			packet, err := rdr.NextPacket()
+			if err != nil {
+				if i == len(blogTest.Packets) && err == io.EOF {
+					// End of stream
+					break
+				} else {
+					t.Errorf("Unexpected error while advancing packet: %v", err)
+				}
+
+			}
+
+			if !reflect.DeepEqual(blogTest.Packets[i], packet) {
+				t.Errorf("Output packet, %v, does not match input packet %s", packet, blogTest.Packets[i])
+			}
+
 		}
 	}
 }
