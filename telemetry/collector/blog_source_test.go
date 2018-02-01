@@ -1,8 +1,8 @@
-package datasources
+package collector
 
 import (
 	"bytes"
-	"github.com/sscp/naturallight-telemetry/blog"
+	"github.com/sscp/naturallight-telemetry/telemetry/blog"
 	"reflect"
 	"testing"
 	"time"
@@ -16,11 +16,6 @@ type BlogReaderSourceTest struct {
 var BlogTests = []BlogReaderSourceTest{
 	BlogReaderSourceTest{
 		Packets: [][]byte{[]byte("hello"), []byte("i am a packet"), []byte("im another packet")},
-		Delay:   0,
-	},
-	BlogReaderSourceTest{
-		Packets: [][]byte{[]byte("hello"), []byte("i am a packet"), []byte("im another packet")},
-		Delay:   time.Second / 100,
 	},
 }
 
@@ -34,10 +29,10 @@ func testBlogReaderSource(t *testing.T) {
 		}
 
 		bufRead := bytes.NewReader(buf.Bytes())
-		rdr := ReadPackets(bufRead, blogTest.Delay)
+		bps := NewBlogPacketSource(bufRead, blogTest.Delay)
 
 		var i int = 0
-		for packet := range rdr.Packets() {
+		for packet := range bps.Packets() {
 			if !reflect.DeepEqual(blogTest.Packets[i], packet) {
 				t.Errorf("Output packet, %v, does not match input packet %s", packet, blogTest.Packets[i])
 			}

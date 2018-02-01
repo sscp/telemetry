@@ -1,0 +1,511 @@
+syntax = "proto2";
+message DataMessage { //1512 bytes constraint
+  // @inject_tag: db:"regen_enabled" csv:"regen_enabled"
+  optional uint32 regen_enabled = 1;
+
+  // @inject_tag: db:"regen_command" csv:"regen_command"
+  optional uint32 regen_command = 2;
+
+  // @inject_tag: db:"battery_power" csv:"battery_power"
+  optional float battery_power = 3;
+
+  // @inject_tag: db:"array_power" csv:"array_power"
+  optional float array_power = 4;
+
+  // @inject_tag: db:"reverse_on" csv:"reverse_on"
+  optional uint32 reverse_on = 5;
+
+  // @inject_tag: db:"low_volt_power" csv:"low_volt_power"
+  optional float low_volt_power = 6;
+
+  // @inject_tag: db:"cell_read_error" csv:"cell_read_error"
+  optional int32 cell_read_error = 7;
+
+  // @inject_tag: db:"cell_bleed" csv:"cell_bleed"
+  optional uint32 cell_bleed = 8;
+
+  // @inject_tag: db:"cruise_speed" csv:"cruise_speed"
+  optional float cruise_speed = 9;
+
+  // @inject_tag: db:"hazard_lights_on" csv:"hazard_lights_on"
+  optional int32 hazard_lights_on = 10;
+
+  // @inject_tag: db:"battery_voltage" csv:"battery_voltage"
+  optional float battery_voltage = 11;
+
+  // @inject_tag: db:"ltc6804_badpec" csv:"ltc6804_badpec"
+  optional uint32 ltc6804_badpec = 12;
+
+  // @inject_tag: db:"bms_state" csv:"bms_state"
+  optional uint32 bms_state = 13;
+
+  // @inject_tag: db:"charge_enabled" csv:"charge_enabled"
+  optional int32 charge_enabled = 14;
+
+  // @inject_tag: db:"discharge_enabled" csv:"discharge_enabled"
+  optional int32 discharge_enabled = 15;
+
+  // @inject_tag: db:"highside_contactor_on" csv:"highside_contactor_on"
+  optional int32 highside_contactor_on = 16;
+
+  // @inject_tag: db:"lowside_contactor_on" csv:"lowside_contactor_on"
+  optional int32 lowside_contactor_on = 17;
+
+  // @inject_tag: db:"precharge_on" csv:"precharge_on"
+  optional int32 precharge_on = 18;
+
+  // @inject_tag: db:"low_volt_bus_on" csv:"low_volt_bus_on"
+  optional int32 low_volt_bus_on = 19;
+
+  // @inject_tag: db:"battery_temp_1" csv:"battery_temp_1"
+  optional float battery_temp_1 = 20;
+
+  // @inject_tag: db:"battery_temp_2" csv:"battery_temp_2"
+  optional float battery_temp_2 = 21;
+
+  // @inject_tag: db:"battery_temp_3" csv:"battery_temp_3"
+  optional float battery_temp_3 = 22;
+
+  // @inject_tag: db:"battery_temp_4" csv:"battery_temp_4"
+  optional float battery_temp_4 = 23;
+
+  // @inject_tag: db:"battery_temp_5" csv:"battery_temp_5"
+  optional float battery_temp_5 = 24;
+
+  // @inject_tag: db:"battery_temp_6" csv:"battery_temp_6"
+  optional float battery_temp_6 = 25;
+
+  // @inject_tag: db:"bms_precharge_battery_adc" csv:"bms_precharge_battery_adc"
+  optional float bms_precharge_battery_adc = 26;
+
+  // @inject_tag: db:"bms_precharge_car_adc" csv:"bms_precharge_car_adc"
+  optional float bms_precharge_car_adc = 27;
+
+  //gap - no field 28
+
+  // @inject_tag: db:"low_volt_output_current" csv:"low_volt_output_current"
+  optional float low_volt_output_current = 29;
+
+  // @inject_tag: db:"array_current" csv:"array_current"
+  optional float array_current = 30;
+
+  // @inject_tag: db:"battery_current" csv:"battery_current"
+  optional float battery_current = 31;
+
+  // @inject_tag: db:"left_motor_controller_power" csv:"left_motor_controller_power"
+  optional float left_motor_controller_power = 32;
+
+  // @inject_tag: db:"right_motor_controller_power" csv:"right_motor_controller_power"
+  optional float right_motor_controller_power = 33;
+
+  // @inject_tag: db:"amp_hours" csv:"amp_hours"
+  optional float amp_hours = 34;
+
+  // @inject_tag: db:"head_lights_on" csv:"head_lights_on"
+  optional int32 head_lights_on = 35;
+
+  // @inject_tag: db:"brake_lights_on" csv:"brake_lights_on"
+  optional int32 brake_lights_on = 36;
+
+  // @inject_tag: db:"right_blinker_on" csv:"right_blinker_on"
+  optional int32 right_blinker_on = 37;
+
+  // @inject_tag: db:"left_blinker_on" csv:"left_blinker_on"
+  optional int32 left_blinker_on = 38;
+
+  // @inject_tag: db:"brake_pressed" csv:"brake_pressed"
+  optional int32 brake_pressed = 39;
+
+  // @inject_tag: db:"throttle_pressed" csv:"throttle_pressed"
+  optional int32 throttle_pressed = 40;
+
+  // @inject_tag: db:"drive_mode" csv:"drive_mode"
+  optional uint32 drive_mode = 41;
+
+  // @inject_tag: db:"motor_controller_enabled" csv:"motor_controller_enabled"
+  optional int32 motor_controller_enabled = 42;
+
+  // @inject_tag: db:"motor_controller_speed" csv:"motor_controller_speed"
+  optional float motor_controller_speed = 43;
+
+  // @inject_tag: db:"motor_controller_rpm" csv:"motor_controller_rpm"
+  optional float motor_controller_rpm = 44;
+
+  // @inject_tag: db:"avg_odometer" csv:"avg_odometer"
+  optional float avg_odometer = 45; //???
+
+  // @inject_tag: db:"left_motor_temp" csv:"left_motor_temp"
+  optional float left_motor_temp = 46;
+
+  // @inject_tag: db:"right_motor_temp" csv:"right_motor_temp"
+  optional float right_motor_temp = 47;
+
+  // @inject_tag: db:"left_motor_controller_temp" csv:"left_motor_controller_temp"
+  optional float left_motor_controller_temp = 48;
+
+  // @inject_tag: db:"right_motor_controller_temp" csv:"right_motor_controller_temp"
+  optional float right_motor_controller_temp = 49;
+
+  // @inject_tag: db:"left_motor_controller_alive" csv:"left_motor_controller_alive"
+  optional float left_motor_controller_alive = 50;
+
+  // @inject_tag: db:"right_motor_controller_alive" csv:"right_motor_controller_alive"
+  optional float right_motor_controller_alive = 51;
+
+  // @inject_tag: db:"left_motor_controller_current" csv:"left_motor_controller_current"
+  optional float left_motor_controller_current = 52;
+
+  // @inject_tag: db:"right_motor_controller_current" csv:"right_motor_controller_current"
+  optional float right_motor_controller_current = 53;
+
+  // @inject_tag: db:"motor_controller_current_diff" csv:"motor_controller_current_diff"
+  optional float motor_controller_current_diff = 54;
+
+  // @inject_tag: db:"left_motor_controller_error" csv:"left_motor_controller_error"
+  optional uint32 left_motor_controller_error = 55;
+
+  // @inject_tag: db:"right_motor_controller_error" csv:"right_motor_controller_error"
+  optional uint32 right_motor_controller_error = 56;
+
+  // @inject_tag: db:"left_motor_controller_limit" csv:"left_motor_controller_limit"
+  optional uint32 left_motor_controller_limit = 57;
+
+  // @inject_tag: db:"right_motor_controller_limit" csv:"right_motor_controller_limit"
+  optional uint32 right_motor_controller_limit = 58;
+
+  // @inject_tag: db:"left_motor_controller_rx_error_count" csv:"left_motor_controller_rx_error_count"
+  optional uint32 left_motor_controller_rx_error_count = 59;
+
+  // @inject_tag: db:"right_motor_controller_rx_error_count" csv:"right_motor_controller_rx_error_count"
+  optional uint32 right_motor_controller_rx_error_count = 60;
+
+  // @inject_tag: db:"left_motor_controller_tx_error_count" csv:"left_motor_controller_tx_error_count"
+  optional uint32 left_motor_controller_tx_error_count = 61;
+
+  // @inject_tag: db:"right_motor_controller_tx_error_count" csv:"right_motor_controller_tx_error_count"
+  optional uint32 right_motor_controller_tx_error_count = 62;
+
+  // @inject_tag: db:"left_motor_controller_bus_voltage" csv:"left_motor_controller_bus_voltage"
+  optional float left_motor_controller_bus_voltage = 63;
+
+  // @inject_tag: db:"right_motor_controller_bus_voltage" csv:"right_motor_controller_bus_voltage"
+  optional float right_motor_controller_bus_voltage = 64;
+
+  // @inject_tag: db:"left_motor_controller_15v_voltage" csv:"left_motor_controller_15v_voltage"
+  optional float left_motor_controller_15v_voltage = 65;
+
+  // @inject_tag: db:"right_motor_controller_15v_voltage" csv:"right_motor_controller_15v_voltage"
+  optional float right_motor_controller_15v_voltage = 66;
+
+  // @inject_tag: db:"left_motor_controller_3v3_voltage" csv:"left_motor_controller_3v3_voltage"
+  optional float left_motor_controller_3v3_voltage = 67;
+
+  // @inject_tag: db:"right_motor_controller_3v3_voltage" csv:"right_motor_controller_3v3_voltage"
+  optional float right_motor_controller_3v3_voltage = 68;
+
+  // @inject_tag: db:"left_motor_controller_1v9_voltage" csv:"left_motor_controller_1v9_voltage"
+  optional float left_motor_controller_1v9_voltage = 69;
+
+  // @inject_tag: db:"right_motor_controller_1v9_voltage" csv:"right_motor_controller_1v9_voltage"
+  optional float right_motor_controller_1v9_voltage = 70;
+
+  // @inject_tag: db:"left_motor_controller_dsp_temp" csv:"left_motor_controller_dsp_temp"
+  optional float left_motor_controller_dsp_temp = 71;
+  
+  // @inject_tag: db:"right_motor_controller_dsp_temp" csv:"right_motor_controller_dsp_temp"
+  optional float right_motor_controller_dsp_temp = 72;
+
+  // @inject_tag: db:"left_motor_controller_phase_current" csv:"left_motor_controller_phase_current"
+  optional float left_motor_controller_phase_current = 73;
+
+  // @inject_tag: db:"right_motor_controller_phase_current" csv:"right_motor_controller_phase_current"
+  optional float right_motor_controller_phase_current = 74;
+
+  // @inject_tag: db:"left_motor_rpm_command" csv:"left_motor_rpm_command"
+  optional float left_motor_rpm_command = 75;
+
+  // @inject_tag: db:"right_motor_rpm_command" csv:"right_motor_rpm_command"
+  optional float right_motor_rpm_command = 76;
+
+  // @inject_tag: db:"left_motor_current_command" csv:"left_motor_current_command"
+  optional float left_motor_current_command = 77;
+
+  // @inject_tag: db:"right_motor_current_command" csv:"right_motor_current_command"
+  optional float right_motor_current_command = 78;
+
+  // @inject_tag: db:"gps_time" csv:"gps_time"
+  optional int64 gps_time = 80;
+
+  // @inject_tag: db:"gps_latitude" csv:"gps_latitude"
+  optional float gps_latitude = 81;
+
+  // @inject_tag: db:"gps_longitude" csv:"gps_longitude"
+  optional float gps_longitude = 82;
+
+  // @inject_tag: db:"gps_speed" csv:"gps_speed"
+  optional float gps_speed = 83;
+
+  // @inject_tag: db:"gps_altitude" csv:"gps_altitude"
+  optional float gps_altitude = 84;
+
+  // @inject_tag: db:"gps_bearing" csv:"gps_bearing"
+  optional float gps_bearing = 85;
+
+  // @inject_tag: db:"led_state" csv:"led_state"
+  optional int32 led_state = 86;
+
+  // @inject_tag: db:"mppt_array_power" csv:"mppt_array_power"
+  optional float mppt_array_power = 87;
+
+  // @inject_tag: db:"mppt_A0_volt_in" csv:"mppt_A0_volt_in"
+  optional float mppt_A0_volt_in = 88;
+
+  // @inject_tag: db:"mppt_A0_volt_out" csv:"mppt_A0_volt_out"
+  optional float mppt_A0_volt_out = 89;
+
+  // @inject_tag: db:"mppt_A0_current" csv:"mppt_A0_current"
+  optional float mppt_A0_current = 90;
+
+  // @inject_tag: db:"mppt_A0_temp" csv:"mppt_A0_temp"
+  optional float mppt_A0_temp = 91;
+
+  // @inject_tag: db:"mppt_A1_volt_in" csv:"mppt_A1_volt_in"
+  optional float mppt_A1_volt_in = 92;
+
+  // @inject_tag: db:"mppt_A1_volt_out" csv:"mppt_A1_volt_out"
+  optional float mppt_A1_volt_out = 93;
+
+  // @inject_tag: db:"mppt_A1_current" csv:"mppt_A1_current"
+  optional float mppt_A1_current = 94;
+
+  // @inject_tag: db:"mppt_A1_temp" csv:"mppt_A1_temp"
+  optional float mppt_A1_temp = 95;
+
+  // @inject_tag: db:"mppt_B0_volt_in" csv:"mppt_B0_volt_in"
+  optional float mppt_B0_volt_in = 96;
+
+  // @inject_tag: db:"mppt_B0_volt_out" csv:"mppt_B0_volt_out"
+  optional float mppt_B0_volt_out = 97;
+
+  // @inject_tag: db:"mppt_B0_current" csv:"mppt_B0_current"
+  optional float mppt_B0_current = 98;
+
+  // @inject_tag: db:"mppt_B0_temp" csv:"mppt_B0_temp"
+  optional float mppt_B0_temp = 99;
+
+  // @inject_tag: db:"mppt_B1_volt_in" csv:"mppt_B1_volt_in"
+  optional float mppt_B1_volt_in = 100;
+
+  // @inject_tag: db:"mppt_B1_volt_out" csv:"mppt_B1_volt_out"
+  optional float mppt_B1_volt_out = 101;
+
+  // @inject_tag: db:"mppt_B1_current" csv:"mppt_B1_current"
+  optional float mppt_B1_current = 102;
+
+  // @inject_tag: db:"mppt_B1_temp" csv:"mppt_B1_temp"
+  optional float mppt_B1_temp = 103;
+
+  // @inject_tag: db:"mppt_C0_volt_in" csv:"mppt_C0_volt_in"
+  optional float mppt_C0_volt_in = 104;
+
+  // @inject_tag: db:"mppt_C0_volt_out" csv:"mppt_C0_volt_out"
+  optional float mppt_C0_volt_out = 105;
+
+  // @inject_tag: db:"mppt_C0_current" csv:"mppt_C0_current"
+  optional float mppt_C0_current = 106;
+
+  // @inject_tag: db:"mppt_C0_temp" csv:"mppt_C0_temp"
+  optional float mppt_C0_temp = 107;
+
+  // @inject_tag: db:"mppt_C1_volt_in" csv:"mppt_C1_volt_in"
+  optional float mppt_C1_volt_in = 108;
+
+  // @inject_tag: db:"mppt_C1_volt_out" csv:"mppt_C1_volt_out"
+  optional float mppt_C1_volt_out = 109;
+
+  // @inject_tag: db:"mppt_C1_current" csv:"mppt_C1_current"
+  optional float mppt_C1_current = 110;
+
+  // @inject_tag: db:"mppt_C1_temp" csv:"mppt_C1_temp"
+  optional float mppt_C1_temp = 111;
+
+  // @inject_tag: db:"mppt_D0_volt_in" csv:"mppt_D0_volt_in"
+  optional float mppt_D0_volt_in = 112;
+
+  // @inject_tag: db:"mppt_D0_volt_out" csv:"mppt_D0_volt_out"
+  optional float mppt_D0_volt_out = 113;
+
+  // @inject_tag: db:"mppt_D0_current" csv:"mppt_D0_current"
+  optional float mppt_D0_current = 114;
+
+  // @inject_tag: db:"mppt_D0_temp" csv:"mppt_D0_temp"
+  optional float mppt_D0_temp = 115;
+
+  // @inject_tag: db:"mppt_D1_volt_in" csv:"mppt_D1_volt_in"
+  optional float mppt_D1_volt_in = 116;
+
+  // @inject_tag: db:"mppt_D1_volt_out" csv:"mppt_D1_volt_out"
+  optional float mppt_D1_volt_out = 117;
+
+  // @inject_tag: db:"mppt_D1_current" csv:"mppt_D1_current"
+  optional float mppt_D1_current = 118;
+
+  // @inject_tag: db:"mppt_D1_temp" csv:"mppt_D1_temp"
+  optional float mppt_D1_temp = 119;
+
+  // @inject_tag: db:"cell_volt_1" csv:"cell_volt_1"
+  optional float cell_volt_1 = 120;
+
+  // @inject_tag: db:"cell_volt_2" csv:"cell_volt_2"
+  optional float cell_volt_2 = 121;
+
+  // @inject_tag: db:"cell_volt_3" csv:"cell_volt_3"
+  optional float cell_volt_3 = 122;
+
+  // @inject_tag: db:"cell_volt_4" csv:"cell_volt_4"
+  optional float cell_volt_4 = 123;
+
+  // @inject_tag: db:"cell_volt_5" csv:"cell_volt_5"
+  optional float cell_volt_5 = 124;
+
+  // @inject_tag: db:"cell_volt_6" csv:"cell_volt_6"
+  optional float cell_volt_6 = 125;
+
+  // @inject_tag: db:"cell_volt_7" csv:"cell_volt_7"
+  optional float cell_volt_7 = 126;
+
+  // @inject_tag: db:"cell_volt_8" csv:"cell_volt_8"
+  optional float cell_volt_8 = 127;
+
+  // @inject_tag: db:"cell_volt_9" csv:"cell_volt_9"
+  optional float cell_volt_9 = 128;
+
+  // @inject_tag: db:"cell_volt_10" csv:"cell_volt_10"
+  optional float cell_volt_10 = 129;
+
+  // @inject_tag: db:"cell_volt_11" csv:"cell_volt_11"
+  optional float cell_volt_11 = 130;
+
+  // @inject_tag: db:"cell_volt_12" csv:"cell_volt_12"
+  optional float cell_volt_12 = 131;
+
+  // @inject_tag: db:"cell_volt_13" csv:"cell_volt_13"
+  optional float cell_volt_13 = 132;
+
+  // @inject_tag: db:"cell_volt_14" csv:"cell_volt_14"
+  optional float cell_volt_14 = 133;
+
+  // @inject_tag: db:"cell_volt_15" csv:"cell_volt_15"
+  optional float cell_volt_15 = 134;
+
+  // @inject_tag: db:"cell_volt_16" csv:"cell_volt_16"
+  optional float cell_volt_16 = 135;
+
+  // @inject_tag: db:"cell_volt_17" csv:"cell_volt_17"
+  optional float cell_volt_17 = 136;
+
+  // @inject_tag: db:"cell_volt_18" csv:"cell_volt_18"
+  optional float cell_volt_18 = 137;
+
+  // @inject_tag: db:"cell_volt_19" csv:"cell_volt_19"
+  optional float cell_volt_19 = 138;
+
+  // @inject_tag: db:"cell_volt_20" csv:"cell_volt_20"
+  optional float cell_volt_20 = 139;
+
+  // @inject_tag: db:"cell_volt_21" csv:"cell_volt_21"
+  optional float cell_volt_21 = 140;
+
+  // @inject_tag: db:"cell_volt_22" csv:"cell_volt_22"
+  optional float cell_volt_22 = 141;
+
+  // @inject_tag: db:"cell_volt_23" csv:"cell_volt_23"
+  optional float cell_volt_23 = 142;
+
+  // @inject_tag: db:"cell_volt_24" csv:"cell_volt_24"
+  optional float cell_volt_24 = 143;
+
+  // @inject_tag: db:"cell_volt_25" csv:"cell_volt_25"
+  optional float cell_volt_25 = 144;
+
+  // @inject_tag: db:"cell_volt_26" csv:"cell_volt_26"
+  optional float cell_volt_26 = 145;
+
+  // @inject_tag: db:"cell_volt_27" csv:"cell_volt_27"
+  optional float cell_volt_27 = 146;
+
+  // @inject_tag: db:"cell_volt_28" csv:"cell_volt_28"
+  optional float cell_volt_28 = 147;
+
+  // @inject_tag: db:"cell_volt_29" csv:"cell_volt_29"
+  optional float cell_volt_29 = 148;
+
+  // @inject_tag: db:"cell_volt_30" csv:"cell_volt_30"
+  optional float cell_volt_30 = 149;
+
+  // @inject_tag: db:"cell_volt_31" csv:"cell_volt_31"
+  optional float cell_volt_31 = 150;
+
+  // @inject_tag: db:"cell_volt_min" csv:"cell_volt_min"
+  optional float cell_volt_min = 151;
+
+  // @inject_tag: db:"cell_volt_max" csv:"cell_volt_max"
+  optional float cell_volt_max = 152;
+
+  // @inject_tag: db:"cell_volt_avg" csv:"cell_volt_avg"
+  optional float cell_volt_avg = 153; //not in use
+
+  // @inject_tag: db:"cell_volt_diff" csv:"cell_volt_diff"
+  optional float cell_volt_diff = 154;
+
+  // @inject_tag: db:"power_save_on" csv:"power_save_on"
+  optional int32 power_save_on = 155;
+
+  // @inject_tag: db:"rearview_on" csv:"rearview_on"
+  optional int32 rearview_on = 156;
+
+  // @inject_tag: db:"mic_enabled" csv:"mic_enabled"
+  optional int32 mic_enabled = 157;
+
+  // @inject_tag: db:"imu_temp" csv:"imu_temp"
+  optional int32 imu_temp = 158;
+
+  // @inject_tag: db:"imu_magnet_x" csv:"imu_magnet_x"
+  optional int32 imu_magnet_x = 159;
+
+  // @inject_tag: db:"imu_magnet_y" csv:"imu_magnet_y"
+  optional int32 imu_magnet_y = 160;
+
+  // @inject_tag: db:"imu_magnet_z" csv:"imu_magnet_z"
+  optional int32 imu_magnet_z = 161;
+
+  // @inject_tag: db:"imu_gyro_x" csv:"imu_gyro_x"
+  optional int32 imu_gyro_x = 162;
+
+  // @inject_tag: db:"imu_gyro_y" csv:"imu_gyro_y"
+  optional int32 imu_gyro_y = 163;
+
+  // @inject_tag: db:"imu_gyro_z" csv:"imu_gyro_z"
+  optional int32 imu_gyro_z = 164;
+
+  // @inject_tag: db:"imu_accel_x" csv:"imu_accel_x"
+  optional int32 imu_accel_x = 165;
+
+  // @inject_tag: db:"imu_accel_y" csv:"imu_accel_y"
+  optional int32 imu_accel_y = 166;
+
+  // @inject_tag: db:"imu_accel_z" csv:"imu_accel_z"
+  optional int32 imu_accel_z = 167;
+
+  // @inject_tag: db:"bms_left_motor_controller_current" csv:"bms_left_motor_controller_current"
+  optional float bms_left_motor_controller_current = 168;
+
+  // @inject_tag: db:"bms_right_motor_controller_current" csv:"bms_right_motor_controller_current"
+  optional float bms_right_motor_controller_current = 169;
+
+  // @inject_tag: db:"bms_motor_controller_current_sum" csv:"bms_motor_controller_current_sum"
+  optional float bms_motor_controller_current_sum = 170;
+
+  // @inject_tag: db:"packets_per_sec" csv:"packets_per_sec"
+  optional float packets_per_sec = 171;
+}

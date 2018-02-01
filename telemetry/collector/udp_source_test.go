@@ -1,4 +1,4 @@
-package datasources
+package collector
 
 import (
 	"math/rand"
@@ -8,13 +8,18 @@ import (
 )
 
 func TestUDPSendRecv(t *testing.T) {
-	packetChan := make(chan []byte)
+	src, err := NewUDPPacketSource(3000)
+	if err != nil {
+		t.Errorf("Error creating packet source: %v", err)
+	}
 
+	packetChan := make(chan []byte)
 	// Send all the packets in the channel
 	go SendPacketsAsUDP(packetChan, 3000, time.Duration(0))
 
 	// Listen for those same packets
-	udpSrc := NewUDPSource(3000)
+	src.Listen()
+	defer src.Close()
 
 	for i := 1; i < 512; i++ {
 		// Make a random packet
@@ -25,13 +30,11 @@ func TestUDPSendRecv(t *testing.T) {
 		packetChan <- packet
 
 		// Listen for the packet on the recv channel
-		outPacket := <-udpSrc.Packets()
+		outPacket := <-src.Packets()
 
 		// Check that everything made it
-		if !reflect.DeepEqual(packet, outPacket) {
-			t.Errorf("Output packet, %v, does not match input packet %v", outPacket, packet)
+		if !reflect.DeepEqual(packet, outPacket.packet) {
+			t.Errorf("Output packet, %v, does not match input packet %v", outPacket.packet, packet)
 		}
 	}
-
-	udpSrc.Close()
 }
