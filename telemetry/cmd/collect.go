@@ -33,7 +33,7 @@ var collectCmd = &cobra.Command{
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("collect called")
-		col := collector.NewUDPCollector(3000)
+		col := collector.NewUDPCollector(33333)
 		col.RecordRun(context.TODO(), args[0])
 		buf := bufio.NewReader(os.Stdin)
 		fmt.Print("Press any key to end")

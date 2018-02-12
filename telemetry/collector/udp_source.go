@@ -30,7 +30,7 @@ func NewUDPPacketSource(port int) (PacketSource, error) {
 		outChan:      make(chan *ContextPacket),
 		doneChan:     make(chan bool),
 		conn:         conn,
-		packetBuffer: make([]byte, 1000), // Max packet size is 512
+		packetBuffer: make([]byte, 2000), // Max packet size is ~1000
 	}, nil
 }
 

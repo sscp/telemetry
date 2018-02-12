@@ -24,6 +24,7 @@ import (
 	"github.com/golang/protobuf/proto"
 	"github.com/opentracing/opentracing-go"
 	sscpproto "github.com/sscp/naturallight-telemetry/proto"
+	"log"
 	"sync"
 	"time"
 )
@@ -182,7 +183,7 @@ func (col *Collector) processPacket(ctx context.Context, packet []byte) {
 	dMsg := sscpproto.DataMessage{}
 	err := proto.Unmarshal(packet, &dMsg)
 	if err != nil {
-		panic(err)
+		log.Print(err)
 	}
 
 	// Pass off deserialized data to channels
