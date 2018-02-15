@@ -1,5 +1,5 @@
-# naturallight-strategy
-This repo is for the new strategy server that will collect and process data from the car on the fly
+# telemetry
+This repo contains the car data processing server that collects [ProtocolBuffer](https://developers.google.com/protocol-buffers/) data over UDP and logs it to CSVs, binary log files and influxdb for monitoring and data exploration. Currently built for Sundae and expected to be updated for sunrise.
 
 ## Requirements
 - [golang](https://golang.org/) 1.9
