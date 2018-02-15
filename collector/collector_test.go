@@ -2,7 +2,7 @@ package collector
 
 import (
 	"github.com/golang/protobuf/proto"
-	sscpproto "github.com/sscp/naturallight-telemetry/proto"
+	sscpproto "github.com/sscp/telemetry/proto"
 
 	"context"
 	//"github.com/opentracing/opentracing-go"

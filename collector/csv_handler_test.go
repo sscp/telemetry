@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/gocarina/gocsv"
 	"github.com/sergi/go-diff/diffmatchpatch"
-	sscpproto "github.com/sscp/naturallight-telemetry/proto"
+	sscpproto "github.com/sscp/telemetry/proto"
 	"io/ioutil"
 	"os"
 	"strings"

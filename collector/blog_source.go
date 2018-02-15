@@ -2,7 +2,7 @@ package collector
 
 import (
 	"context"
-	"github.com/sscp/naturallight-telemetry/telemetry/blog"
+	"github.com/sscp/telemetry/blog"
 	"io"
 	"time"
 )

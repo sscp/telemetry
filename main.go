@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/sscp/naturallight-telemetry/telemetry/cmd"
+	"github.com/sscp/telemetry/cmd"
 )
 
 func main() {

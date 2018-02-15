@@ -19,7 +19,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/sscp/naturallight-telemetry/telemetry/collector"
+	"github.com/sscp/telemetry/collector"
 
 	"context"
 	"github.com/spf13/cobra"

@@ -7,7 +7,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/sscp/naturallight-telemetry/telemetry/blog"
+	"github.com/sscp/telemetry/blog"
 
 	"github.com/opentracing/opentracing-go"
 )

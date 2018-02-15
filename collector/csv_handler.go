@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"github.com/gocarina/gocsv"
 	"github.com/opentracing/opentracing-go"
-	sscpproto "github.com/sscp/naturallight-telemetry/proto"
+	sscpproto "github.com/sscp/telemetry/proto"
 	"os"
 	"time"
 )

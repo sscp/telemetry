@@ -2,7 +2,7 @@ package collector
 
 import (
 	"bytes"
-	"github.com/sscp/naturallight-telemetry/telemetry/blog"
+	"github.com/sscp/telemetry/blog"
 	"reflect"
 	"testing"
 	"time"

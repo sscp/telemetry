@@ -3,7 +3,7 @@ package collector
 import (
 	"context"
 	"fmt"
-	sscpproto "github.com/sscp/naturallight-telemetry/proto"
+	sscpproto "github.com/sscp/telemetry/proto"
 	"time"
 )
 

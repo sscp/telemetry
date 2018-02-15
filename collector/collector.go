@@ -23,7 +23,7 @@ import (
 	"context"
 	"github.com/golang/protobuf/proto"
 	"github.com/opentracing/opentracing-go"
-	sscpproto "github.com/sscp/naturallight-telemetry/proto"
+	sscpproto "github.com/sscp/telemetry/proto"
 	"log"
 	"sync"
 	"time"

@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/golang/protobuf/proto"
-	sscpproto "github.com/sscp/naturallight-telemetry/proto"
+	sscpproto "github.com/sscp/telemetry/proto"
 	"golang.org/x/time/rate"
 )
 
