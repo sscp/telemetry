@@ -1,0 +1,29 @@
+# .goreleaser.yml
+project_name: telemetry
+# Build customization
+builds:
+  - main: main.go
+    binary: telemetry
+    goos:
+      - windows
+      - darwin
+      - linux
+    goarch:
+      - amd64
+# Archive customization
+archive:
+  format: tar.gz
+  replacements:
+    amd64: x86_64
+    darwin: macOS
+  format_overrides:
+    - goos: windows
+      format: zip
+  files:
+    - README.md
+
+release:
+    github:
+        owner: sscp
+        name: telemetry
+    draft: true

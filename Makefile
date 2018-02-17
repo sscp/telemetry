@@ -1,4 +1,6 @@
 
+BINARY_NAME=telemetry
+
 # Installs 
 .PHONY: install-tools
 install-tools:
@@ -17,8 +19,14 @@ update-deps:
 # Tests all the packages (excludes vendor on go 1.9)
 .PHONY: test
 test:
-	go test ./...
+	go test -v ./...
 
-.PHONY: build
-build:
+.PHONY: install
+install:
 	go install .
+
+.PHONY: release
+release:
+	go get github.com/goreleaser/goreleaser
+	goreleaser --rm-dist
+
