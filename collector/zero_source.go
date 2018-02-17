@@ -6,6 +6,7 @@ import (
 	"github.com/golang/protobuf/proto"
 	sscpproto "github.com/sscp/telemetry/proto"
 	"golang.org/x/time/rate"
+	"time"
 )
 
 // ZeroPacketSource is a PacketSource that returns only zeroed out DataMessages
@@ -34,8 +35,12 @@ func (zps *ZeroPacketSource) Listen() {
 				err := zps.limiter.Wait(context.TODO())
 				if err == nil {
 					zPacket, _ := CreateZeroPacket()
+					recievedTime := time.Now()
+					// Create context with time of receiving packet
+					ctx := context.WithValue(context.Background(), contextKeyRecievedTime, recievedTime)
+
 					zps.outChan <- &ContextPacket{
-						ctx:    context.TODO(),
+						ctx:    ctx,
 						packet: zPacket,
 					}
 				} else {

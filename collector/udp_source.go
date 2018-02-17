@@ -50,23 +50,30 @@ func (ups *UDPPacketSource) Listen() {
 				ups.conn.Close()
 				return
 			default:
-				packet, err := ups.readPacket()
-				if netError, ok := err.(net.Error); ok {
-					// If timeout error, keep looping
-					if !netError.Timeout() {
-						// Panic if not a timeout error
-						panic(err)
-					}
-				} else {
-					ctx := context.TODO()
-					ups.outChan <- &ContextPacket{
-						ctx:    ctx,
-						packet: packet,
-					}
-				}
+				ups.readAndForwardPacket()
 			}
 		}
 	}()
+
+}
+
+func (ups *UDPPacketSource) readAndForwardPacket() {
+	packet, err := ups.readPacket()
+	if netError, ok := err.(net.Error); ok {
+		// If timeout error, keep looping
+		if !netError.Timeout() {
+			// Panic if not a timeout error
+			panic(err)
+		}
+	} else {
+		recievedTime := time.Now()
+		// Create context with time of receiving packet
+		ctx := context.WithValue(context.Background(), contextKeyRecievedTime, recievedTime)
+		ups.outChan <- &ContextPacket{
+			ctx:    ctx,
+			packet: packet,
+		}
+	}
 
 }
 

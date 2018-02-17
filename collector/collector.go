@@ -185,6 +185,12 @@ func (col *Collector) processPacket(ctx context.Context, packet []byte) {
 	if err != nil {
 		log.Print(err)
 	}
+	// Unpack the recievedTime from the context and add it to the protobuf
+	t, ok := RecievedTimeFromContext(ctx)
+	if ok {
+		recievedTimeNanos := t.UnixNano()
+		dMsg.TimeCollected = &recievedTimeNanos
+	}
 
 	// Pass off deserialized data to channels
 	for i := 0; i < len(col.dataChans); i++ {

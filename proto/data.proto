@@ -508,4 +508,7 @@ message DataMessage { //1512 bytes constraint
 
   // @inject_tag: db:"packets_per_sec" csv:"packets_per_sec"
   optional float packets_per_sec = 171;
+
+  // @inject_tag: db:"time_collected" csv:"time_collected"
+  optional int64 time_collected = 172;
 }
