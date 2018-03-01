@@ -10,7 +10,10 @@ import (
 )
 
 func BenchmarkBlogWriter(b *testing.B) {
-	bw := NewBlogWriter()
+	bw, err := NewBlogWriter(BlogConfig{Folder: "."})
+	if err != nil {
+		b.Fatalf("Could not create BlogWriter: %v", err)
+	}
 	runName := "bench"
 	runStart := time.Now()
 	ctx := context.TODO()

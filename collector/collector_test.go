@@ -2,7 +2,7 @@ package collector
 
 import (
 	"github.com/golang/protobuf/proto"
-	sscpproto "github.com/sscp/telemetry/proto"
+	sundaeproto "github.com/sscp/telemetry/collector/sundae"
 
 	"context"
 	//"github.com/opentracing/opentracing-go"
@@ -21,7 +21,7 @@ type CollectorTest struct {
 }
 
 type testBinaryHandler struct {
-	DeliveryCount  int
+	DeliveryCount  int64
 	DroppedPackets int
 	t              *testing.T
 	delay          time.Duration
@@ -50,7 +50,7 @@ func (tbh *testBinaryHandler) HandleEndRun(ctx context.Context, endTime time.Tim
 }
 
 func (tbh *testBinaryHandler) HandlePacket(ctx context.Context, packet []byte) {
-	dm := sscpproto.DataMessage{}
+	dm := sundaeproto.DataMessage{}
 	err := proto.Unmarshal(packet, &dm)
 	if err != nil {
 		tbh.t.Errorf("Expected no deserialiation error, instead got %v", err)
@@ -67,7 +67,7 @@ func (tbh *testBinaryHandler) HandleDroppedPacket(ctx context.Context) {
 }
 
 type testDataHandler struct {
-	DeliveryCount  int
+	DeliveryCount  int64
 	DroppedPackets int
 	delay          time.Duration
 	t              *testing.T
@@ -95,7 +95,7 @@ func (tdh *testDataHandler) HandleEndRun(ctx context.Context, endTime time.Time)
 	}
 }
 
-func (tbh *testDataHandler) HandleData(ctx context.Context, data *sscpproto.DataMessage) {
+func (tbh *testDataHandler) HandleData(ctx context.Context, data *sundaeproto.DataMessage) {
 	time.Sleep(tbh.delay)
 	tbh.DeliveryCount++
 }
@@ -108,34 +108,34 @@ func runCollectorTest(t *testing.T, test CollectorTest) {
 	bh := newTestBinaryHandler(t, test.BinaryHandlerDelay)
 	dh := newTestDataHandler(t, test.DataHandlerDelay)
 	zps := NewZeroPacketSource(test.PacketsPerSecond)
-	telem := NewCollector(zps, []BinaryHandler{BinaryHandler(bh)}, []DataHandler{DataHandler(dh)}, test.BufferSize)
+	telem := NewCollector(zps, []BinaryHandler{BinaryHandler(bh)}, []DataHandler{DataHandler(dh)})
 	ctx := context.TODO()
 	telem.RecordRun(ctx, "test")
 	time.Sleep(test.TestTime)
 	telem.Close(ctx)
-	expectedPackets := int(float64(test.PacketsPerSecond) * test.TestTime.Seconds())
-	if telem.GetPacketsProcessed() < expectedPackets {
-		t.Errorf("Expected to process %v packets, but collector only processed %v packets", expectedPackets, telem.GetPacketsProcessed())
+	expectedPackets := int64(float64(test.PacketsPerSecond) * test.TestTime.Seconds())
+	if telem.GetStatus().PacketsProcessed < expectedPackets {
+		t.Errorf("Expected to process %v packets, but collector only processed %v packets", expectedPackets, telem.GetStatus().PacketsProcessed)
 	}
 	if test.BinaryReceiveAll {
-		if bh.DeliveryCount < telem.GetPacketsProcessed() {
-			t.Errorf("Expected all packets to be delivered to binary handler, but %v packets were processed and %v delivered", telem.GetPacketsProcessed(), bh.DeliveryCount)
+		if bh.DeliveryCount < telem.GetStatus().PacketsProcessed {
+			t.Errorf("Expected all packets to be delivered to binary handler, but %v packets were processed and %v delivered", telem.GetStatus().PacketsProcessed, bh.DeliveryCount)
 		}
 	} else {
-		if bh.DeliveryCount == telem.GetPacketsProcessed() {
-			t.Errorf("Expected binary handler to fall behind, but %v packets were processed and %v delivered", telem.GetPacketsProcessed(), bh.DeliveryCount)
+		if bh.DeliveryCount == telem.GetStatus().PacketsProcessed {
+			t.Errorf("Expected binary handler to fall behind, but %v packets were processed and %v delivered", telem.GetStatus().PacketsProcessed, bh.DeliveryCount)
 
 		}
 
 	}
 
 	if test.DataReceiveAll {
-		if dh.DeliveryCount < telem.GetPacketsProcessed() {
-			t.Errorf("Expected all packets to be delivered to data handler, but %v packets were processed and %v delivered", telem.GetPacketsProcessed(), dh.DeliveryCount)
+		if dh.DeliveryCount < telem.GetStatus().PacketsProcessed {
+			t.Errorf("Expected all packets to be delivered to data handler, but %v packets were processed and %v delivered", telem.GetStatus().PacketsProcessed, dh.DeliveryCount)
 		}
 	} else {
-		if dh.DeliveryCount == telem.GetPacketsProcessed() {
-			t.Errorf("Expected data handler to fall behind, but %v packets were processed and %v delivered", telem.GetPacketsProcessed(), dh.DeliveryCount)
+		if dh.DeliveryCount == telem.GetStatus().PacketsProcessed {
+			t.Errorf("Expected data handler to fall behind, but %v packets were processed and %v delivered", telem.GetStatus().PacketsProcessed, dh.DeliveryCount)
 
 		}
 

@@ -2,7 +2,7 @@ package collector
 
 import (
 	"github.com/golang/protobuf/proto"
-	sscpproto "github.com/sscp/telemetry/proto"
+	sundaeproto "github.com/sscp/telemetry/collector/sundae"
 
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -15,7 +15,7 @@ func TestZeroPacketSource(t *testing.T) {
 
 	for i := 0; i < 10; i++ {
 		ctxPacket := <-zps.Packets()
-		dm := sscpproto.DataMessage{}
+		dm := sundaeproto.DataMessage{}
 		err := proto.Unmarshal(ctxPacket.packet, &dm)
 		assert.Nil(t, err)
 		assert.Equal(

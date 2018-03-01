@@ -15,59 +15,100 @@ import (
 	"github.com/spf13/viper"
 )
 
-var cfgFile string
-
-// rootCmd represents the base command when called without any subcommands
-var rootCmd = &cobra.Command{
-	Use:   "telemetry",
-	Short: "telemetry manages the data that goes to and from the car",
-	Long:  `TODO: long explanation`,
-}
+var (
+	defaultCollectorConfig = map[string]interface{}{
+		"port": 33333,
+		"csv": map[string]interface{}{
+			"folder": "./csvs",
+		},
+		"blog": map[string]interface{}{
+			"folder": "./blogs",
+		},
+	}
+	defaultServerConfig = map[string]interface{}{
+		"port":      3000,
+		"collector": defaultCollectorConfig,
+	}
+	defaultClientConfig = map[string]interface{}{
+		"port":     3000,
+		"hostname": "localhost",
+	}
+)
 
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
+	rootCmd := buildRootTelemetryCmd()
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
 }
 
-func init() {
-	cobra.OnInitialize(initConfig)
+func buildRootTelemetryCmd() *cobra.Command {
+
+	config := viper.New()
+	config.SetDefault("client", defaultClientConfig)
+	config.SetDefault("server", defaultServerConfig)
+	config.SetDefault("collector", defaultCollectorConfig)
+
+	// rootCmd represents the base command when called without any subcommands
+	var rootCmd = &cobra.Command{
+		Use:               "telemetry",
+		Short:             "telemetry manages the data that goes to and from the car",
+		Long:              `telemetry manages the data that goes to and from the car`,
+		PersistentPreRunE: createReadTelemetryConfigFunc(config),
+	}
 
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.telemetry.yaml)")
 
-	// Cobra also supports local flags, which will only run
-	// when this action is called directly.
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	rootCmd.PersistentFlags().StringP("config", "c", "", "config file (default is $HOME/.telemetry.yaml)")
+
+	registerServerCmd(rootCmd, config.Sub("server"))
+	registerCallCmd(rootCmd, config.Sub("client"))
+	registerCollectCmd(rootCmd, config.Sub("collector"))
+
+	return rootCmd
 }
 
-// initConfig reads in config file and ENV variables if set.
-func initConfig() {
-	if cfgFile != "" {
-		// Use config file from the flag.
-		viper.SetConfigFile(cfgFile)
-	} else {
-		// Find home directory.
-		home, err := homedir.Dir()
+func createReadTelemetryConfigFunc(config *viper.Viper) func(cmd *cobra.Command, args []string) error {
+
+	return func(cmd *cobra.Command, args []string) error {
+
+		cfgFile, err := cmd.Flags().GetString("config")
 		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
+			return err
+		}
+		if cfgFile != "" {
+			// Use config file from the flag.
+			config.SetConfigFile(cfgFile)
+		} else {
+			// Find home directory.
+			home, err := homedir.Dir()
+			if err != nil {
+				return err
+			}
+
+			// Search config in home directory with name ".telemetry" (without extension).
+			config.AddConfigPath(home)
+			config.SetConfigName(".telemetry")
 		}
 
-		// Search config in home directory with name ".telemetr" (without extension).
-		viper.AddConfigPath(home)
-		viper.SetConfigName(".telemetr")
-	}
+		config.AutomaticEnv() // read in environment variables that match
 
-	viper.AutomaticEnv() // read in environment variables that match
+		if config.ConfigFileUsed() != "" {
+			// If a config file is found, read it in.
+			if err := config.ReadInConfig(); err != nil {
+				fmt.Println("Bad config")
+				//return nil, err
+			}
+		}
+		if config.ConfigFileUsed() != "" {
+			fmt.Println("Using config file:", config.ConfigFileUsed())
+		}
 
-	// If a config file is found, read it in.
-	if err := viper.ReadInConfig(); err == nil {
-		fmt.Println("Using config file:", viper.ConfigFileUsed())
+		return nil
 	}
 }

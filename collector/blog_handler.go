@@ -4,7 +4,9 @@ import (
 	"bufio"
 	"context"
 	"fmt"
+	"log"
 	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/sscp/telemetry/blog"
@@ -20,15 +22,25 @@ func GetBlogFileName(runName string, startTime time.Time) string {
 // BlogWriter is a BinaryHandler (handlers.go) that writes to a .blog file in
 // the folder that telemetry is run in
 type BlogWriter struct {
+	folderPath string
 	file       *os.File
 	buffer     *bufio.Writer
 	blogWriter *blog.Writer
 }
 
+// BlogConfig contains config info for the CSVWriter
+type BlogConfig struct {
+	Folder string
+}
+
 // NewBlogWriter allocates a BlogWriter, which is returned as a BinaryHandler
 // interface
-func NewBlogWriter() BinaryHandler {
-	return &BlogWriter{}
+func NewBlogWriter(cfg BlogConfig) (BinaryHandler, error) {
+	err := os.MkdirAll(cfg.Folder, os.ModePerm) // Create folder if it doesn't exist
+	if err != nil {
+		return nil, err
+	}
+	return &BlogWriter{folderPath: cfg.Folder}, nil
 }
 
 // HandleStartRun is called by collector when data collection starts and
@@ -46,9 +58,9 @@ func (bw *BlogWriter) HandleStartRun(ctx context.Context, runName string, startT
 func (bw *BlogWriter) createFile(runName string, startTime time.Time) {
 	filename := GetBlogFileName(runName, startTime)
 	var err error
-	bw.file, err = os.Create(filename)
+	bw.file, err = os.Create(filepath.Join(bw.folderPath, filename))
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 }
 

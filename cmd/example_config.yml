@@ -1,0 +1,25 @@
+server:
+    port: 3000
+    collector:
+        port: 33333
+        influx:
+            host: localhost
+            port: 8086
+        csv:
+            folder: ./csvs
+        blog:
+            folder: ./blogs
+collector:
+        port: 33333
+        influx:
+            host: localhost
+            port: 8086
+        csv:
+            folder: ./csvs
+        blog:
+            folder: ./blogs
+
+client:
+        hostname: localhost
+        port: 33333
+

@@ -4,33 +4,47 @@ import (
 	"bufio"
 	"context"
 	"fmt"
+	"log"
+	"os"
+	"path/filepath"
+	"time"
+
+	sundaeproto "github.com/sscp/telemetry/collector/sundae"
+
 	"github.com/gocarina/gocsv"
 	"github.com/opentracing/opentracing-go"
-	sscpproto "github.com/sscp/telemetry/proto"
-	"os"
-	"time"
 )
-
-// CSVWriter is a DataHandler (handlers.go) that writes to CSV files
-type CSVWriter struct {
-	file     *os.File
-	buffer   *bufio.Writer
-	dataBuf  []*sscpproto.DataMessage
-	bufIndex int
-	csvWrite *gocsv.SafeCSVWriter
-}
-
-// dataBufferSize is the default size of the queues that lead to each handler
-const dataBufferSize = 10
 
 // GetCSVFileName wraps GetBaseFileName, in handlers.go, and adds the .csv to the end
 func GetCSVFileName(runName string, startTime time.Time) string {
 	return fmt.Sprintf("%v.csv", GetBaseFileName(runName, startTime))
 }
 
+// CSVConfig contains config info for the CSVWriter
+type CSVConfig struct {
+	Folder string
+}
+
+// CSVWriter is a DataHandler (handlers.go) that writes to CSV files
+type CSVWriter struct {
+	folderPath string
+	file       *os.File
+	buffer     *bufio.Writer
+	dataBuf    []*sundaeproto.DataMessage
+	bufIndex   int
+	csvWrite   *gocsv.SafeCSVWriter
+}
+
+// dataBufferSize is the default size of the queues that lead to each handler
+const dataBufferSize = 10
+
 // NewCSVWriter returns an instantiated CSVWriter as a DataHandler interface
-func NewCSVWriter() DataHandler {
-	return &CSVWriter{}
+func NewCSVWriter(cfg CSVConfig) (DataHandler, error) {
+	err := os.MkdirAll(cfg.Folder, os.ModePerm) // Create folder if it doesn't exist
+	if err != nil {
+		return nil, err
+	}
+	return &CSVWriter{folderPath: cfg.Folder}, nil
 }
 
 // HandleStartRun is called when collector starts recording a run and creates
@@ -40,13 +54,13 @@ func (cw *CSVWriter) HandleStartRun(ctx context.Context, runName string, startTi
 	cw.setupWriter()
 }
 
-// createFile creates a .csv file to write to and panics if it errors (unlikely)
+// createFile creates a .csv file to write to and log.Fatals if it errors (unlikely)
 func (cw *CSVWriter) createFile(runName string, startTime time.Time) {
 	filename := GetCSVFileName(runName, startTime)
 	var err error
-	cw.file, err = os.Create(filename)
+	cw.file, err = os.Create(filepath.Join(cw.folderPath, filename))
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 }
 
@@ -59,11 +73,11 @@ func (cw *CSVWriter) createFile(runName string, startTime time.Time) {
 func (cw *CSVWriter) setupWriter() {
 	cw.buffer = bufio.NewWriter(cw.file)
 	cw.csvWrite = gocsv.DefaultCSVWriter(cw.buffer)
-	cw.dataBuf = make([]*sscpproto.DataMessage, 10)
+	cw.dataBuf = make([]*sundaeproto.DataMessage, 10)
 	cw.bufIndex = 0
 	// Write only the headers because all future data will be written
 	// without headers
-	empData := []*sscpproto.DataMessage{}
+	empData := []*sundaeproto.DataMessage{}
 	gocsv.MarshalCSV(&empData, cw.csvWrite)
 }
 
@@ -80,7 +94,7 @@ func (cw *CSVWriter) flushDataBuffer() {
 // HandleData is called on every new DataMessage from the collector and adds
 // the new DataMessage to the buffer of DataMessages and flushes the buffer if
 // it is full
-func (cw *CSVWriter) HandleData(ctx context.Context, data *sscpproto.DataMessage) {
+func (cw *CSVWriter) HandleData(ctx context.Context, data *sundaeproto.DataMessage) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "CSVWriter/HandleData")
 	defer span.Finish()
 	cw.dataBuf[cw.bufIndex] = data

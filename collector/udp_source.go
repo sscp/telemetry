@@ -2,6 +2,7 @@ package collector
 
 import (
 	"context"
+	"log"
 	"net"
 	"time"
 )
@@ -10,6 +11,7 @@ import (
 const udpListenTimeout = 100 * time.Millisecond
 
 type UDPPacketSource struct {
+	port         int
 	outChan      chan *ContextPacket
 	doneChan     chan bool
 	conn         *net.UDPConn
@@ -17,21 +19,31 @@ type UDPPacketSource struct {
 }
 
 func NewUDPPacketSource(port int) (PacketSource, error) {
-	// Listen to the zero port for IPv4 to catch any packet to that port
-	// This will catch broadcast packets from the car
-	conn, err := net.ListenUDP("udp4", &net.UDPAddr{
-		IP:   net.IPv4zero,
-		Port: port,
-	})
+	ups := &UDPPacketSource{
+		port:         port,
+		packetBuffer: make([]byte, 2000), // Max packet size is ~1000
+	}
+	err := ups.setupForListen()
 	if err != nil {
 		return nil, err
 	}
-	return &UDPPacketSource{
-		outChan:      make(chan *ContextPacket),
-		doneChan:     make(chan bool),
-		conn:         conn,
-		packetBuffer: make([]byte, 2000), // Max packet size is ~1000
-	}, nil
+	return ups, nil
+}
+
+func (ups *UDPPacketSource) setupForListen() error {
+	// Listen to the zero port for IPv4 to catch any packet to that port
+	// This will catch broadcast packets from the car
+	var err error
+	ups.conn, err = net.ListenUDP("udp4", &net.UDPAddr{
+		IP:   net.IPv4zero,
+		Port: ups.port,
+	})
+	if err != nil {
+		return err
+	}
+	ups.outChan = make(chan *ContextPacket)
+	ups.doneChan = make(chan bool)
+	return nil
 }
 
 // Packets is the stream of packets received from UDP
@@ -54,7 +66,6 @@ func (ups *UDPPacketSource) Listen() {
 			}
 		}
 	}()
-
 }
 
 func (ups *UDPPacketSource) readAndForwardPacket() {
@@ -63,7 +74,7 @@ func (ups *UDPPacketSource) readAndForwardPacket() {
 		// If timeout error, keep looping
 		if !netError.Timeout() {
 			// Panic if not a timeout error
-			panic(err)
+			log.Fatal(err)
 		}
 	} else {
 		recievedTime := time.Now()
@@ -96,6 +107,8 @@ func (ups *UDPPacketSource) Close() {
 	ups.doneChan <- true
 	close(ups.doneChan)
 	close(ups.outChan)
+	// Reset
+	ups.setupForListen()
 }
 
 // SendPacketsAsUDP sends all the packets from the dataSource to the broadcast
@@ -106,7 +119,7 @@ func SendPacketsAsUDP(packetChan chan []byte, port int, delay time.Duration) {
 		Port: port,
 	})
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 	defer conn.Close()
 

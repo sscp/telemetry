@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/gocarina/gocsv"
 	"github.com/sergi/go-diff/diffmatchpatch"
-	sscpproto "github.com/sscp/telemetry/proto"
+	sundaeproto "github.com/sscp/telemetry/collector/sundae"
 	"io/ioutil"
 	"os"
 	"strings"
@@ -13,7 +13,10 @@ import (
 )
 
 func BenchmarkCSVWriter(b *testing.B) {
-	cw := NewCSVWriter()
+	cw, err := NewCSVWriter(CSVConfig{Folder: "."})
+	if err != nil {
+		b.Fatalf("Could not create CSVWriter: %v", err)
+	}
 	runName := "bench"
 	runStart := time.Now()
 	ctx := context.TODO()
@@ -30,14 +33,17 @@ func BenchmarkCSVWriter(b *testing.B) {
 }
 
 func runCSVWriterTest(t *testing.T, numPackets int) {
-	testPackets := make([]*sscpproto.DataMessage, numPackets)
+	testPackets := make([]*sundaeproto.DataMessage, numPackets)
 	for i := range testPackets {
 		testPackets[i] = CreateZeroDataMessage()
 		num := int32(i)
 		testPackets[i].PowerSaveOn = &num
 	}
 
-	cw := NewCSVWriter()
+	cw, err := NewCSVWriter(CSVConfig{Folder: "."})
+	if err != nil {
+		t.Fatalf("Could not create CSVWriter: %v", err)
+	}
 	runName := "bench"
 	runStart := time.Now()
 	ctx := context.TODO()

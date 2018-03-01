@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/sscp/telemetry/blog"
 	"io"
+	"log"
 	"time"
 )
 
@@ -38,7 +39,7 @@ func (bps *BlogPacketSource) Listen() {
 					bps.doneChan <- true
 					break
 				} else {
-					panic(err)
+					log.Fatal(err)
 				}
 			}
 			recievedTime := time.Now()

@@ -3,7 +3,7 @@ package collector
 import (
 	"context"
 	"fmt"
-	sscpproto "github.com/sscp/telemetry/proto"
+	sundaeproto "github.com/sscp/telemetry/collector/sundae"
 	"time"
 )
 
@@ -26,7 +26,7 @@ type DataHandler interface {
 	// method is performance critical, so if it is slow, the DataHandler
 	// will not recieve every packet from collector. This method should be
 	// benchmarked to verify that it is fast enough to recieve all data.
-	HandleData(context.Context, *sscpproto.DataMessage)
+	HandleData(context.Context, *sundaeproto.DataMessage)
 
 	// HandleDroppedData is called by collector whenever the DataHandler
 	// falls behind and misses a packet. This is a performance critical

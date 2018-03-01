@@ -9,12 +9,12 @@ install-tools:
 
 .PHONY: build-proto
 build-proto:
-	protoc -I=proto --go_out=proto ./proto/data.proto
+	go generate ./...
 
 # Build all the binaries in cmd
 .PHONY: update-deps
 update-deps:
-	dep ensure && dep prune
+	dep ensure
 
 # Tests all the packages (excludes vendor on go 1.9)
 .PHONY: test

@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+service CollectorService {
+    rpc StartCollecting(StartRequest) returns (CollectorStatus) {}
+    rpc StopCollecting(StopRequest) returns (CollectorStatus) {}
+    rpc GetCollectorStatus(StatusRequest) returns (CollectorStatus) {}
+}
+
+message StartRequest {
+    string run_name = 1;
+}
+
+message StopRequest {}
+
+message StatusRequest {}
+
+message CollectorStatus {
+    bool collecting = 1;
+    string run_name = 2;
+    int32 port = 3;
+    int64 packets_recorded = 4;
+}

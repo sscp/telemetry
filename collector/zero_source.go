@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/golang/protobuf/proto"
-	sscpproto "github.com/sscp/telemetry/proto"
+	sundaeproto "github.com/sscp/telemetry/collector/sundae"
 	"golang.org/x/time/rate"
 	"time"
 )
@@ -71,13 +71,13 @@ func CreateZeroPacket() ([]byte, error) {
 	return proto.Marshal(zdm)
 }
 
-func CreateZeroDataMessage() *sscpproto.DataMessage {
+func CreateZeroDataMessage() *sundaeproto.DataMessage {
 	Uint32 := uint32(0)
 	Int32 := int32(0)
 	Int64 := int64(0)
 	Float32 := float32(0.0)
 
-	zdm := sscpproto.DataMessage{
+	zdm := sundaeproto.DataMessage{
 		RegenEnabled:                     &Uint32,
 		RegenCommand:                     &Uint32,
 		BatteryPower:                     &Float32,
