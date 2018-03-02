@@ -1,17 +1,18 @@
 
 BINARY_NAME=telemetry
 
-# Installs 
+# Installs tools to generate code/work with the repo
 .PHONY: install-tools
 install-tools:
 	go get -u github.com/golang/protobuf/{proto,protoc-gen-go} 
-	go get github.com/favadi/protoc-go-inject-tag
+	go get -u github.com/favadi/protoc-go-inject-tag
+	go get -u google.golang.org/grpc
 
-.PHONY: build-proto
-build-proto:
+.PHONY: generate
+generate:
 	go generate ./...
 
-# Build all the binaries in cmd
+# Build all the binaries in cmd, requires https://github.com/golang/dep
 .PHONY: update-deps
 update-deps:
 	dep ensure

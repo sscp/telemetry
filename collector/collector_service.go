@@ -9,6 +9,10 @@ import (
 	pb "github.com/sscp/telemetry/collector/serviceproto"
 
 	"github.com/opentracing/opentracing-go"
+	"github.com/uber/jaeger-client-go"
+	jaegercfg "github.com/uber/jaeger-client-go/config"
+	jaegerlog "github.com/uber/jaeger-client-go/log"
+	"github.com/uber/jaeger-lib/metrics"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )
@@ -23,8 +27,9 @@ type CollectorService struct {
 }
 
 type CollectorServiceConfig struct {
-	Port      int32
-	Collector CollectorConfig
+	Port       int32
+	Collector  CollectorConfig
+	JaegerAddr string
 }
 
 func NewCollectorService(cfg CollectorServiceConfig) (*CollectorService, error) {
@@ -90,7 +95,7 @@ func (cs *CollectorService) GetCollectorStatus(ctx context.Context, req *pb.Stat
 }
 
 func RunCollectionService(cfg CollectorServiceConfig) {
-	lis, err := net.Listen("tcp", fmt.Sprintf("localhost:%d", cfg.Port))
+	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", cfg.Port))
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
@@ -103,6 +108,41 @@ func RunCollectionService(cfg CollectorServiceConfig) {
 	pb.RegisterCollectorServiceServer(grpcServer, srv)
 	// Register reflection service on gRPC server.
 	reflection.Register(grpcServer)
+
+	// Setup tracing if enabled
+	if cfg.JaegerAddr != "" {
+		log.Printf("Tracing enabled. Sending spans to %v", cfg.JaegerAddr)
+		// Sample configuration for testing. Use constant sampling to sample every trace
+		jaegerCfg := jaegercfg.Configuration{
+			Sampler: &jaegercfg.SamplerConfig{
+				Type:  jaeger.SamplerTypeConst,
+				Param: 1,
+			},
+			Reporter: &jaegercfg.ReporterConfig{
+				LocalAgentHostPort: cfg.JaegerAddr,
+			},
+		}
+
+		// Example logger and metrics factory. Use github.com/uber/jaeger-client-go/log
+		// and github.com/uber/jaeger-lib/metrics respectively to bind to real logging and metrics
+		// frameworks.
+		jLogger := jaegerlog.StdLogger
+		jMetricsFactory := metrics.NullFactory
+
+		// Initialize tracer with a logger and a metrics factory
+		closer, err := jaegerCfg.InitGlobalTracer(
+			"telemetryCollectorService",
+			jaegercfg.Logger(jLogger),
+			jaegercfg.Metrics(jMetricsFactory),
+		)
+		if err != nil {
+			log.Printf("Could not initialize jaeger tracer: %s", err.Error())
+			return
+		}
+		defer closer.Close()
+
+	}
+
 	grpcServer.Serve(lis)
 
 }

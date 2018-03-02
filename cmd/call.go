@@ -3,6 +3,8 @@ package cmd
 import (
 	"fmt"
 	"log"
+	"net"
+	"strconv"
 
 	"github.com/sscp/telemetry/collector"
 	pb "github.com/sscp/telemetry/collector/serviceproto"
@@ -12,10 +14,11 @@ import (
 )
 
 func readConfAndConnect(rootConfig *viper.Viper) *collector.CollectorClient {
-	config := collector.CollectorClientConfig{}
-	rootConfig.Unmarshal(&config)
-
-	client, err := collector.NewCollectorClient(config)
+	cfg := collector.CollectorClientConfig{}
+	rootConfig.UnmarshalKey("client", &cfg)
+	addr := net.JoinHostPort(cfg.Hostname, strconv.FormatInt(int64(cfg.Port), 10))
+	fmt.Printf("Connecting to collector at: %v\n", addr)
+	client, err := collector.NewCollectorClient(cfg)
 	if err != nil {
 		log.Fatalf("Could not connect to collector: %v", err)
 	}
@@ -27,26 +30,26 @@ func printCollectorStatus(status *pb.CollectorStatus) {
 	if status.Collecting {
 		fmt.Printf("Collector status: collecting run %v from port %v. %v packets received\n", status.RunName, status.Port, status.PacketsRecorded)
 	} else {
-		fmt.Print("Collector status: not collecting")
+		fmt.Print("Collector status: not collecting\n")
 	}
 }
 
-func registerCallCmd(rootCmd *cobra.Command, clientConfig *viper.Viper) {
+func registerCallCmd(rootCmd *cobra.Command, rootConfig *viper.Viper) {
 	// callCmd represents the call command
 	var callCmd = &cobra.Command{
 		Use:   "call",
 		Short: "calls a collector server using GRPC",
 		Long:  ``,
 		Run: func(cmd *cobra.Command, args []string) {
-			client := readConfAndConnect(clientConfig)
+			client := readConfAndConnect(rootConfig)
 			defer client.Close()
 		},
 	}
 	//callCmd.PersistentFlags().IntP("port", "p", 3000, "port to connect to")
-	//clientConfig.BindPFlag("port", callCmd.Flags().Lookup("port"))
+	//rootConfig.BindPFlag("port", callCmd.Flags().Lookup("port"))
 
 	//callCmd.PersistentFlags().StringP("host", "h", "localhost", "host to connect to")
-	//clientConfig.BindPFlag("host", callCmd.Flags().Lookup("host"))
+	//rootConfig.BindPFlag("host", callCmd.Flags().Lookup("host"))
 
 	// startCmd represents the start command
 	var startCmd = &cobra.Command{
@@ -54,7 +57,7 @@ func registerCallCmd(rootCmd *cobra.Command, clientConfig *viper.Viper) {
 		Short: "start a collector server over GRPC",
 		Long:  ``,
 		Args:  cobra.ExactArgs(1),
-		Run:   createCallStart(clientConfig),
+		Run:   createCallStart(rootConfig),
 	}
 	callCmd.AddCommand(startCmd)
 
@@ -63,7 +66,7 @@ func registerCallCmd(rootCmd *cobra.Command, clientConfig *viper.Viper) {
 		Use:   "stop",
 		Short: "stop a collector server over GRPC",
 		Long:  ``,
-		Run:   createCallStop(clientConfig),
+		Run:   createCallStop(rootConfig),
 	}
 	callCmd.AddCommand(stopCmd)
 
@@ -72,19 +75,19 @@ func registerCallCmd(rootCmd *cobra.Command, clientConfig *viper.Viper) {
 		Use:   "status",
 		Short: "get the status of a collector server over GRPC",
 		Long:  ``,
-		Run:   createCallStatus(clientConfig),
+		Run:   createCallStatus(rootConfig),
 	}
 	callCmd.AddCommand(statusCmd)
 	rootCmd.AddCommand(callCmd)
 }
 
-func createCallStart(clientConfig *viper.Viper) func(cmd *cobra.Command, args []string) {
+func createCallStart(rootConfig *viper.Viper) func(cmd *cobra.Command, args []string) {
 	return func(cmd *cobra.Command, args []string) {
 		runName := args[0]
 		config := collector.CollectorClientConfig{}
-		clientConfig.Unmarshal(&config)
+		rootConfig.UnmarshalKey("client", &config)
 
-		client := readConfAndConnect(clientConfig)
+		client := readConfAndConnect(rootConfig)
 		defer client.Close()
 
 		fmt.Printf("Starting collection for %v on port %v\n", config.Hostname, runName)
@@ -97,12 +100,12 @@ func createCallStart(clientConfig *viper.Viper) func(cmd *cobra.Command, args []
 	}
 }
 
-func createCallStop(clientConfig *viper.Viper) func(cmd *cobra.Command, args []string) {
+func createCallStop(rootConfig *viper.Viper) func(cmd *cobra.Command, args []string) {
 	return func(cmd *cobra.Command, args []string) {
 		config := collector.CollectorClientConfig{}
-		clientConfig.Unmarshal(&config)
+		rootConfig.UnmarshalKey("client", &config)
 
-		client := readConfAndConnect(clientConfig)
+		client := readConfAndConnect(rootConfig)
 		defer client.Close()
 		fmt.Println("Stopping collection")
 		status, err := client.StopCollector()
@@ -114,12 +117,12 @@ func createCallStop(clientConfig *viper.Viper) func(cmd *cobra.Command, args []s
 	}
 }
 
-func createCallStatus(clientConfig *viper.Viper) func(cmd *cobra.Command, args []string) {
+func createCallStatus(rootConfig *viper.Viper) func(cmd *cobra.Command, args []string) {
 	return func(cmd *cobra.Command, args []string) {
 		config := collector.CollectorClientConfig{}
-		clientConfig.Unmarshal(&config)
+		rootConfig.UnmarshalKey("client", &config)
 
-		client := readConfAndConnect(clientConfig)
+		client := readConfAndConnect(rootConfig)
 		defer client.Close()
 
 		status, err := client.GetCollectorStatus()

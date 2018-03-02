@@ -26,11 +26,11 @@ var (
 		},
 	}
 	defaultServerConfig = map[string]interface{}{
-		"port":      3000,
+		"port":      9090,
 		"collector": defaultCollectorConfig,
 	}
 	defaultClientConfig = map[string]interface{}{
-		"port":     3000,
+		"port":     9090,
 		"hostname": "localhost",
 	}
 )
@@ -66,9 +66,9 @@ func buildRootTelemetryCmd() *cobra.Command {
 
 	rootCmd.PersistentFlags().StringP("config", "c", "", "config file (default is $HOME/.telemetry.yaml)")
 
-	registerServerCmd(rootCmd, config.Sub("server"))
-	registerCallCmd(rootCmd, config.Sub("client"))
-	registerCollectCmd(rootCmd, config.Sub("collector"))
+	registerServerCmd(rootCmd, config)
+	registerCallCmd(rootCmd, config)
+	registerCollectCmd(rootCmd, config)
 
 	return rootCmd
 }

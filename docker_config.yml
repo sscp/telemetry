@@ -1,0 +1,13 @@
+server:
+    port: 9090
+    jaegeraddr: jaeger:6831
+    collector:
+        port: 33333
+        influx:
+            host: localhost
+            port: 8086
+        csv:
+            folder: /csvs
+        blog:
+            folder: /blogs
+
