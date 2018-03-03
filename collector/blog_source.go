@@ -44,7 +44,7 @@ func (bps *BlogPacketSource) Listen() {
 			}
 			recievedTime := time.Now()
 			// Create context with time of receiving packet
-			ctx := context.WithValue(context.Background(), contextKeyRecievedTime, recievedTime)
+			ctx := ContextWithRecievedTime(context.Background(), recievedTime)
 
 			bps.outChan <- &ContextPacket{
 				ctx:    ctx,

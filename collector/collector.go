@@ -33,6 +33,7 @@ import (
 )
 
 //go:generate protoc -I=sundae --go_out=sundae ./sundae/data_message.proto
+//go:generate protoc-go-inject-tag -input=./sundae/data_message.pb.go
 
 const defaultBufferSize = 10
 
@@ -54,9 +55,10 @@ type Collector struct {
 
 // CollectorConfig holds config values needed to create a collector
 type CollectorConfig struct {
-	Port int
-	CSV  *CSVConfig
-	Blog *BlogConfig
+	Port   int
+	CSV    *CSVConfig
+	Blog   *BlogConfig
+	Influx *InfluxConfig
 }
 
 // CollectorStatus holds variables that pertain to the current status of
@@ -102,6 +104,13 @@ func NewUDPCollector(cfg CollectorConfig) (*Collector, error) {
 			return nil, err
 		}
 		binaryHandlers = append(binaryHandlers, blogHandler)
+	}
+	if cfg.Influx != nil {
+		influxHandler, err := NewInfluxWriter(*cfg.Influx)
+		if err != nil {
+			return nil, err
+		}
+		dataHandlers = append(dataHandlers, influxHandler)
 	}
 
 	return NewCollector(ps, binaryHandlers, dataHandlers), nil

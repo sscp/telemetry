@@ -37,7 +37,7 @@ func (zps *ZeroPacketSource) Listen() {
 					zPacket, _ := CreateZeroPacket()
 					recievedTime := time.Now()
 					// Create context with time of receiving packet
-					ctx := context.WithValue(context.Background(), contextKeyRecievedTime, recievedTime)
+					ctx := ContextWithRecievedTime(context.Background(), recievedTime)
 
 					zps.outChan <- &ContextPacket{
 						ctx:    ctx,

@@ -10,4 +10,8 @@ server:
             folder: /csvs
         blog:
             folder: /blogs
+        influx:
+            addr: http://influxdb:8086
+            username: collector
+            password: solarpower
 

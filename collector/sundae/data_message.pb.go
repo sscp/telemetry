@@ -28,346 +28,346 @@ var _ = math.Inf
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
 type DataMessage struct {
-	// @inject_tag: db:"regen_enabled" csv:"regen_enabled"
-	RegenEnabled *uint32 `protobuf:"varint,1,opt,name=regen_enabled,json=regenEnabled" json:"regen_enabled,omitempty"`
-	// @inject_tag: db:"regen_command" csv:"regen_command"
-	RegenCommand *uint32 `protobuf:"varint,2,opt,name=regen_command,json=regenCommand" json:"regen_command,omitempty"`
-	// @inject_tag: db:"battery_power" csv:"battery_power"
-	BatteryPower *float32 `protobuf:"fixed32,3,opt,name=battery_power,json=batteryPower" json:"battery_power,omitempty"`
-	// @inject_tag: db:"array_power" csv:"array_power"
-	ArrayPower *float32 `protobuf:"fixed32,4,opt,name=array_power,json=arrayPower" json:"array_power,omitempty"`
-	// @inject_tag: db:"reverse_on" csv:"reverse_on"
-	ReverseOn *uint32 `protobuf:"varint,5,opt,name=reverse_on,json=reverseOn" json:"reverse_on,omitempty"`
-	// @inject_tag: db:"low_volt_power" csv:"low_volt_power"
-	LowVoltPower *float32 `protobuf:"fixed32,6,opt,name=low_volt_power,json=lowVoltPower" json:"low_volt_power,omitempty"`
-	// @inject_tag: db:"cell_read_error" csv:"cell_read_error"
-	CellReadError *int32 `protobuf:"varint,7,opt,name=cell_read_error,json=cellReadError" json:"cell_read_error,omitempty"`
-	// @inject_tag: db:"cell_bleed" csv:"cell_bleed"
-	CellBleed *uint32 `protobuf:"varint,8,opt,name=cell_bleed,json=cellBleed" json:"cell_bleed,omitempty"`
-	// @inject_tag: db:"cruise_speed" csv:"cruise_speed"
-	CruiseSpeed *float32 `protobuf:"fixed32,9,opt,name=cruise_speed,json=cruiseSpeed" json:"cruise_speed,omitempty"`
-	// @inject_tag: db:"hazard_lights_on" csv:"hazard_lights_on"
-	HazardLightsOn *int32 `protobuf:"varint,10,opt,name=hazard_lights_on,json=hazardLightsOn" json:"hazard_lights_on,omitempty"`
-	// @inject_tag: db:"battery_voltage" csv:"battery_voltage"
-	BatteryVoltage *float32 `protobuf:"fixed32,11,opt,name=battery_voltage,json=batteryVoltage" json:"battery_voltage,omitempty"`
-	// @inject_tag: db:"ltc6804_badpec" csv:"ltc6804_badpec"
-	Ltc6804Badpec *uint32 `protobuf:"varint,12,opt,name=ltc6804_badpec,json=ltc6804Badpec" json:"ltc6804_badpec,omitempty"`
-	// @inject_tag: db:"bms_state" csv:"bms_state"
-	BmsState *uint32 `protobuf:"varint,13,opt,name=bms_state,json=bmsState" json:"bms_state,omitempty"`
-	// @inject_tag: db:"charge_enabled" csv:"charge_enabled"
-	ChargeEnabled *int32 `protobuf:"varint,14,opt,name=charge_enabled,json=chargeEnabled" json:"charge_enabled,omitempty"`
-	// @inject_tag: db:"discharge_enabled" csv:"discharge_enabled"
-	DischargeEnabled *int32 `protobuf:"varint,15,opt,name=discharge_enabled,json=dischargeEnabled" json:"discharge_enabled,omitempty"`
-	// @inject_tag: db:"highside_contactor_on" csv:"highside_contactor_on"
-	HighsideContactorOn *int32 `protobuf:"varint,16,opt,name=highside_contactor_on,json=highsideContactorOn" json:"highside_contactor_on,omitempty"`
-	// @inject_tag: db:"lowside_contactor_on" csv:"lowside_contactor_on"
-	LowsideContactorOn *int32 `protobuf:"varint,17,opt,name=lowside_contactor_on,json=lowsideContactorOn" json:"lowside_contactor_on,omitempty"`
-	// @inject_tag: db:"precharge_on" csv:"precharge_on"
-	PrechargeOn *int32 `protobuf:"varint,18,opt,name=precharge_on,json=prechargeOn" json:"precharge_on,omitempty"`
-	// @inject_tag: db:"low_volt_bus_on" csv:"low_volt_bus_on"
-	LowVoltBusOn *int32 `protobuf:"varint,19,opt,name=low_volt_bus_on,json=lowVoltBusOn" json:"low_volt_bus_on,omitempty"`
-	// @inject_tag: db:"battery_temp_1" csv:"battery_temp_1"
-	BatteryTemp_1 *float32 `protobuf:"fixed32,20,opt,name=battery_temp_1,json=batteryTemp1" json:"battery_temp_1,omitempty"`
-	// @inject_tag: db:"battery_temp_2" csv:"battery_temp_2"
-	BatteryTemp_2 *float32 `protobuf:"fixed32,21,opt,name=battery_temp_2,json=batteryTemp2" json:"battery_temp_2,omitempty"`
-	// @inject_tag: db:"battery_temp_3" csv:"battery_temp_3"
-	BatteryTemp_3 *float32 `protobuf:"fixed32,22,opt,name=battery_temp_3,json=batteryTemp3" json:"battery_temp_3,omitempty"`
-	// @inject_tag: db:"battery_temp_4" csv:"battery_temp_4"
-	BatteryTemp_4 *float32 `protobuf:"fixed32,23,opt,name=battery_temp_4,json=batteryTemp4" json:"battery_temp_4,omitempty"`
-	// @inject_tag: db:"battery_temp_5" csv:"battery_temp_5"
-	BatteryTemp_5 *float32 `protobuf:"fixed32,24,opt,name=battery_temp_5,json=batteryTemp5" json:"battery_temp_5,omitempty"`
-	// @inject_tag: db:"battery_temp_6" csv:"battery_temp_6"
-	BatteryTemp_6 *float32 `protobuf:"fixed32,25,opt,name=battery_temp_6,json=batteryTemp6" json:"battery_temp_6,omitempty"`
-	// @inject_tag: db:"bms_precharge_battery_adc" csv:"bms_precharge_battery_adc"
-	BmsPrechargeBatteryAdc *float32 `protobuf:"fixed32,26,opt,name=bms_precharge_battery_adc,json=bmsPrechargeBatteryAdc" json:"bms_precharge_battery_adc,omitempty"`
-	// @inject_tag: db:"bms_precharge_car_adc" csv:"bms_precharge_car_adc"
-	BmsPrechargeCarAdc *float32 `protobuf:"fixed32,27,opt,name=bms_precharge_car_adc,json=bmsPrechargeCarAdc" json:"bms_precharge_car_adc,omitempty"`
-	// @inject_tag: db:"low_volt_output_current" csv:"low_volt_output_current"
-	LowVoltOutputCurrent *float32 `protobuf:"fixed32,29,opt,name=low_volt_output_current,json=lowVoltOutputCurrent" json:"low_volt_output_current,omitempty"`
-	// @inject_tag: db:"array_current" csv:"array_current"
-	ArrayCurrent *float32 `protobuf:"fixed32,30,opt,name=array_current,json=arrayCurrent" json:"array_current,omitempty"`
-	// @inject_tag: db:"battery_current" csv:"battery_current"
-	BatteryCurrent *float32 `protobuf:"fixed32,31,opt,name=battery_current,json=batteryCurrent" json:"battery_current,omitempty"`
-	// @inject_tag: db:"left_motor_controller_power" csv:"left_motor_controller_power"
-	LeftMotorControllerPower *float32 `protobuf:"fixed32,32,opt,name=left_motor_controller_power,json=leftMotorControllerPower" json:"left_motor_controller_power,omitempty"`
-	// @inject_tag: db:"right_motor_controller_power" csv:"right_motor_controller_power"
-	RightMotorControllerPower *float32 `protobuf:"fixed32,33,opt,name=right_motor_controller_power,json=rightMotorControllerPower" json:"right_motor_controller_power,omitempty"`
-	// @inject_tag: db:"amp_hours" csv:"amp_hours"
-	AmpHours *float32 `protobuf:"fixed32,34,opt,name=amp_hours,json=ampHours" json:"amp_hours,omitempty"`
-	// @inject_tag: db:"head_lights_on" csv:"head_lights_on"
-	HeadLightsOn *int32 `protobuf:"varint,35,opt,name=head_lights_on,json=headLightsOn" json:"head_lights_on,omitempty"`
-	// @inject_tag: db:"brake_lights_on" csv:"brake_lights_on"
-	BrakeLightsOn *int32 `protobuf:"varint,36,opt,name=brake_lights_on,json=brakeLightsOn" json:"brake_lights_on,omitempty"`
-	// @inject_tag: db:"right_blinker_on" csv:"right_blinker_on"
-	RightBlinkerOn *int32 `protobuf:"varint,37,opt,name=right_blinker_on,json=rightBlinkerOn" json:"right_blinker_on,omitempty"`
-	// @inject_tag: db:"left_blinker_on" csv:"left_blinker_on"
-	LeftBlinkerOn *int32 `protobuf:"varint,38,opt,name=left_blinker_on,json=leftBlinkerOn" json:"left_blinker_on,omitempty"`
-	// @inject_tag: db:"brake_pressed" csv:"brake_pressed"
-	BrakePressed *int32 `protobuf:"varint,39,opt,name=brake_pressed,json=brakePressed" json:"brake_pressed,omitempty"`
-	// @inject_tag: db:"throttle_pressed" csv:"throttle_pressed"
-	ThrottlePressed *int32 `protobuf:"varint,40,opt,name=throttle_pressed,json=throttlePressed" json:"throttle_pressed,omitempty"`
-	// @inject_tag: db:"drive_mode" csv:"drive_mode"
-	DriveMode *uint32 `protobuf:"varint,41,opt,name=drive_mode,json=driveMode" json:"drive_mode,omitempty"`
-	// @inject_tag: db:"motor_controller_enabled" csv:"motor_controller_enabled"
-	MotorControllerEnabled *int32 `protobuf:"varint,42,opt,name=motor_controller_enabled,json=motorControllerEnabled" json:"motor_controller_enabled,omitempty"`
-	// @inject_tag: db:"motor_controller_speed" csv:"motor_controller_speed"
-	MotorControllerSpeed *float32 `protobuf:"fixed32,43,opt,name=motor_controller_speed,json=motorControllerSpeed" json:"motor_controller_speed,omitempty"`
-	// @inject_tag: db:"motor_controller_rpm" csv:"motor_controller_rpm"
-	MotorControllerRpm *float32 `protobuf:"fixed32,44,opt,name=motor_controller_rpm,json=motorControllerRpm" json:"motor_controller_rpm,omitempty"`
-	// @inject_tag: db:"avg_odometer" csv:"avg_odometer"
-	AvgOdometer *float32 `protobuf:"fixed32,45,opt,name=avg_odometer,json=avgOdometer" json:"avg_odometer,omitempty"`
-	// @inject_tag: db:"left_motor_temp" csv:"left_motor_temp"
-	LeftMotorTemp *float32 `protobuf:"fixed32,46,opt,name=left_motor_temp,json=leftMotorTemp" json:"left_motor_temp,omitempty"`
-	// @inject_tag: db:"right_motor_temp" csv:"right_motor_temp"
-	RightMotorTemp *float32 `protobuf:"fixed32,47,opt,name=right_motor_temp,json=rightMotorTemp" json:"right_motor_temp,omitempty"`
-	// @inject_tag: db:"left_motor_controller_temp" csv:"left_motor_controller_temp"
-	LeftMotorControllerTemp *float32 `protobuf:"fixed32,48,opt,name=left_motor_controller_temp,json=leftMotorControllerTemp" json:"left_motor_controller_temp,omitempty"`
-	// @inject_tag: db:"right_motor_controller_temp" csv:"right_motor_controller_temp"
-	RightMotorControllerTemp *float32 `protobuf:"fixed32,49,opt,name=right_motor_controller_temp,json=rightMotorControllerTemp" json:"right_motor_controller_temp,omitempty"`
-	// @inject_tag: db:"left_motor_controller_alive" csv:"left_motor_controller_alive"
-	LeftMotorControllerAlive *float32 `protobuf:"fixed32,50,opt,name=left_motor_controller_alive,json=leftMotorControllerAlive" json:"left_motor_controller_alive,omitempty"`
-	// @inject_tag: db:"right_motor_controller_alive" csv:"right_motor_controller_alive"
-	RightMotorControllerAlive *float32 `protobuf:"fixed32,51,opt,name=right_motor_controller_alive,json=rightMotorControllerAlive" json:"right_motor_controller_alive,omitempty"`
-	// @inject_tag: db:"left_motor_controller_current" csv:"left_motor_controller_current"
-	LeftMotorControllerCurrent *float32 `protobuf:"fixed32,52,opt,name=left_motor_controller_current,json=leftMotorControllerCurrent" json:"left_motor_controller_current,omitempty"`
-	// @inject_tag: db:"right_motor_controller_current" csv:"right_motor_controller_current"
-	RightMotorControllerCurrent *float32 `protobuf:"fixed32,53,opt,name=right_motor_controller_current,json=rightMotorControllerCurrent" json:"right_motor_controller_current,omitempty"`
-	// @inject_tag: db:"motor_controller_current_diff" csv:"motor_controller_current_diff"
-	MotorControllerCurrentDiff *float32 `protobuf:"fixed32,54,opt,name=motor_controller_current_diff,json=motorControllerCurrentDiff" json:"motor_controller_current_diff,omitempty"`
-	// @inject_tag: db:"left_motor_controller_error" csv:"left_motor_controller_error"
-	LeftMotorControllerError *uint32 `protobuf:"varint,55,opt,name=left_motor_controller_error,json=leftMotorControllerError" json:"left_motor_controller_error,omitempty"`
-	// @inject_tag: db:"right_motor_controller_error" csv:"right_motor_controller_error"
-	RightMotorControllerError *uint32 `protobuf:"varint,56,opt,name=right_motor_controller_error,json=rightMotorControllerError" json:"right_motor_controller_error,omitempty"`
-	// @inject_tag: db:"left_motor_controller_limit" csv:"left_motor_controller_limit"
-	LeftMotorControllerLimit *uint32 `protobuf:"varint,57,opt,name=left_motor_controller_limit,json=leftMotorControllerLimit" json:"left_motor_controller_limit,omitempty"`
-	// @inject_tag: db:"right_motor_controller_limit" csv:"right_motor_controller_limit"
-	RightMotorControllerLimit *uint32 `protobuf:"varint,58,opt,name=right_motor_controller_limit,json=rightMotorControllerLimit" json:"right_motor_controller_limit,omitempty"`
-	// @inject_tag: db:"left_motor_controller_rx_error_count" csv:"left_motor_controller_rx_error_count"
-	LeftMotorControllerRxErrorCount *uint32 `protobuf:"varint,59,opt,name=left_motor_controller_rx_error_count,json=leftMotorControllerRxErrorCount" json:"left_motor_controller_rx_error_count,omitempty"`
-	// @inject_tag: db:"right_motor_controller_rx_error_count" csv:"right_motor_controller_rx_error_count"
-	RightMotorControllerRxErrorCount *uint32 `protobuf:"varint,60,opt,name=right_motor_controller_rx_error_count,json=rightMotorControllerRxErrorCount" json:"right_motor_controller_rx_error_count,omitempty"`
-	// @inject_tag: db:"left_motor_controller_tx_error_count" csv:"left_motor_controller_tx_error_count"
-	LeftMotorControllerTxErrorCount *uint32 `protobuf:"varint,61,opt,name=left_motor_controller_tx_error_count,json=leftMotorControllerTxErrorCount" json:"left_motor_controller_tx_error_count,omitempty"`
-	// @inject_tag: db:"right_motor_controller_tx_error_count" csv:"right_motor_controller_tx_error_count"
-	RightMotorControllerTxErrorCount *uint32 `protobuf:"varint,62,opt,name=right_motor_controller_tx_error_count,json=rightMotorControllerTxErrorCount" json:"right_motor_controller_tx_error_count,omitempty"`
-	// @inject_tag: db:"left_motor_controller_bus_voltage" csv:"left_motor_controller_bus_voltage"
-	LeftMotorControllerBusVoltage *float32 `protobuf:"fixed32,63,opt,name=left_motor_controller_bus_voltage,json=leftMotorControllerBusVoltage" json:"left_motor_controller_bus_voltage,omitempty"`
-	// @inject_tag: db:"right_motor_controller_bus_voltage" csv:"right_motor_controller_bus_voltage"
-	RightMotorControllerBusVoltage *float32 `protobuf:"fixed32,64,opt,name=right_motor_controller_bus_voltage,json=rightMotorControllerBusVoltage" json:"right_motor_controller_bus_voltage,omitempty"`
-	// @inject_tag: db:"left_motor_controller_15v_voltage" csv:"left_motor_controller_15v_voltage"
-	LeftMotorController_15VVoltage *float32 `protobuf:"fixed32,65,opt,name=left_motor_controller_15v_voltage,json=leftMotorController15vVoltage" json:"left_motor_controller_15v_voltage,omitempty"`
-	// @inject_tag: db:"right_motor_controller_15v_voltage" csv:"right_motor_controller_15v_voltage"
-	RightMotorController_15VVoltage *float32 `protobuf:"fixed32,66,opt,name=right_motor_controller_15v_voltage,json=rightMotorController15vVoltage" json:"right_motor_controller_15v_voltage,omitempty"`
-	// @inject_tag: db:"left_motor_controller_3v3_voltage" csv:"left_motor_controller_3v3_voltage"
-	LeftMotorController_3V3Voltage *float32 `protobuf:"fixed32,67,opt,name=left_motor_controller_3v3_voltage,json=leftMotorController3v3Voltage" json:"left_motor_controller_3v3_voltage,omitempty"`
-	// @inject_tag: db:"right_motor_controller_3v3_voltage" csv:"right_motor_controller_3v3_voltage"
-	RightMotorController_3V3Voltage *float32 `protobuf:"fixed32,68,opt,name=right_motor_controller_3v3_voltage,json=rightMotorController3v3Voltage" json:"right_motor_controller_3v3_voltage,omitempty"`
-	// @inject_tag: db:"left_motor_controller_1v9_voltage" csv:"left_motor_controller_1v9_voltage"
-	LeftMotorController_1V9Voltage *float32 `protobuf:"fixed32,69,opt,name=left_motor_controller_1v9_voltage,json=leftMotorController1v9Voltage" json:"left_motor_controller_1v9_voltage,omitempty"`
-	// @inject_tag: db:"right_motor_controller_1v9_voltage" csv:"right_motor_controller_1v9_voltage"
-	RightMotorController_1V9Voltage *float32 `protobuf:"fixed32,70,opt,name=right_motor_controller_1v9_voltage,json=rightMotorController1v9Voltage" json:"right_motor_controller_1v9_voltage,omitempty"`
-	// @inject_tag: db:"left_motor_controller_dsp_temp" csv:"left_motor_controller_dsp_temp"
-	LeftMotorControllerDspTemp *float32 `protobuf:"fixed32,71,opt,name=left_motor_controller_dsp_temp,json=leftMotorControllerDspTemp" json:"left_motor_controller_dsp_temp,omitempty"`
-	// @inject_tag: db:"right_motor_controller_dsp_temp" csv:"right_motor_controller_dsp_temp"
-	RightMotorControllerDspTemp *float32 `protobuf:"fixed32,72,opt,name=right_motor_controller_dsp_temp,json=rightMotorControllerDspTemp" json:"right_motor_controller_dsp_temp,omitempty"`
-	// @inject_tag: db:"left_motor_controller_phase_current" csv:"left_motor_controller_phase_current"
-	LeftMotorControllerPhaseCurrent *float32 `protobuf:"fixed32,73,opt,name=left_motor_controller_phase_current,json=leftMotorControllerPhaseCurrent" json:"left_motor_controller_phase_current,omitempty"`
-	// @inject_tag: db:"right_motor_controller_phase_current" csv:"right_motor_controller_phase_current"
-	RightMotorControllerPhaseCurrent *float32 `protobuf:"fixed32,74,opt,name=right_motor_controller_phase_current,json=rightMotorControllerPhaseCurrent" json:"right_motor_controller_phase_current,omitempty"`
-	// @inject_tag: db:"left_motor_rpm_command" csv:"left_motor_rpm_command"
-	LeftMotorRpmCommand *float32 `protobuf:"fixed32,75,opt,name=left_motor_rpm_command,json=leftMotorRpmCommand" json:"left_motor_rpm_command,omitempty"`
-	// @inject_tag: db:"right_motor_rpm_command" csv:"right_motor_rpm_command"
-	RightMotorRpmCommand *float32 `protobuf:"fixed32,76,opt,name=right_motor_rpm_command,json=rightMotorRpmCommand" json:"right_motor_rpm_command,omitempty"`
-	// @inject_tag: db:"left_motor_current_command" csv:"left_motor_current_command"
-	LeftMotorCurrentCommand *float32 `protobuf:"fixed32,77,opt,name=left_motor_current_command,json=leftMotorCurrentCommand" json:"left_motor_current_command,omitempty"`
-	// @inject_tag: db:"right_motor_current_command" csv:"right_motor_current_command"
-	RightMotorCurrentCommand *float32 `protobuf:"fixed32,78,opt,name=right_motor_current_command,json=rightMotorCurrentCommand" json:"right_motor_current_command,omitempty"`
-	// @inject_tag: db:"gps_time" csv:"gps_time"
-	GpsTime *int64 `protobuf:"varint,80,opt,name=gps_time,json=gpsTime" json:"gps_time,omitempty"`
-	// @inject_tag: db:"gps_latitude" csv:"gps_latitude"
-	GpsLatitude *float32 `protobuf:"fixed32,81,opt,name=gps_latitude,json=gpsLatitude" json:"gps_latitude,omitempty"`
-	// @inject_tag: db:"gps_longitude" csv:"gps_longitude"
-	GpsLongitude *float32 `protobuf:"fixed32,82,opt,name=gps_longitude,json=gpsLongitude" json:"gps_longitude,omitempty"`
-	// @inject_tag: db:"gps_speed" csv:"gps_speed"
-	GpsSpeed *float32 `protobuf:"fixed32,83,opt,name=gps_speed,json=gpsSpeed" json:"gps_speed,omitempty"`
-	// @inject_tag: db:"gps_altitude" csv:"gps_altitude"
-	GpsAltitude *float32 `protobuf:"fixed32,84,opt,name=gps_altitude,json=gpsAltitude" json:"gps_altitude,omitempty"`
-	// @inject_tag: db:"gps_bearing" csv:"gps_bearing"
-	GpsBearing *float32 `protobuf:"fixed32,85,opt,name=gps_bearing,json=gpsBearing" json:"gps_bearing,omitempty"`
-	// @inject_tag: db:"led_state" csv:"led_state"
-	LedState *int32 `protobuf:"varint,86,opt,name=led_state,json=ledState" json:"led_state,omitempty"`
-	// @inject_tag: db:"mppt_array_power" csv:"mppt_array_power"
-	MpptArrayPower *float32 `protobuf:"fixed32,87,opt,name=mppt_array_power,json=mpptArrayPower" json:"mppt_array_power,omitempty"`
-	// @inject_tag: db:"mppt_A0_volt_in" csv:"mppt_A0_volt_in"
-	Mppt_A0VoltIn *float32 `protobuf:"fixed32,88,opt,name=mppt_A0_volt_in,json=mpptA0VoltIn" json:"mppt_A0_volt_in,omitempty"`
-	// @inject_tag: db:"mppt_A0_volt_out" csv:"mppt_A0_volt_out"
-	Mppt_A0VoltOut *float32 `protobuf:"fixed32,89,opt,name=mppt_A0_volt_out,json=mpptA0VoltOut" json:"mppt_A0_volt_out,omitempty"`
-	// @inject_tag: db:"mppt_A0_current" csv:"mppt_A0_current"
-	Mppt_A0Current *float32 `protobuf:"fixed32,90,opt,name=mppt_A0_current,json=mpptA0Current" json:"mppt_A0_current,omitempty"`
-	// @inject_tag: db:"mppt_A0_temp" csv:"mppt_A0_temp"
-	Mppt_A0Temp *float32 `protobuf:"fixed32,91,opt,name=mppt_A0_temp,json=mpptA0Temp" json:"mppt_A0_temp,omitempty"`
-	// @inject_tag: db:"mppt_A1_volt_in" csv:"mppt_A1_volt_in"
-	Mppt_A1VoltIn *float32 `protobuf:"fixed32,92,opt,name=mppt_A1_volt_in,json=mpptA1VoltIn" json:"mppt_A1_volt_in,omitempty"`
-	// @inject_tag: db:"mppt_A1_volt_out" csv:"mppt_A1_volt_out"
-	Mppt_A1VoltOut *float32 `protobuf:"fixed32,93,opt,name=mppt_A1_volt_out,json=mpptA1VoltOut" json:"mppt_A1_volt_out,omitempty"`
-	// @inject_tag: db:"mppt_A1_current" csv:"mppt_A1_current"
-	Mppt_A1Current *float32 `protobuf:"fixed32,94,opt,name=mppt_A1_current,json=mpptA1Current" json:"mppt_A1_current,omitempty"`
-	// @inject_tag: db:"mppt_A1_temp" csv:"mppt_A1_temp"
-	Mppt_A1Temp *float32 `protobuf:"fixed32,95,opt,name=mppt_A1_temp,json=mpptA1Temp" json:"mppt_A1_temp,omitempty"`
-	// @inject_tag: db:"mppt_B0_volt_in" csv:"mppt_B0_volt_in"
-	Mppt_B0VoltIn *float32 `protobuf:"fixed32,96,opt,name=mppt_B0_volt_in,json=mpptB0VoltIn" json:"mppt_B0_volt_in,omitempty"`
-	// @inject_tag: db:"mppt_B0_volt_out" csv:"mppt_B0_volt_out"
-	Mppt_B0VoltOut *float32 `protobuf:"fixed32,97,opt,name=mppt_B0_volt_out,json=mpptB0VoltOut" json:"mppt_B0_volt_out,omitempty"`
-	// @inject_tag: db:"mppt_B0_current" csv:"mppt_B0_current"
-	Mppt_B0Current *float32 `protobuf:"fixed32,98,opt,name=mppt_B0_current,json=mpptB0Current" json:"mppt_B0_current,omitempty"`
-	// @inject_tag: db:"mppt_B0_temp" csv:"mppt_B0_temp"
-	Mppt_B0Temp *float32 `protobuf:"fixed32,99,opt,name=mppt_B0_temp,json=mpptB0Temp" json:"mppt_B0_temp,omitempty"`
-	// @inject_tag: db:"mppt_B1_volt_in" csv:"mppt_B1_volt_in"
-	Mppt_B1VoltIn *float32 `protobuf:"fixed32,100,opt,name=mppt_B1_volt_in,json=mpptB1VoltIn" json:"mppt_B1_volt_in,omitempty"`
-	// @inject_tag: db:"mppt_B1_volt_out" csv:"mppt_B1_volt_out"
-	Mppt_B1VoltOut *float32 `protobuf:"fixed32,101,opt,name=mppt_B1_volt_out,json=mpptB1VoltOut" json:"mppt_B1_volt_out,omitempty"`
-	// @inject_tag: db:"mppt_B1_current" csv:"mppt_B1_current"
-	Mppt_B1Current *float32 `protobuf:"fixed32,102,opt,name=mppt_B1_current,json=mpptB1Current" json:"mppt_B1_current,omitempty"`
-	// @inject_tag: db:"mppt_B1_temp" csv:"mppt_B1_temp"
-	Mppt_B1Temp *float32 `protobuf:"fixed32,103,opt,name=mppt_B1_temp,json=mpptB1Temp" json:"mppt_B1_temp,omitempty"`
-	// @inject_tag: db:"mppt_C0_volt_in" csv:"mppt_C0_volt_in"
-	Mppt_C0VoltIn *float32 `protobuf:"fixed32,104,opt,name=mppt_C0_volt_in,json=mpptC0VoltIn" json:"mppt_C0_volt_in,omitempty"`
-	// @inject_tag: db:"mppt_C0_volt_out" csv:"mppt_C0_volt_out"
-	Mppt_C0VoltOut *float32 `protobuf:"fixed32,105,opt,name=mppt_C0_volt_out,json=mpptC0VoltOut" json:"mppt_C0_volt_out,omitempty"`
-	// @inject_tag: db:"mppt_C0_current" csv:"mppt_C0_current"
-	Mppt_C0Current *float32 `protobuf:"fixed32,106,opt,name=mppt_C0_current,json=mpptC0Current" json:"mppt_C0_current,omitempty"`
-	// @inject_tag: db:"mppt_C0_temp" csv:"mppt_C0_temp"
-	Mppt_C0Temp *float32 `protobuf:"fixed32,107,opt,name=mppt_C0_temp,json=mpptC0Temp" json:"mppt_C0_temp,omitempty"`
-	// @inject_tag: db:"mppt_C1_volt_in" csv:"mppt_C1_volt_in"
-	Mppt_C1VoltIn *float32 `protobuf:"fixed32,108,opt,name=mppt_C1_volt_in,json=mpptC1VoltIn" json:"mppt_C1_volt_in,omitempty"`
-	// @inject_tag: db:"mppt_C1_volt_out" csv:"mppt_C1_volt_out"
-	Mppt_C1VoltOut *float32 `protobuf:"fixed32,109,opt,name=mppt_C1_volt_out,json=mpptC1VoltOut" json:"mppt_C1_volt_out,omitempty"`
-	// @inject_tag: db:"mppt_C1_current" csv:"mppt_C1_current"
-	Mppt_C1Current *float32 `protobuf:"fixed32,110,opt,name=mppt_C1_current,json=mpptC1Current" json:"mppt_C1_current,omitempty"`
-	// @inject_tag: db:"mppt_C1_temp" csv:"mppt_C1_temp"
-	Mppt_C1Temp *float32 `protobuf:"fixed32,111,opt,name=mppt_C1_temp,json=mpptC1Temp" json:"mppt_C1_temp,omitempty"`
-	// @inject_tag: db:"mppt_D0_volt_in" csv:"mppt_D0_volt_in"
-	Mppt_D0VoltIn *float32 `protobuf:"fixed32,112,opt,name=mppt_D0_volt_in,json=mpptD0VoltIn" json:"mppt_D0_volt_in,omitempty"`
-	// @inject_tag: db:"mppt_D0_volt_out" csv:"mppt_D0_volt_out"
-	Mppt_D0VoltOut *float32 `protobuf:"fixed32,113,opt,name=mppt_D0_volt_out,json=mpptD0VoltOut" json:"mppt_D0_volt_out,omitempty"`
-	// @inject_tag: db:"mppt_D0_current" csv:"mppt_D0_current"
-	Mppt_D0Current *float32 `protobuf:"fixed32,114,opt,name=mppt_D0_current,json=mpptD0Current" json:"mppt_D0_current,omitempty"`
-	// @inject_tag: db:"mppt_D0_temp" csv:"mppt_D0_temp"
-	Mppt_D0Temp *float32 `protobuf:"fixed32,115,opt,name=mppt_D0_temp,json=mpptD0Temp" json:"mppt_D0_temp,omitempty"`
-	// @inject_tag: db:"mppt_D1_volt_in" csv:"mppt_D1_volt_in"
-	Mppt_D1VoltIn *float32 `protobuf:"fixed32,116,opt,name=mppt_D1_volt_in,json=mpptD1VoltIn" json:"mppt_D1_volt_in,omitempty"`
-	// @inject_tag: db:"mppt_D1_volt_out" csv:"mppt_D1_volt_out"
-	Mppt_D1VoltOut *float32 `protobuf:"fixed32,117,opt,name=mppt_D1_volt_out,json=mpptD1VoltOut" json:"mppt_D1_volt_out,omitempty"`
-	// @inject_tag: db:"mppt_D1_current" csv:"mppt_D1_current"
-	Mppt_D1Current *float32 `protobuf:"fixed32,118,opt,name=mppt_D1_current,json=mpptD1Current" json:"mppt_D1_current,omitempty"`
-	// @inject_tag: db:"mppt_D1_temp" csv:"mppt_D1_temp"
-	Mppt_D1Temp *float32 `protobuf:"fixed32,119,opt,name=mppt_D1_temp,json=mpptD1Temp" json:"mppt_D1_temp,omitempty"`
-	// @inject_tag: db:"cell_volt_1" csv:"cell_volt_1"
-	CellVolt_1 *float32 `protobuf:"fixed32,120,opt,name=cell_volt_1,json=cellVolt1" json:"cell_volt_1,omitempty"`
-	// @inject_tag: db:"cell_volt_2" csv:"cell_volt_2"
-	CellVolt_2 *float32 `protobuf:"fixed32,121,opt,name=cell_volt_2,json=cellVolt2" json:"cell_volt_2,omitempty"`
-	// @inject_tag: db:"cell_volt_3" csv:"cell_volt_3"
-	CellVolt_3 *float32 `protobuf:"fixed32,122,opt,name=cell_volt_3,json=cellVolt3" json:"cell_volt_3,omitempty"`
-	// @inject_tag: db:"cell_volt_4" csv:"cell_volt_4"
-	CellVolt_4 *float32 `protobuf:"fixed32,123,opt,name=cell_volt_4,json=cellVolt4" json:"cell_volt_4,omitempty"`
-	// @inject_tag: db:"cell_volt_5" csv:"cell_volt_5"
-	CellVolt_5 *float32 `protobuf:"fixed32,124,opt,name=cell_volt_5,json=cellVolt5" json:"cell_volt_5,omitempty"`
-	// @inject_tag: db:"cell_volt_6" csv:"cell_volt_6"
-	CellVolt_6 *float32 `protobuf:"fixed32,125,opt,name=cell_volt_6,json=cellVolt6" json:"cell_volt_6,omitempty"`
-	// @inject_tag: db:"cell_volt_7" csv:"cell_volt_7"
-	CellVolt_7 *float32 `protobuf:"fixed32,126,opt,name=cell_volt_7,json=cellVolt7" json:"cell_volt_7,omitempty"`
-	// @inject_tag: db:"cell_volt_8" csv:"cell_volt_8"
-	CellVolt_8 *float32 `protobuf:"fixed32,127,opt,name=cell_volt_8,json=cellVolt8" json:"cell_volt_8,omitempty"`
-	// @inject_tag: db:"cell_volt_9" csv:"cell_volt_9"
-	CellVolt_9 *float32 `protobuf:"fixed32,128,opt,name=cell_volt_9,json=cellVolt9" json:"cell_volt_9,omitempty"`
-	// @inject_tag: db:"cell_volt_10" csv:"cell_volt_10"
-	CellVolt_10 *float32 `protobuf:"fixed32,129,opt,name=cell_volt_10,json=cellVolt10" json:"cell_volt_10,omitempty"`
-	// @inject_tag: db:"cell_volt_11" csv:"cell_volt_11"
-	CellVolt_11 *float32 `protobuf:"fixed32,130,opt,name=cell_volt_11,json=cellVolt11" json:"cell_volt_11,omitempty"`
-	// @inject_tag: db:"cell_volt_12" csv:"cell_volt_12"
-	CellVolt_12 *float32 `protobuf:"fixed32,131,opt,name=cell_volt_12,json=cellVolt12" json:"cell_volt_12,omitempty"`
-	// @inject_tag: db:"cell_volt_13" csv:"cell_volt_13"
-	CellVolt_13 *float32 `protobuf:"fixed32,132,opt,name=cell_volt_13,json=cellVolt13" json:"cell_volt_13,omitempty"`
-	// @inject_tag: db:"cell_volt_14" csv:"cell_volt_14"
-	CellVolt_14 *float32 `protobuf:"fixed32,133,opt,name=cell_volt_14,json=cellVolt14" json:"cell_volt_14,omitempty"`
-	// @inject_tag: db:"cell_volt_15" csv:"cell_volt_15"
-	CellVolt_15 *float32 `protobuf:"fixed32,134,opt,name=cell_volt_15,json=cellVolt15" json:"cell_volt_15,omitempty"`
-	// @inject_tag: db:"cell_volt_16" csv:"cell_volt_16"
-	CellVolt_16 *float32 `protobuf:"fixed32,135,opt,name=cell_volt_16,json=cellVolt16" json:"cell_volt_16,omitempty"`
-	// @inject_tag: db:"cell_volt_17" csv:"cell_volt_17"
-	CellVolt_17 *float32 `protobuf:"fixed32,136,opt,name=cell_volt_17,json=cellVolt17" json:"cell_volt_17,omitempty"`
-	// @inject_tag: db:"cell_volt_18" csv:"cell_volt_18"
-	CellVolt_18 *float32 `protobuf:"fixed32,137,opt,name=cell_volt_18,json=cellVolt18" json:"cell_volt_18,omitempty"`
-	// @inject_tag: db:"cell_volt_19" csv:"cell_volt_19"
-	CellVolt_19 *float32 `protobuf:"fixed32,138,opt,name=cell_volt_19,json=cellVolt19" json:"cell_volt_19,omitempty"`
-	// @inject_tag: db:"cell_volt_20" csv:"cell_volt_20"
-	CellVolt_20 *float32 `protobuf:"fixed32,139,opt,name=cell_volt_20,json=cellVolt20" json:"cell_volt_20,omitempty"`
-	// @inject_tag: db:"cell_volt_21" csv:"cell_volt_21"
-	CellVolt_21 *float32 `protobuf:"fixed32,140,opt,name=cell_volt_21,json=cellVolt21" json:"cell_volt_21,omitempty"`
-	// @inject_tag: db:"cell_volt_22" csv:"cell_volt_22"
-	CellVolt_22 *float32 `protobuf:"fixed32,141,opt,name=cell_volt_22,json=cellVolt22" json:"cell_volt_22,omitempty"`
-	// @inject_tag: db:"cell_volt_23" csv:"cell_volt_23"
-	CellVolt_23 *float32 `protobuf:"fixed32,142,opt,name=cell_volt_23,json=cellVolt23" json:"cell_volt_23,omitempty"`
-	// @inject_tag: db:"cell_volt_24" csv:"cell_volt_24"
-	CellVolt_24 *float32 `protobuf:"fixed32,143,opt,name=cell_volt_24,json=cellVolt24" json:"cell_volt_24,omitempty"`
-	// @inject_tag: db:"cell_volt_25" csv:"cell_volt_25"
-	CellVolt_25 *float32 `protobuf:"fixed32,144,opt,name=cell_volt_25,json=cellVolt25" json:"cell_volt_25,omitempty"`
-	// @inject_tag: db:"cell_volt_26" csv:"cell_volt_26"
-	CellVolt_26 *float32 `protobuf:"fixed32,145,opt,name=cell_volt_26,json=cellVolt26" json:"cell_volt_26,omitempty"`
-	// @inject_tag: db:"cell_volt_27" csv:"cell_volt_27"
-	CellVolt_27 *float32 `protobuf:"fixed32,146,opt,name=cell_volt_27,json=cellVolt27" json:"cell_volt_27,omitempty"`
-	// @inject_tag: db:"cell_volt_28" csv:"cell_volt_28"
-	CellVolt_28 *float32 `protobuf:"fixed32,147,opt,name=cell_volt_28,json=cellVolt28" json:"cell_volt_28,omitempty"`
-	// @inject_tag: db:"cell_volt_29" csv:"cell_volt_29"
-	CellVolt_29 *float32 `protobuf:"fixed32,148,opt,name=cell_volt_29,json=cellVolt29" json:"cell_volt_29,omitempty"`
-	// @inject_tag: db:"cell_volt_30" csv:"cell_volt_30"
-	CellVolt_30 *float32 `protobuf:"fixed32,149,opt,name=cell_volt_30,json=cellVolt30" json:"cell_volt_30,omitempty"`
-	// @inject_tag: db:"cell_volt_31" csv:"cell_volt_31"
-	CellVolt_31 *float32 `protobuf:"fixed32,150,opt,name=cell_volt_31,json=cellVolt31" json:"cell_volt_31,omitempty"`
-	// @inject_tag: db:"cell_volt_min" csv:"cell_volt_min"
-	CellVoltMin *float32 `protobuf:"fixed32,151,opt,name=cell_volt_min,json=cellVoltMin" json:"cell_volt_min,omitempty"`
-	// @inject_tag: db:"cell_volt_max" csv:"cell_volt_max"
-	CellVoltMax *float32 `protobuf:"fixed32,152,opt,name=cell_volt_max,json=cellVoltMax" json:"cell_volt_max,omitempty"`
-	// @inject_tag: db:"cell_volt_avg" csv:"cell_volt_avg"
-	CellVoltAvg *float32 `protobuf:"fixed32,153,opt,name=cell_volt_avg,json=cellVoltAvg" json:"cell_volt_avg,omitempty"`
-	// @inject_tag: db:"cell_volt_diff" csv:"cell_volt_diff"
-	CellVoltDiff *float32 `protobuf:"fixed32,154,opt,name=cell_volt_diff,json=cellVoltDiff" json:"cell_volt_diff,omitempty"`
-	// @inject_tag: db:"power_save_on" csv:"power_save_on"
-	PowerSaveOn *int32 `protobuf:"varint,155,opt,name=power_save_on,json=powerSaveOn" json:"power_save_on,omitempty"`
-	// @inject_tag: db:"rearview_on" csv:"rearview_on"
-	RearviewOn *int32 `protobuf:"varint,156,opt,name=rearview_on,json=rearviewOn" json:"rearview_on,omitempty"`
-	// @inject_tag: db:"mic_enabled" csv:"mic_enabled"
-	MicEnabled *int32 `protobuf:"varint,157,opt,name=mic_enabled,json=micEnabled" json:"mic_enabled,omitempty"`
-	// @inject_tag: db:"imu_temp" csv:"imu_temp"
-	ImuTemp *int32 `protobuf:"varint,158,opt,name=imu_temp,json=imuTemp" json:"imu_temp,omitempty"`
-	// @inject_tag: db:"imu_magnet_x" csv:"imu_magnet_x"
-	ImuMagnetX *int32 `protobuf:"varint,159,opt,name=imu_magnet_x,json=imuMagnetX" json:"imu_magnet_x,omitempty"`
-	// @inject_tag: db:"imu_magnet_y" csv:"imu_magnet_y"
-	ImuMagnetY *int32 `protobuf:"varint,160,opt,name=imu_magnet_y,json=imuMagnetY" json:"imu_magnet_y,omitempty"`
-	// @inject_tag: db:"imu_magnet_z" csv:"imu_magnet_z"
-	ImuMagnetZ *int32 `protobuf:"varint,161,opt,name=imu_magnet_z,json=imuMagnetZ" json:"imu_magnet_z,omitempty"`
-	// @inject_tag: db:"imu_gyro_x" csv:"imu_gyro_x"
-	ImuGyroX *int32 `protobuf:"varint,162,opt,name=imu_gyro_x,json=imuGyroX" json:"imu_gyro_x,omitempty"`
-	// @inject_tag: db:"imu_gyro_y" csv:"imu_gyro_y"
-	ImuGyroY *int32 `protobuf:"varint,163,opt,name=imu_gyro_y,json=imuGyroY" json:"imu_gyro_y,omitempty"`
-	// @inject_tag: db:"imu_gyro_z" csv:"imu_gyro_z"
-	ImuGyroZ *int32 `protobuf:"varint,164,opt,name=imu_gyro_z,json=imuGyroZ" json:"imu_gyro_z,omitempty"`
-	// @inject_tag: db:"imu_accel_x" csv:"imu_accel_x"
-	ImuAccelX *int32 `protobuf:"varint,165,opt,name=imu_accel_x,json=imuAccelX" json:"imu_accel_x,omitempty"`
-	// @inject_tag: db:"imu_accel_y" csv:"imu_accel_y"
-	ImuAccelY *int32 `protobuf:"varint,166,opt,name=imu_accel_y,json=imuAccelY" json:"imu_accel_y,omitempty"`
-	// @inject_tag: db:"imu_accel_z" csv:"imu_accel_z"
-	ImuAccelZ *int32 `protobuf:"varint,167,opt,name=imu_accel_z,json=imuAccelZ" json:"imu_accel_z,omitempty"`
-	// @inject_tag: db:"bms_left_motor_controller_current" csv:"bms_left_motor_controller_current"
-	BmsLeftMotorControllerCurrent *float32 `protobuf:"fixed32,168,opt,name=bms_left_motor_controller_current,json=bmsLeftMotorControllerCurrent" json:"bms_left_motor_controller_current,omitempty"`
-	// @inject_tag: db:"bms_right_motor_controller_current" csv:"bms_right_motor_controller_current"
-	BmsRightMotorControllerCurrent *float32 `protobuf:"fixed32,169,opt,name=bms_right_motor_controller_current,json=bmsRightMotorControllerCurrent" json:"bms_right_motor_controller_current,omitempty"`
-	// @inject_tag: db:"bms_motor_controller_current_sum" csv:"bms_motor_controller_current_sum"
-	BmsMotorControllerCurrentSum *float32 `protobuf:"fixed32,170,opt,name=bms_motor_controller_current_sum,json=bmsMotorControllerCurrentSum" json:"bms_motor_controller_current_sum,omitempty"`
-	// @inject_tag: db:"packets_per_sec" csv:"packets_per_sec"
-	PacketsPerSec *float32 `protobuf:"fixed32,171,opt,name=packets_per_sec,json=packetsPerSec" json:"packets_per_sec,omitempty"`
-	// @inject_tag: db:"time_collected" csv:"time_collected"
-	TimeCollected    *int64 `protobuf:"varint,172,opt,name=time_collected,json=timeCollected" json:"time_collected,omitempty"`
+	// @inject_tag: structs:"regen_enabled,indirect" csv:"regen_enabled"
+	RegenEnabled *uint32 `protobuf:"varint,1,opt,name=regen_enabled,json=regenEnabled" json:"regen_enabled,omitempty" structs:"regen_enabled,indirect" csv:"regen_enabled"`
+	// @inject_tag: structs:"regen_command,indirect" csv:"regen_command"
+	RegenCommand *uint32 `protobuf:"varint,2,opt,name=regen_command,json=regenCommand" json:"regen_command,omitempty" structs:"regen_command,indirect" csv:"regen_command"`
+	// @inject_tag: structs:"battery_power,indirect" csv:"battery_power"
+	BatteryPower *float32 `protobuf:"fixed32,3,opt,name=battery_power,json=batteryPower" json:"battery_power,omitempty" structs:"battery_power,indirect" csv:"battery_power"`
+	// @inject_tag: structs:"array_power,indirect" csv:"array_power"
+	ArrayPower *float32 `protobuf:"fixed32,4,opt,name=array_power,json=arrayPower" json:"array_power,omitempty" structs:"array_power,indirect" csv:"array_power"`
+	// @inject_tag: structs:"reverse_on,indirect" csv:"reverse_on"
+	ReverseOn *uint32 `protobuf:"varint,5,opt,name=reverse_on,json=reverseOn" json:"reverse_on,omitempty" structs:"reverse_on,indirect" csv:"reverse_on"`
+	// @inject_tag: structs:"low_volt_power,indirect" csv:"low_volt_power"
+	LowVoltPower *float32 `protobuf:"fixed32,6,opt,name=low_volt_power,json=lowVoltPower" json:"low_volt_power,omitempty" structs:"low_volt_power,indirect" csv:"low_volt_power"`
+	// @inject_tag: structs:"cell_read_error,indirect" csv:"cell_read_error"
+	CellReadError *int32 `protobuf:"varint,7,opt,name=cell_read_error,json=cellReadError" json:"cell_read_error,omitempty" structs:"cell_read_error,indirect" csv:"cell_read_error"`
+	// @inject_tag: structs:"cell_bleed,indirect" csv:"cell_bleed"
+	CellBleed *uint32 `protobuf:"varint,8,opt,name=cell_bleed,json=cellBleed" json:"cell_bleed,omitempty" structs:"cell_bleed,indirect" csv:"cell_bleed"`
+	// @inject_tag: structs:"cruise_speed,indirect" csv:"cruise_speed"
+	CruiseSpeed *float32 `protobuf:"fixed32,9,opt,name=cruise_speed,json=cruiseSpeed" json:"cruise_speed,omitempty" structs:"cruise_speed,indirect" csv:"cruise_speed"`
+	// @inject_tag: structs:"hazard_lights_on,indirect" csv:"hazard_lights_on"
+	HazardLightsOn *int32 `protobuf:"varint,10,opt,name=hazard_lights_on,json=hazardLightsOn" json:"hazard_lights_on,omitempty" structs:"hazard_lights_on,indirect" csv:"hazard_lights_on"`
+	// @inject_tag: structs:"battery_voltage,indirect" csv:"battery_voltage"
+	BatteryVoltage *float32 `protobuf:"fixed32,11,opt,name=battery_voltage,json=batteryVoltage" json:"battery_voltage,omitempty" structs:"battery_voltage,indirect" csv:"battery_voltage"`
+	// @inject_tag: structs:"ltc6804_badpec,indirect" csv:"ltc6804_badpec"
+	Ltc6804Badpec *uint32 `protobuf:"varint,12,opt,name=ltc6804_badpec,json=ltc6804Badpec" json:"ltc6804_badpec,omitempty" structs:"ltc6804_badpec,indirect" csv:"ltc6804_badpec"`
+	// @inject_tag: structs:"bms_state,indirect" csv:"bms_state"
+	BmsState *uint32 `protobuf:"varint,13,opt,name=bms_state,json=bmsState" json:"bms_state,omitempty" structs:"bms_state,indirect" csv:"bms_state"`
+	// @inject_tag: structs:"charge_enabled,indirect" csv:"charge_enabled"
+	ChargeEnabled *int32 `protobuf:"varint,14,opt,name=charge_enabled,json=chargeEnabled" json:"charge_enabled,omitempty" structs:"charge_enabled,indirect" csv:"charge_enabled"`
+	// @inject_tag: structs:"discharge_enabled,indirect" csv:"discharge_enabled"
+	DischargeEnabled *int32 `protobuf:"varint,15,opt,name=discharge_enabled,json=dischargeEnabled" json:"discharge_enabled,omitempty" structs:"discharge_enabled,indirect" csv:"discharge_enabled"`
+	// @inject_tag: structs:"highside_contactor_on,indirect" csv:"highside_contactor_on"
+	HighsideContactorOn *int32 `protobuf:"varint,16,opt,name=highside_contactor_on,json=highsideContactorOn" json:"highside_contactor_on,omitempty" structs:"highside_contactor_on,indirect" csv:"highside_contactor_on"`
+	// @inject_tag: structs:"lowside_contactor_on,indirect" csv:"lowside_contactor_on"
+	LowsideContactorOn *int32 `protobuf:"varint,17,opt,name=lowside_contactor_on,json=lowsideContactorOn" json:"lowside_contactor_on,omitempty" structs:"lowside_contactor_on,indirect" csv:"lowside_contactor_on"`
+	// @inject_tag: structs:"precharge_on,indirect" csv:"precharge_on"
+	PrechargeOn *int32 `protobuf:"varint,18,opt,name=precharge_on,json=prechargeOn" json:"precharge_on,omitempty" structs:"precharge_on,indirect" csv:"precharge_on"`
+	// @inject_tag: structs:"low_volt_bus_on,indirect" csv:"low_volt_bus_on"
+	LowVoltBusOn *int32 `protobuf:"varint,19,opt,name=low_volt_bus_on,json=lowVoltBusOn" json:"low_volt_bus_on,omitempty" structs:"low_volt_bus_on,indirect" csv:"low_volt_bus_on"`
+	// @inject_tag: structs:"battery_temp_1,indirect" csv:"battery_temp_1"
+	BatteryTemp_1 *float32 `protobuf:"fixed32,20,opt,name=battery_temp_1,json=batteryTemp1" json:"battery_temp_1,omitempty" structs:"battery_temp_1,indirect" csv:"battery_temp_1"`
+	// @inject_tag: structs:"battery_temp_2,indirect" csv:"battery_temp_2"
+	BatteryTemp_2 *float32 `protobuf:"fixed32,21,opt,name=battery_temp_2,json=batteryTemp2" json:"battery_temp_2,omitempty" structs:"battery_temp_2,indirect" csv:"battery_temp_2"`
+	// @inject_tag: structs:"battery_temp_3,indirect" csv:"battery_temp_3"
+	BatteryTemp_3 *float32 `protobuf:"fixed32,22,opt,name=battery_temp_3,json=batteryTemp3" json:"battery_temp_3,omitempty" structs:"battery_temp_3,indirect" csv:"battery_temp_3"`
+	// @inject_tag: structs:"battery_temp_4,indirect" csv:"battery_temp_4"
+	BatteryTemp_4 *float32 `protobuf:"fixed32,23,opt,name=battery_temp_4,json=batteryTemp4" json:"battery_temp_4,omitempty" structs:"battery_temp_4,indirect" csv:"battery_temp_4"`
+	// @inject_tag: structs:"battery_temp_5,indirect" csv:"battery_temp_5"
+	BatteryTemp_5 *float32 `protobuf:"fixed32,24,opt,name=battery_temp_5,json=batteryTemp5" json:"battery_temp_5,omitempty" structs:"battery_temp_5,indirect" csv:"battery_temp_5"`
+	// @inject_tag: structs:"battery_temp_6,indirect" csv:"battery_temp_6"
+	BatteryTemp_6 *float32 `protobuf:"fixed32,25,opt,name=battery_temp_6,json=batteryTemp6" json:"battery_temp_6,omitempty" structs:"battery_temp_6,indirect" csv:"battery_temp_6"`
+	// @inject_tag: structs:"bms_precharge_battery_adc,indirect" csv:"bms_precharge_battery_adc"
+	BmsPrechargeBatteryAdc *float32 `protobuf:"fixed32,26,opt,name=bms_precharge_battery_adc,json=bmsPrechargeBatteryAdc" json:"bms_precharge_battery_adc,omitempty" structs:"bms_precharge_battery_adc,indirect" csv:"bms_precharge_battery_adc"`
+	// @inject_tag: structs:"bms_precharge_car_adc,indirect" csv:"bms_precharge_car_adc"
+	BmsPrechargeCarAdc *float32 `protobuf:"fixed32,27,opt,name=bms_precharge_car_adc,json=bmsPrechargeCarAdc" json:"bms_precharge_car_adc,omitempty" structs:"bms_precharge_car_adc,indirect" csv:"bms_precharge_car_adc"`
+	// @inject_tag: structs:"low_volt_output_current,indirect" csv:"low_volt_output_current"
+	LowVoltOutputCurrent *float32 `protobuf:"fixed32,29,opt,name=low_volt_output_current,json=lowVoltOutputCurrent" json:"low_volt_output_current,omitempty" structs:"low_volt_output_current,indirect" csv:"low_volt_output_current"`
+	// @inject_tag: structs:"array_current,indirect" csv:"array_current"
+	ArrayCurrent *float32 `protobuf:"fixed32,30,opt,name=array_current,json=arrayCurrent" json:"array_current,omitempty" structs:"array_current,indirect" csv:"array_current"`
+	// @inject_tag: structs:"battery_current,indirect" csv:"battery_current"
+	BatteryCurrent *float32 `protobuf:"fixed32,31,opt,name=battery_current,json=batteryCurrent" json:"battery_current,omitempty" structs:"battery_current,indirect" csv:"battery_current"`
+	// @inject_tag: structs:"left_motor_controller_power,indirect" csv:"left_motor_controller_power"
+	LeftMotorControllerPower *float32 `protobuf:"fixed32,32,opt,name=left_motor_controller_power,json=leftMotorControllerPower" json:"left_motor_controller_power,omitempty" structs:"left_motor_controller_power,indirect" csv:"left_motor_controller_power"`
+	// @inject_tag: structs:"right_motor_controller_power,indirect" csv:"right_motor_controller_power"
+	RightMotorControllerPower *float32 `protobuf:"fixed32,33,opt,name=right_motor_controller_power,json=rightMotorControllerPower" json:"right_motor_controller_power,omitempty" structs:"right_motor_controller_power,indirect" csv:"right_motor_controller_power"`
+	// @inject_tag: structs:"amp_hours,indirect" csv:"amp_hours"
+	AmpHours *float32 `protobuf:"fixed32,34,opt,name=amp_hours,json=ampHours" json:"amp_hours,omitempty" structs:"amp_hours,indirect" csv:"amp_hours"`
+	// @inject_tag: structs:"head_lights_on,indirect" csv:"head_lights_on"
+	HeadLightsOn *int32 `protobuf:"varint,35,opt,name=head_lights_on,json=headLightsOn" json:"head_lights_on,omitempty" structs:"head_lights_on,indirect" csv:"head_lights_on"`
+	// @inject_tag: structs:"brake_lights_on,indirect" csv:"brake_lights_on"
+	BrakeLightsOn *int32 `protobuf:"varint,36,opt,name=brake_lights_on,json=brakeLightsOn" json:"brake_lights_on,omitempty" structs:"brake_lights_on,indirect" csv:"brake_lights_on"`
+	// @inject_tag: structs:"right_blinker_on,indirect" csv:"right_blinker_on"
+	RightBlinkerOn *int32 `protobuf:"varint,37,opt,name=right_blinker_on,json=rightBlinkerOn" json:"right_blinker_on,omitempty" structs:"right_blinker_on,indirect" csv:"right_blinker_on"`
+	// @inject_tag: structs:"left_blinker_on,indirect" csv:"left_blinker_on"
+	LeftBlinkerOn *int32 `protobuf:"varint,38,opt,name=left_blinker_on,json=leftBlinkerOn" json:"left_blinker_on,omitempty" structs:"left_blinker_on,indirect" csv:"left_blinker_on"`
+	// @inject_tag: structs:"brake_pressed,indirect" csv:"brake_pressed"
+	BrakePressed *int32 `protobuf:"varint,39,opt,name=brake_pressed,json=brakePressed" json:"brake_pressed,omitempty" structs:"brake_pressed,indirect" csv:"brake_pressed"`
+	// @inject_tag: structs:"throttle_pressed,indirect" csv:"throttle_pressed"
+	ThrottlePressed *int32 `protobuf:"varint,40,opt,name=throttle_pressed,json=throttlePressed" json:"throttle_pressed,omitempty" structs:"throttle_pressed,indirect" csv:"throttle_pressed"`
+	// @inject_tag: structs:"drive_mode,indirect" csv:"drive_mode"
+	DriveMode *uint32 `protobuf:"varint,41,opt,name=drive_mode,json=driveMode" json:"drive_mode,omitempty" structs:"drive_mode,indirect" csv:"drive_mode"`
+	// @inject_tag: structs:"motor_controller_enabled,indirect" csv:"motor_controller_enabled"
+	MotorControllerEnabled *int32 `protobuf:"varint,42,opt,name=motor_controller_enabled,json=motorControllerEnabled" json:"motor_controller_enabled,omitempty" structs:"motor_controller_enabled,indirect" csv:"motor_controller_enabled"`
+	// @inject_tag: structs:"motor_controller_speed,indirect" csv:"motor_controller_speed"
+	MotorControllerSpeed *float32 `protobuf:"fixed32,43,opt,name=motor_controller_speed,json=motorControllerSpeed" json:"motor_controller_speed,omitempty" structs:"motor_controller_speed,indirect" csv:"motor_controller_speed"`
+	// @inject_tag: structs:"motor_controller_rpm,indirect" csv:"motor_controller_rpm"
+	MotorControllerRpm *float32 `protobuf:"fixed32,44,opt,name=motor_controller_rpm,json=motorControllerRpm" json:"motor_controller_rpm,omitempty" structs:"motor_controller_rpm,indirect" csv:"motor_controller_rpm"`
+	// @inject_tag: structs:"avg_odometer,indirect" csv:"avg_odometer"
+	AvgOdometer *float32 `protobuf:"fixed32,45,opt,name=avg_odometer,json=avgOdometer" json:"avg_odometer,omitempty" structs:"avg_odometer,indirect" csv:"avg_odometer"`
+	// @inject_tag: structs:"left_motor_temp,indirect" csv:"left_motor_temp"
+	LeftMotorTemp *float32 `protobuf:"fixed32,46,opt,name=left_motor_temp,json=leftMotorTemp" json:"left_motor_temp,omitempty" structs:"left_motor_temp,indirect" csv:"left_motor_temp"`
+	// @inject_tag: structs:"right_motor_temp,indirect" csv:"right_motor_temp"
+	RightMotorTemp *float32 `protobuf:"fixed32,47,opt,name=right_motor_temp,json=rightMotorTemp" json:"right_motor_temp,omitempty" structs:"right_motor_temp,indirect" csv:"right_motor_temp"`
+	// @inject_tag: structs:"left_motor_controller_temp,indirect" csv:"left_motor_controller_temp"
+	LeftMotorControllerTemp *float32 `protobuf:"fixed32,48,opt,name=left_motor_controller_temp,json=leftMotorControllerTemp" json:"left_motor_controller_temp,omitempty" structs:"left_motor_controller_temp,indirect" csv:"left_motor_controller_temp"`
+	// @inject_tag: structs:"right_motor_controller_temp,indirect" csv:"right_motor_controller_temp"
+	RightMotorControllerTemp *float32 `protobuf:"fixed32,49,opt,name=right_motor_controller_temp,json=rightMotorControllerTemp" json:"right_motor_controller_temp,omitempty" structs:"right_motor_controller_temp,indirect" csv:"right_motor_controller_temp"`
+	// @inject_tag: structs:"left_motor_controller_alive,indirect" csv:"left_motor_controller_alive"
+	LeftMotorControllerAlive *float32 `protobuf:"fixed32,50,opt,name=left_motor_controller_alive,json=leftMotorControllerAlive" json:"left_motor_controller_alive,omitempty" structs:"left_motor_controller_alive,indirect" csv:"left_motor_controller_alive"`
+	// @inject_tag: structs:"right_motor_controller_alive,indirect" csv:"right_motor_controller_alive"
+	RightMotorControllerAlive *float32 `protobuf:"fixed32,51,opt,name=right_motor_controller_alive,json=rightMotorControllerAlive" json:"right_motor_controller_alive,omitempty" structs:"right_motor_controller_alive,indirect" csv:"right_motor_controller_alive"`
+	// @inject_tag: structs:"left_motor_controller_current,indirect" csv:"left_motor_controller_current"
+	LeftMotorControllerCurrent *float32 `protobuf:"fixed32,52,opt,name=left_motor_controller_current,json=leftMotorControllerCurrent" json:"left_motor_controller_current,omitempty" structs:"left_motor_controller_current,indirect" csv:"left_motor_controller_current"`
+	// @inject_tag: structs:"right_motor_controller_current,indirect" csv:"right_motor_controller_current"
+	RightMotorControllerCurrent *float32 `protobuf:"fixed32,53,opt,name=right_motor_controller_current,json=rightMotorControllerCurrent" json:"right_motor_controller_current,omitempty" structs:"right_motor_controller_current,indirect" csv:"right_motor_controller_current"`
+	// @inject_tag: structs:"motor_controller_current_diff,indirect" csv:"motor_controller_current_diff"
+	MotorControllerCurrentDiff *float32 `protobuf:"fixed32,54,opt,name=motor_controller_current_diff,json=motorControllerCurrentDiff" json:"motor_controller_current_diff,omitempty" structs:"motor_controller_current_diff,indirect" csv:"motor_controller_current_diff"`
+	// @inject_tag: structs:"left_motor_controller_error,indirect" csv:"left_motor_controller_error"
+	LeftMotorControllerError *uint32 `protobuf:"varint,55,opt,name=left_motor_controller_error,json=leftMotorControllerError" json:"left_motor_controller_error,omitempty" structs:"left_motor_controller_error,indirect" csv:"left_motor_controller_error"`
+	// @inject_tag: structs:"right_motor_controller_error,indirect" csv:"right_motor_controller_error"
+	RightMotorControllerError *uint32 `protobuf:"varint,56,opt,name=right_motor_controller_error,json=rightMotorControllerError" json:"right_motor_controller_error,omitempty" structs:"right_motor_controller_error,indirect" csv:"right_motor_controller_error"`
+	// @inject_tag: structs:"left_motor_controller_limit,indirect" csv:"left_motor_controller_limit"
+	LeftMotorControllerLimit *uint32 `protobuf:"varint,57,opt,name=left_motor_controller_limit,json=leftMotorControllerLimit" json:"left_motor_controller_limit,omitempty" structs:"left_motor_controller_limit,indirect" csv:"left_motor_controller_limit"`
+	// @inject_tag: structs:"right_motor_controller_limit,indirect" csv:"right_motor_controller_limit"
+	RightMotorControllerLimit *uint32 `protobuf:"varint,58,opt,name=right_motor_controller_limit,json=rightMotorControllerLimit" json:"right_motor_controller_limit,omitempty" structs:"right_motor_controller_limit,indirect" csv:"right_motor_controller_limit"`
+	// @inject_tag: structs:"left_motor_controller_rx_error_count,indirect" csv:"left_motor_controller_rx_error_count"
+	LeftMotorControllerRxErrorCount *uint32 `protobuf:"varint,59,opt,name=left_motor_controller_rx_error_count,json=leftMotorControllerRxErrorCount" json:"left_motor_controller_rx_error_count,omitempty" structs:"left_motor_controller_rx_error_count,indirect" csv:"left_motor_controller_rx_error_count"`
+	// @inject_tag: structs:"right_motor_controller_rx_error_count,indirect" csv:"right_motor_controller_rx_error_count"
+	RightMotorControllerRxErrorCount *uint32 `protobuf:"varint,60,opt,name=right_motor_controller_rx_error_count,json=rightMotorControllerRxErrorCount" json:"right_motor_controller_rx_error_count,omitempty" structs:"right_motor_controller_rx_error_count,indirect" csv:"right_motor_controller_rx_error_count"`
+	// @inject_tag: structs:"left_motor_controller_tx_error_count,indirect" csv:"left_motor_controller_tx_error_count"
+	LeftMotorControllerTxErrorCount *uint32 `protobuf:"varint,61,opt,name=left_motor_controller_tx_error_count,json=leftMotorControllerTxErrorCount" json:"left_motor_controller_tx_error_count,omitempty" structs:"left_motor_controller_tx_error_count,indirect" csv:"left_motor_controller_tx_error_count"`
+	// @inject_tag: structs:"right_motor_controller_tx_error_count,indirect" csv:"right_motor_controller_tx_error_count"
+	RightMotorControllerTxErrorCount *uint32 `protobuf:"varint,62,opt,name=right_motor_controller_tx_error_count,json=rightMotorControllerTxErrorCount" json:"right_motor_controller_tx_error_count,omitempty" structs:"right_motor_controller_tx_error_count,indirect" csv:"right_motor_controller_tx_error_count"`
+	// @inject_tag: structs:"left_motor_controller_bus_voltage,indirect" csv:"left_motor_controller_bus_voltage"
+	LeftMotorControllerBusVoltage *float32 `protobuf:"fixed32,63,opt,name=left_motor_controller_bus_voltage,json=leftMotorControllerBusVoltage" json:"left_motor_controller_bus_voltage,omitempty" structs:"left_motor_controller_bus_voltage,indirect" csv:"left_motor_controller_bus_voltage"`
+	// @inject_tag: structs:"right_motor_controller_bus_voltage,indirect" csv:"right_motor_controller_bus_voltage"
+	RightMotorControllerBusVoltage *float32 `protobuf:"fixed32,64,opt,name=right_motor_controller_bus_voltage,json=rightMotorControllerBusVoltage" json:"right_motor_controller_bus_voltage,omitempty" structs:"right_motor_controller_bus_voltage,indirect" csv:"right_motor_controller_bus_voltage"`
+	// @inject_tag: structs:"left_motor_controller_15v_voltage,indirect" csv:"left_motor_controller_15v_voltage"
+	LeftMotorController_15VVoltage *float32 `protobuf:"fixed32,65,opt,name=left_motor_controller_15v_voltage,json=leftMotorController15vVoltage" json:"left_motor_controller_15v_voltage,omitempty" structs:"left_motor_controller_15v_voltage,indirect" csv:"left_motor_controller_15v_voltage"`
+	// @inject_tag: structs:"right_motor_controller_15v_voltage,indirect" csv:"right_motor_controller_15v_voltage"
+	RightMotorController_15VVoltage *float32 `protobuf:"fixed32,66,opt,name=right_motor_controller_15v_voltage,json=rightMotorController15vVoltage" json:"right_motor_controller_15v_voltage,omitempty" structs:"right_motor_controller_15v_voltage,indirect" csv:"right_motor_controller_15v_voltage"`
+	// @inject_tag: structs:"left_motor_controller_3v3_voltage,indirect" csv:"left_motor_controller_3v3_voltage"
+	LeftMotorController_3V3Voltage *float32 `protobuf:"fixed32,67,opt,name=left_motor_controller_3v3_voltage,json=leftMotorController3v3Voltage" json:"left_motor_controller_3v3_voltage,omitempty" structs:"left_motor_controller_3v3_voltage,indirect" csv:"left_motor_controller_3v3_voltage"`
+	// @inject_tag: structs:"right_motor_controller_3v3_voltage,indirect" csv:"right_motor_controller_3v3_voltage"
+	RightMotorController_3V3Voltage *float32 `protobuf:"fixed32,68,opt,name=right_motor_controller_3v3_voltage,json=rightMotorController3v3Voltage" json:"right_motor_controller_3v3_voltage,omitempty" structs:"right_motor_controller_3v3_voltage,indirect" csv:"right_motor_controller_3v3_voltage"`
+	// @inject_tag: structs:"left_motor_controller_1v9_voltage,indirect" csv:"left_motor_controller_1v9_voltage"
+	LeftMotorController_1V9Voltage *float32 `protobuf:"fixed32,69,opt,name=left_motor_controller_1v9_voltage,json=leftMotorController1v9Voltage" json:"left_motor_controller_1v9_voltage,omitempty" structs:"left_motor_controller_1v9_voltage,indirect" csv:"left_motor_controller_1v9_voltage"`
+	// @inject_tag: structs:"right_motor_controller_1v9_voltage,indirect" csv:"right_motor_controller_1v9_voltage"
+	RightMotorController_1V9Voltage *float32 `protobuf:"fixed32,70,opt,name=right_motor_controller_1v9_voltage,json=rightMotorController1v9Voltage" json:"right_motor_controller_1v9_voltage,omitempty" structs:"right_motor_controller_1v9_voltage,indirect" csv:"right_motor_controller_1v9_voltage"`
+	// @inject_tag: structs:"left_motor_controller_dsp_temp,indirect" csv:"left_motor_controller_dsp_temp"
+	LeftMotorControllerDspTemp *float32 `protobuf:"fixed32,71,opt,name=left_motor_controller_dsp_temp,json=leftMotorControllerDspTemp" json:"left_motor_controller_dsp_temp,omitempty" structs:"left_motor_controller_dsp_temp,indirect" csv:"left_motor_controller_dsp_temp"`
+	// @inject_tag: structs:"right_motor_controller_dsp_temp,indirect" csv:"right_motor_controller_dsp_temp"
+	RightMotorControllerDspTemp *float32 `protobuf:"fixed32,72,opt,name=right_motor_controller_dsp_temp,json=rightMotorControllerDspTemp" json:"right_motor_controller_dsp_temp,omitempty" structs:"right_motor_controller_dsp_temp,indirect" csv:"right_motor_controller_dsp_temp"`
+	// @inject_tag: structs:"left_motor_controller_phase_current,indirect" csv:"left_motor_controller_phase_current"
+	LeftMotorControllerPhaseCurrent *float32 `protobuf:"fixed32,73,opt,name=left_motor_controller_phase_current,json=leftMotorControllerPhaseCurrent" json:"left_motor_controller_phase_current,omitempty" structs:"left_motor_controller_phase_current,indirect" csv:"left_motor_controller_phase_current"`
+	// @inject_tag: structs:"right_motor_controller_phase_current,indirect" csv:"right_motor_controller_phase_current"
+	RightMotorControllerPhaseCurrent *float32 `protobuf:"fixed32,74,opt,name=right_motor_controller_phase_current,json=rightMotorControllerPhaseCurrent" json:"right_motor_controller_phase_current,omitempty" structs:"right_motor_controller_phase_current,indirect" csv:"right_motor_controller_phase_current"`
+	// @inject_tag: structs:"left_motor_rpm_command,indirect" csv:"left_motor_rpm_command"
+	LeftMotorRpmCommand *float32 `protobuf:"fixed32,75,opt,name=left_motor_rpm_command,json=leftMotorRpmCommand" json:"left_motor_rpm_command,omitempty" structs:"left_motor_rpm_command,indirect" csv:"left_motor_rpm_command"`
+	// @inject_tag: structs:"right_motor_rpm_command,indirect" csv:"right_motor_rpm_command"
+	RightMotorRpmCommand *float32 `protobuf:"fixed32,76,opt,name=right_motor_rpm_command,json=rightMotorRpmCommand" json:"right_motor_rpm_command,omitempty" structs:"right_motor_rpm_command,indirect" csv:"right_motor_rpm_command"`
+	// @inject_tag: structs:"left_motor_current_command,indirect" csv:"left_motor_current_command"
+	LeftMotorCurrentCommand *float32 `protobuf:"fixed32,77,opt,name=left_motor_current_command,json=leftMotorCurrentCommand" json:"left_motor_current_command,omitempty" structs:"left_motor_current_command,indirect" csv:"left_motor_current_command"`
+	// @inject_tag: structs:"right_motor_current_command,indirect" csv:"right_motor_current_command"
+	RightMotorCurrentCommand *float32 `protobuf:"fixed32,78,opt,name=right_motor_current_command,json=rightMotorCurrentCommand" json:"right_motor_current_command,omitempty" structs:"right_motor_current_command,indirect" csv:"right_motor_current_command"`
+	// @inject_tag: structs:"gps_time,indirect" csv:"gps_time"
+	GpsTime *int64 `protobuf:"varint,80,opt,name=gps_time,json=gpsTime" json:"gps_time,omitempty" structs:"gps_time,indirect" csv:"gps_time"`
+	// @inject_tag: structs:"gps_latitude,indirect" csv:"gps_latitude"
+	GpsLatitude *float32 `protobuf:"fixed32,81,opt,name=gps_latitude,json=gpsLatitude" json:"gps_latitude,omitempty" structs:"gps_latitude,indirect" csv:"gps_latitude"`
+	// @inject_tag: structs:"gps_longitude,indirect" csv:"gps_longitude"
+	GpsLongitude *float32 `protobuf:"fixed32,82,opt,name=gps_longitude,json=gpsLongitude" json:"gps_longitude,omitempty" structs:"gps_longitude,indirect" csv:"gps_longitude"`
+	// @inject_tag: structs:"gps_speed,indirect" csv:"gps_speed"
+	GpsSpeed *float32 `protobuf:"fixed32,83,opt,name=gps_speed,json=gpsSpeed" json:"gps_speed,omitempty" structs:"gps_speed,indirect" csv:"gps_speed"`
+	// @inject_tag: structs:"gps_altitude,indirect" csv:"gps_altitude"
+	GpsAltitude *float32 `protobuf:"fixed32,84,opt,name=gps_altitude,json=gpsAltitude" json:"gps_altitude,omitempty" structs:"gps_altitude,indirect" csv:"gps_altitude"`
+	// @inject_tag: structs:"gps_bearing,indirect" csv:"gps_bearing"
+	GpsBearing *float32 `protobuf:"fixed32,85,opt,name=gps_bearing,json=gpsBearing" json:"gps_bearing,omitempty" structs:"gps_bearing,indirect" csv:"gps_bearing"`
+	// @inject_tag: structs:"led_state,indirect" csv:"led_state"
+	LedState *int32 `protobuf:"varint,86,opt,name=led_state,json=ledState" json:"led_state,omitempty" structs:"led_state,indirect" csv:"led_state"`
+	// @inject_tag: structs:"mppt_array_power,indirect" csv:"mppt_array_power"
+	MpptArrayPower *float32 `protobuf:"fixed32,87,opt,name=mppt_array_power,json=mpptArrayPower" json:"mppt_array_power,omitempty" structs:"mppt_array_power,indirect" csv:"mppt_array_power"`
+	// @inject_tag: structs:"mppt_A0_volt_in,indirect" csv:"mppt_A0_volt_in"
+	Mppt_A0VoltIn *float32 `protobuf:"fixed32,88,opt,name=mppt_A0_volt_in,json=mpptA0VoltIn" json:"mppt_A0_volt_in,omitempty" structs:"mppt_A0_volt_in,indirect" csv:"mppt_A0_volt_in"`
+	// @inject_tag: structs:"mppt_A0_volt_out,indirect" csv:"mppt_A0_volt_out"
+	Mppt_A0VoltOut *float32 `protobuf:"fixed32,89,opt,name=mppt_A0_volt_out,json=mpptA0VoltOut" json:"mppt_A0_volt_out,omitempty" structs:"mppt_A0_volt_out,indirect" csv:"mppt_A0_volt_out"`
+	// @inject_tag: structs:"mppt_A0_current,indirect" csv:"mppt_A0_current"
+	Mppt_A0Current *float32 `protobuf:"fixed32,90,opt,name=mppt_A0_current,json=mpptA0Current" json:"mppt_A0_current,omitempty" structs:"mppt_A0_current,indirect" csv:"mppt_A0_current"`
+	// @inject_tag: structs:"mppt_A0_temp,indirect" csv:"mppt_A0_temp"
+	Mppt_A0Temp *float32 `protobuf:"fixed32,91,opt,name=mppt_A0_temp,json=mpptA0Temp" json:"mppt_A0_temp,omitempty" structs:"mppt_A0_temp,indirect" csv:"mppt_A0_temp"`
+	// @inject_tag: structs:"mppt_A1_volt_in,indirect" csv:"mppt_A1_volt_in"
+	Mppt_A1VoltIn *float32 `protobuf:"fixed32,92,opt,name=mppt_A1_volt_in,json=mpptA1VoltIn" json:"mppt_A1_volt_in,omitempty" structs:"mppt_A1_volt_in,indirect" csv:"mppt_A1_volt_in"`
+	// @inject_tag: structs:"mppt_A1_volt_out,indirect" csv:"mppt_A1_volt_out"
+	Mppt_A1VoltOut *float32 `protobuf:"fixed32,93,opt,name=mppt_A1_volt_out,json=mpptA1VoltOut" json:"mppt_A1_volt_out,omitempty" structs:"mppt_A1_volt_out,indirect" csv:"mppt_A1_volt_out"`
+	// @inject_tag: structs:"mppt_A1_current,indirect" csv:"mppt_A1_current"
+	Mppt_A1Current *float32 `protobuf:"fixed32,94,opt,name=mppt_A1_current,json=mpptA1Current" json:"mppt_A1_current,omitempty" structs:"mppt_A1_current,indirect" csv:"mppt_A1_current"`
+	// @inject_tag: structs:"mppt_A1_temp,indirect" csv:"mppt_A1_temp"
+	Mppt_A1Temp *float32 `protobuf:"fixed32,95,opt,name=mppt_A1_temp,json=mpptA1Temp" json:"mppt_A1_temp,omitempty" structs:"mppt_A1_temp,indirect" csv:"mppt_A1_temp"`
+	// @inject_tag: structs:"mppt_B0_volt_in,indirect" csv:"mppt_B0_volt_in"
+	Mppt_B0VoltIn *float32 `protobuf:"fixed32,96,opt,name=mppt_B0_volt_in,json=mpptB0VoltIn" json:"mppt_B0_volt_in,omitempty" structs:"mppt_B0_volt_in,indirect" csv:"mppt_B0_volt_in"`
+	// @inject_tag: structs:"mppt_B0_volt_out,indirect" csv:"mppt_B0_volt_out"
+	Mppt_B0VoltOut *float32 `protobuf:"fixed32,97,opt,name=mppt_B0_volt_out,json=mpptB0VoltOut" json:"mppt_B0_volt_out,omitempty" structs:"mppt_B0_volt_out,indirect" csv:"mppt_B0_volt_out"`
+	// @inject_tag: structs:"mppt_B0_current,indirect" csv:"mppt_B0_current"
+	Mppt_B0Current *float32 `protobuf:"fixed32,98,opt,name=mppt_B0_current,json=mpptB0Current" json:"mppt_B0_current,omitempty" structs:"mppt_B0_current,indirect" csv:"mppt_B0_current"`
+	// @inject_tag: structs:"mppt_B0_temp,indirect" csv:"mppt_B0_temp"
+	Mppt_B0Temp *float32 `protobuf:"fixed32,99,opt,name=mppt_B0_temp,json=mpptB0Temp" json:"mppt_B0_temp,omitempty" structs:"mppt_B0_temp,indirect" csv:"mppt_B0_temp"`
+	// @inject_tag: structs:"mppt_B1_volt_in,indirect" csv:"mppt_B1_volt_in"
+	Mppt_B1VoltIn *float32 `protobuf:"fixed32,100,opt,name=mppt_B1_volt_in,json=mpptB1VoltIn" json:"mppt_B1_volt_in,omitempty" structs:"mppt_B1_volt_in,indirect" csv:"mppt_B1_volt_in"`
+	// @inject_tag: structs:"mppt_B1_volt_out,indirect" csv:"mppt_B1_volt_out"
+	Mppt_B1VoltOut *float32 `protobuf:"fixed32,101,opt,name=mppt_B1_volt_out,json=mpptB1VoltOut" json:"mppt_B1_volt_out,omitempty" structs:"mppt_B1_volt_out,indirect" csv:"mppt_B1_volt_out"`
+	// @inject_tag: structs:"mppt_B1_current,indirect" csv:"mppt_B1_current"
+	Mppt_B1Current *float32 `protobuf:"fixed32,102,opt,name=mppt_B1_current,json=mpptB1Current" json:"mppt_B1_current,omitempty" structs:"mppt_B1_current,indirect" csv:"mppt_B1_current"`
+	// @inject_tag: structs:"mppt_B1_temp,indirect" csv:"mppt_B1_temp"
+	Mppt_B1Temp *float32 `protobuf:"fixed32,103,opt,name=mppt_B1_temp,json=mpptB1Temp" json:"mppt_B1_temp,omitempty" structs:"mppt_B1_temp,indirect" csv:"mppt_B1_temp"`
+	// @inject_tag: structs:"mppt_C0_volt_in,indirect" csv:"mppt_C0_volt_in"
+	Mppt_C0VoltIn *float32 `protobuf:"fixed32,104,opt,name=mppt_C0_volt_in,json=mpptC0VoltIn" json:"mppt_C0_volt_in,omitempty" structs:"mppt_C0_volt_in,indirect" csv:"mppt_C0_volt_in"`
+	// @inject_tag: structs:"mppt_C0_volt_out,indirect" csv:"mppt_C0_volt_out"
+	Mppt_C0VoltOut *float32 `protobuf:"fixed32,105,opt,name=mppt_C0_volt_out,json=mpptC0VoltOut" json:"mppt_C0_volt_out,omitempty" structs:"mppt_C0_volt_out,indirect" csv:"mppt_C0_volt_out"`
+	// @inject_tag: structs:"mppt_C0_current,indirect" csv:"mppt_C0_current"
+	Mppt_C0Current *float32 `protobuf:"fixed32,106,opt,name=mppt_C0_current,json=mpptC0Current" json:"mppt_C0_current,omitempty" structs:"mppt_C0_current,indirect" csv:"mppt_C0_current"`
+	// @inject_tag: structs:"mppt_C0_temp,indirect" csv:"mppt_C0_temp"
+	Mppt_C0Temp *float32 `protobuf:"fixed32,107,opt,name=mppt_C0_temp,json=mpptC0Temp" json:"mppt_C0_temp,omitempty" structs:"mppt_C0_temp,indirect" csv:"mppt_C0_temp"`
+	// @inject_tag: structs:"mppt_C1_volt_in,indirect" csv:"mppt_C1_volt_in"
+	Mppt_C1VoltIn *float32 `protobuf:"fixed32,108,opt,name=mppt_C1_volt_in,json=mpptC1VoltIn" json:"mppt_C1_volt_in,omitempty" structs:"mppt_C1_volt_in,indirect" csv:"mppt_C1_volt_in"`
+	// @inject_tag: structs:"mppt_C1_volt_out,indirect" csv:"mppt_C1_volt_out"
+	Mppt_C1VoltOut *float32 `protobuf:"fixed32,109,opt,name=mppt_C1_volt_out,json=mpptC1VoltOut" json:"mppt_C1_volt_out,omitempty" structs:"mppt_C1_volt_out,indirect" csv:"mppt_C1_volt_out"`
+	// @inject_tag: structs:"mppt_C1_current,indirect" csv:"mppt_C1_current"
+	Mppt_C1Current *float32 `protobuf:"fixed32,110,opt,name=mppt_C1_current,json=mpptC1Current" json:"mppt_C1_current,omitempty" structs:"mppt_C1_current,indirect" csv:"mppt_C1_current"`
+	// @inject_tag: structs:"mppt_C1_temp,indirect" csv:"mppt_C1_temp"
+	Mppt_C1Temp *float32 `protobuf:"fixed32,111,opt,name=mppt_C1_temp,json=mpptC1Temp" json:"mppt_C1_temp,omitempty" structs:"mppt_C1_temp,indirect" csv:"mppt_C1_temp"`
+	// @inject_tag: structs:"mppt_D0_volt_in,indirect" csv:"mppt_D0_volt_in"
+	Mppt_D0VoltIn *float32 `protobuf:"fixed32,112,opt,name=mppt_D0_volt_in,json=mpptD0VoltIn" json:"mppt_D0_volt_in,omitempty" structs:"mppt_D0_volt_in,indirect" csv:"mppt_D0_volt_in"`
+	// @inject_tag: structs:"mppt_D0_volt_out,indirect" csv:"mppt_D0_volt_out"
+	Mppt_D0VoltOut *float32 `protobuf:"fixed32,113,opt,name=mppt_D0_volt_out,json=mpptD0VoltOut" json:"mppt_D0_volt_out,omitempty" structs:"mppt_D0_volt_out,indirect" csv:"mppt_D0_volt_out"`
+	// @inject_tag: structs:"mppt_D0_current,indirect" csv:"mppt_D0_current"
+	Mppt_D0Current *float32 `protobuf:"fixed32,114,opt,name=mppt_D0_current,json=mpptD0Current" json:"mppt_D0_current,omitempty" structs:"mppt_D0_current,indirect" csv:"mppt_D0_current"`
+	// @inject_tag: structs:"mppt_D0_temp,indirect" csv:"mppt_D0_temp"
+	Mppt_D0Temp *float32 `protobuf:"fixed32,115,opt,name=mppt_D0_temp,json=mpptD0Temp" json:"mppt_D0_temp,omitempty" structs:"mppt_D0_temp,indirect" csv:"mppt_D0_temp"`
+	// @inject_tag: structs:"mppt_D1_volt_in,indirect" csv:"mppt_D1_volt_in"
+	Mppt_D1VoltIn *float32 `protobuf:"fixed32,116,opt,name=mppt_D1_volt_in,json=mpptD1VoltIn" json:"mppt_D1_volt_in,omitempty" structs:"mppt_D1_volt_in,indirect" csv:"mppt_D1_volt_in"`
+	// @inject_tag: structs:"mppt_D1_volt_out,indirect" csv:"mppt_D1_volt_out"
+	Mppt_D1VoltOut *float32 `protobuf:"fixed32,117,opt,name=mppt_D1_volt_out,json=mpptD1VoltOut" json:"mppt_D1_volt_out,omitempty" structs:"mppt_D1_volt_out,indirect" csv:"mppt_D1_volt_out"`
+	// @inject_tag: structs:"mppt_D1_current,indirect" csv:"mppt_D1_current"
+	Mppt_D1Current *float32 `protobuf:"fixed32,118,opt,name=mppt_D1_current,json=mpptD1Current" json:"mppt_D1_current,omitempty" structs:"mppt_D1_current,indirect" csv:"mppt_D1_current"`
+	// @inject_tag: structs:"mppt_D1_temp,indirect" csv:"mppt_D1_temp"
+	Mppt_D1Temp *float32 `protobuf:"fixed32,119,opt,name=mppt_D1_temp,json=mpptD1Temp" json:"mppt_D1_temp,omitempty" structs:"mppt_D1_temp,indirect" csv:"mppt_D1_temp"`
+	// @inject_tag: structs:"cell_volt_1,indirect" csv:"cell_volt_1"
+	CellVolt_1 *float32 `protobuf:"fixed32,120,opt,name=cell_volt_1,json=cellVolt1" json:"cell_volt_1,omitempty" structs:"cell_volt_1,indirect" csv:"cell_volt_1"`
+	// @inject_tag: structs:"cell_volt_2,indirect" csv:"cell_volt_2"
+	CellVolt_2 *float32 `protobuf:"fixed32,121,opt,name=cell_volt_2,json=cellVolt2" json:"cell_volt_2,omitempty" structs:"cell_volt_2,indirect" csv:"cell_volt_2"`
+	// @inject_tag: structs:"cell_volt_3,indirect" csv:"cell_volt_3"
+	CellVolt_3 *float32 `protobuf:"fixed32,122,opt,name=cell_volt_3,json=cellVolt3" json:"cell_volt_3,omitempty" structs:"cell_volt_3,indirect" csv:"cell_volt_3"`
+	// @inject_tag: structs:"cell_volt_4,indirect" csv:"cell_volt_4"
+	CellVolt_4 *float32 `protobuf:"fixed32,123,opt,name=cell_volt_4,json=cellVolt4" json:"cell_volt_4,omitempty" structs:"cell_volt_4,indirect" csv:"cell_volt_4"`
+	// @inject_tag: structs:"cell_volt_5,indirect" csv:"cell_volt_5"
+	CellVolt_5 *float32 `protobuf:"fixed32,124,opt,name=cell_volt_5,json=cellVolt5" json:"cell_volt_5,omitempty" structs:"cell_volt_5,indirect" csv:"cell_volt_5"`
+	// @inject_tag: structs:"cell_volt_6,indirect" csv:"cell_volt_6"
+	CellVolt_6 *float32 `protobuf:"fixed32,125,opt,name=cell_volt_6,json=cellVolt6" json:"cell_volt_6,omitempty" structs:"cell_volt_6,indirect" csv:"cell_volt_6"`
+	// @inject_tag: structs:"cell_volt_7,indirect" csv:"cell_volt_7"
+	CellVolt_7 *float32 `protobuf:"fixed32,126,opt,name=cell_volt_7,json=cellVolt7" json:"cell_volt_7,omitempty" structs:"cell_volt_7,indirect" csv:"cell_volt_7"`
+	// @inject_tag: structs:"cell_volt_8,indirect" csv:"cell_volt_8"
+	CellVolt_8 *float32 `protobuf:"fixed32,127,opt,name=cell_volt_8,json=cellVolt8" json:"cell_volt_8,omitempty" structs:"cell_volt_8,indirect" csv:"cell_volt_8"`
+	// @inject_tag: structs:"cell_volt_9,indirect" csv:"cell_volt_9"
+	CellVolt_9 *float32 `protobuf:"fixed32,128,opt,name=cell_volt_9,json=cellVolt9" json:"cell_volt_9,omitempty" structs:"cell_volt_9,indirect" csv:"cell_volt_9"`
+	// @inject_tag: structs:"cell_volt_10,indirect" csv:"cell_volt_10"
+	CellVolt_10 *float32 `protobuf:"fixed32,129,opt,name=cell_volt_10,json=cellVolt10" json:"cell_volt_10,omitempty" structs:"cell_volt_10,indirect" csv:"cell_volt_10"`
+	// @inject_tag: structs:"cell_volt_11,indirect" csv:"cell_volt_11"
+	CellVolt_11 *float32 `protobuf:"fixed32,130,opt,name=cell_volt_11,json=cellVolt11" json:"cell_volt_11,omitempty" structs:"cell_volt_11,indirect" csv:"cell_volt_11"`
+	// @inject_tag: structs:"cell_volt_12,indirect" csv:"cell_volt_12"
+	CellVolt_12 *float32 `protobuf:"fixed32,131,opt,name=cell_volt_12,json=cellVolt12" json:"cell_volt_12,omitempty" structs:"cell_volt_12,indirect" csv:"cell_volt_12"`
+	// @inject_tag: structs:"cell_volt_13,indirect" csv:"cell_volt_13"
+	CellVolt_13 *float32 `protobuf:"fixed32,132,opt,name=cell_volt_13,json=cellVolt13" json:"cell_volt_13,omitempty" structs:"cell_volt_13,indirect" csv:"cell_volt_13"`
+	// @inject_tag: structs:"cell_volt_14,indirect" csv:"cell_volt_14"
+	CellVolt_14 *float32 `protobuf:"fixed32,133,opt,name=cell_volt_14,json=cellVolt14" json:"cell_volt_14,omitempty" structs:"cell_volt_14,indirect" csv:"cell_volt_14"`
+	// @inject_tag: structs:"cell_volt_15,indirect" csv:"cell_volt_15"
+	CellVolt_15 *float32 `protobuf:"fixed32,134,opt,name=cell_volt_15,json=cellVolt15" json:"cell_volt_15,omitempty" structs:"cell_volt_15,indirect" csv:"cell_volt_15"`
+	// @inject_tag: structs:"cell_volt_16,indirect" csv:"cell_volt_16"
+	CellVolt_16 *float32 `protobuf:"fixed32,135,opt,name=cell_volt_16,json=cellVolt16" json:"cell_volt_16,omitempty" structs:"cell_volt_16,indirect" csv:"cell_volt_16"`
+	// @inject_tag: structs:"cell_volt_17,indirect" csv:"cell_volt_17"
+	CellVolt_17 *float32 `protobuf:"fixed32,136,opt,name=cell_volt_17,json=cellVolt17" json:"cell_volt_17,omitempty" structs:"cell_volt_17,indirect" csv:"cell_volt_17"`
+	// @inject_tag: structs:"cell_volt_18,indirect" csv:"cell_volt_18"
+	CellVolt_18 *float32 `protobuf:"fixed32,137,opt,name=cell_volt_18,json=cellVolt18" json:"cell_volt_18,omitempty" structs:"cell_volt_18,indirect" csv:"cell_volt_18"`
+	// @inject_tag: structs:"cell_volt_19,indirect" csv:"cell_volt_19"
+	CellVolt_19 *float32 `protobuf:"fixed32,138,opt,name=cell_volt_19,json=cellVolt19" json:"cell_volt_19,omitempty" structs:"cell_volt_19,indirect" csv:"cell_volt_19"`
+	// @inject_tag: structs:"cell_volt_20,indirect" csv:"cell_volt_20"
+	CellVolt_20 *float32 `protobuf:"fixed32,139,opt,name=cell_volt_20,json=cellVolt20" json:"cell_volt_20,omitempty" structs:"cell_volt_20,indirect" csv:"cell_volt_20"`
+	// @inject_tag: structs:"cell_volt_21,indirect" csv:"cell_volt_21"
+	CellVolt_21 *float32 `protobuf:"fixed32,140,opt,name=cell_volt_21,json=cellVolt21" json:"cell_volt_21,omitempty" structs:"cell_volt_21,indirect" csv:"cell_volt_21"`
+	// @inject_tag: structs:"cell_volt_22,indirect" csv:"cell_volt_22"
+	CellVolt_22 *float32 `protobuf:"fixed32,141,opt,name=cell_volt_22,json=cellVolt22" json:"cell_volt_22,omitempty" structs:"cell_volt_22,indirect" csv:"cell_volt_22"`
+	// @inject_tag: structs:"cell_volt_23,indirect" csv:"cell_volt_23"
+	CellVolt_23 *float32 `protobuf:"fixed32,142,opt,name=cell_volt_23,json=cellVolt23" json:"cell_volt_23,omitempty" structs:"cell_volt_23,indirect" csv:"cell_volt_23"`
+	// @inject_tag: structs:"cell_volt_24,indirect" csv:"cell_volt_24"
+	CellVolt_24 *float32 `protobuf:"fixed32,143,opt,name=cell_volt_24,json=cellVolt24" json:"cell_volt_24,omitempty" structs:"cell_volt_24,indirect" csv:"cell_volt_24"`
+	// @inject_tag: structs:"cell_volt_25,indirect" csv:"cell_volt_25"
+	CellVolt_25 *float32 `protobuf:"fixed32,144,opt,name=cell_volt_25,json=cellVolt25" json:"cell_volt_25,omitempty" structs:"cell_volt_25,indirect" csv:"cell_volt_25"`
+	// @inject_tag: structs:"cell_volt_26,indirect" csv:"cell_volt_26"
+	CellVolt_26 *float32 `protobuf:"fixed32,145,opt,name=cell_volt_26,json=cellVolt26" json:"cell_volt_26,omitempty" structs:"cell_volt_26,indirect" csv:"cell_volt_26"`
+	// @inject_tag: structs:"cell_volt_27,indirect" csv:"cell_volt_27"
+	CellVolt_27 *float32 `protobuf:"fixed32,146,opt,name=cell_volt_27,json=cellVolt27" json:"cell_volt_27,omitempty" structs:"cell_volt_27,indirect" csv:"cell_volt_27"`
+	// @inject_tag: structs:"cell_volt_28,indirect" csv:"cell_volt_28"
+	CellVolt_28 *float32 `protobuf:"fixed32,147,opt,name=cell_volt_28,json=cellVolt28" json:"cell_volt_28,omitempty" structs:"cell_volt_28,indirect" csv:"cell_volt_28"`
+	// @inject_tag: structs:"cell_volt_29,indirect" csv:"cell_volt_29"
+	CellVolt_29 *float32 `protobuf:"fixed32,148,opt,name=cell_volt_29,json=cellVolt29" json:"cell_volt_29,omitempty" structs:"cell_volt_29,indirect" csv:"cell_volt_29"`
+	// @inject_tag: structs:"cell_volt_30,indirect" csv:"cell_volt_30"
+	CellVolt_30 *float32 `protobuf:"fixed32,149,opt,name=cell_volt_30,json=cellVolt30" json:"cell_volt_30,omitempty" structs:"cell_volt_30,indirect" csv:"cell_volt_30"`
+	// @inject_tag: structs:"cell_volt_31,indirect" csv:"cell_volt_31"
+	CellVolt_31 *float32 `protobuf:"fixed32,150,opt,name=cell_volt_31,json=cellVolt31" json:"cell_volt_31,omitempty" structs:"cell_volt_31,indirect" csv:"cell_volt_31"`
+	// @inject_tag: structs:"cell_volt_min,indirect" csv:"cell_volt_min"
+	CellVoltMin *float32 `protobuf:"fixed32,151,opt,name=cell_volt_min,json=cellVoltMin" json:"cell_volt_min,omitempty" structs:"cell_volt_min,indirect" csv:"cell_volt_min"`
+	// @inject_tag: structs:"cell_volt_max,indirect" csv:"cell_volt_max"
+	CellVoltMax *float32 `protobuf:"fixed32,152,opt,name=cell_volt_max,json=cellVoltMax" json:"cell_volt_max,omitempty" structs:"cell_volt_max,indirect" csv:"cell_volt_max"`
+	// @inject_tag: structs:"cell_volt_avg,indirect" csv:"cell_volt_avg"
+	CellVoltAvg *float32 `protobuf:"fixed32,153,opt,name=cell_volt_avg,json=cellVoltAvg" json:"cell_volt_avg,omitempty" structs:"cell_volt_avg,indirect" csv:"cell_volt_avg"`
+	// @inject_tag: structs:"cell_volt_diff,indirect" csv:"cell_volt_diff"
+	CellVoltDiff *float32 `protobuf:"fixed32,154,opt,name=cell_volt_diff,json=cellVoltDiff" json:"cell_volt_diff,omitempty" structs:"cell_volt_diff,indirect" csv:"cell_volt_diff"`
+	// @inject_tag: structs:"power_save_on,indirect" csv:"power_save_on"
+	PowerSaveOn *int32 `protobuf:"varint,155,opt,name=power_save_on,json=powerSaveOn" json:"power_save_on,omitempty" structs:"power_save_on,indirect" csv:"power_save_on"`
+	// @inject_tag: structs:"rearview_on,indirect" csv:"rearview_on"
+	RearviewOn *int32 `protobuf:"varint,156,opt,name=rearview_on,json=rearviewOn" json:"rearview_on,omitempty" structs:"rearview_on,indirect" csv:"rearview_on"`
+	// @inject_tag: structs:"mic_enabled,indirect" csv:"mic_enabled"
+	MicEnabled *int32 `protobuf:"varint,157,opt,name=mic_enabled,json=micEnabled" json:"mic_enabled,omitempty" structs:"mic_enabled,indirect" csv:"mic_enabled"`
+	// @inject_tag: structs:"imu_temp,indirect" csv:"imu_temp"
+	ImuTemp *int32 `protobuf:"varint,158,opt,name=imu_temp,json=imuTemp" json:"imu_temp,omitempty" structs:"imu_temp,indirect" csv:"imu_temp"`
+	// @inject_tag: structs:"imu_magnet_x,indirect" csv:"imu_magnet_x"
+	ImuMagnetX *int32 `protobuf:"varint,159,opt,name=imu_magnet_x,json=imuMagnetX" json:"imu_magnet_x,omitempty" structs:"imu_magnet_x,indirect" csv:"imu_magnet_x"`
+	// @inject_tag: structs:"imu_magnet_y,indirect" csv:"imu_magnet_y"
+	ImuMagnetY *int32 `protobuf:"varint,160,opt,name=imu_magnet_y,json=imuMagnetY" json:"imu_magnet_y,omitempty" structs:"imu_magnet_y,indirect" csv:"imu_magnet_y"`
+	// @inject_tag: structs:"imu_magnet_z,indirect" csv:"imu_magnet_z"
+	ImuMagnetZ *int32 `protobuf:"varint,161,opt,name=imu_magnet_z,json=imuMagnetZ" json:"imu_magnet_z,omitempty" structs:"imu_magnet_z,indirect" csv:"imu_magnet_z"`
+	// @inject_tag: structs:"imu_gyro_x,indirect" csv:"imu_gyro_x"
+	ImuGyroX *int32 `protobuf:"varint,162,opt,name=imu_gyro_x,json=imuGyroX" json:"imu_gyro_x,omitempty" structs:"imu_gyro_x,indirect" csv:"imu_gyro_x"`
+	// @inject_tag: structs:"imu_gyro_y,indirect" csv:"imu_gyro_y"
+	ImuGyroY *int32 `protobuf:"varint,163,opt,name=imu_gyro_y,json=imuGyroY" json:"imu_gyro_y,omitempty" structs:"imu_gyro_y,indirect" csv:"imu_gyro_y"`
+	// @inject_tag: structs:"imu_gyro_z,indirect" csv:"imu_gyro_z"
+	ImuGyroZ *int32 `protobuf:"varint,164,opt,name=imu_gyro_z,json=imuGyroZ" json:"imu_gyro_z,omitempty" structs:"imu_gyro_z,indirect" csv:"imu_gyro_z"`
+	// @inject_tag: structs:"imu_accel_x,indirect" csv:"imu_accel_x"
+	ImuAccelX *int32 `protobuf:"varint,165,opt,name=imu_accel_x,json=imuAccelX" json:"imu_accel_x,omitempty" structs:"imu_accel_x,indirect" csv:"imu_accel_x"`
+	// @inject_tag: structs:"imu_accel_y,indirect" csv:"imu_accel_y"
+	ImuAccelY *int32 `protobuf:"varint,166,opt,name=imu_accel_y,json=imuAccelY" json:"imu_accel_y,omitempty" structs:"imu_accel_y,indirect" csv:"imu_accel_y"`
+	// @inject_tag: structs:"imu_accel_z,indirect" csv:"imu_accel_z"
+	ImuAccelZ *int32 `protobuf:"varint,167,opt,name=imu_accel_z,json=imuAccelZ" json:"imu_accel_z,omitempty" structs:"imu_accel_z,indirect" csv:"imu_accel_z"`
+	// @inject_tag: structs:"bms_left_motor_controller_current,indirect" csv:"bms_left_motor_controller_current"
+	BmsLeftMotorControllerCurrent *float32 `protobuf:"fixed32,168,opt,name=bms_left_motor_controller_current,json=bmsLeftMotorControllerCurrent" json:"bms_left_motor_controller_current,omitempty" structs:"bms_left_motor_controller_current,indirect" csv:"bms_left_motor_controller_current"`
+	// @inject_tag: structs:"bms_right_motor_controller_current,indirect" csv:"bms_right_motor_controller_current"
+	BmsRightMotorControllerCurrent *float32 `protobuf:"fixed32,169,opt,name=bms_right_motor_controller_current,json=bmsRightMotorControllerCurrent" json:"bms_right_motor_controller_current,omitempty" structs:"bms_right_motor_controller_current,indirect" csv:"bms_right_motor_controller_current"`
+	// @inject_tag: structs:"bms_motor_controller_current_sum,indirect" csv:"bms_motor_controller_current_sum"
+	BmsMotorControllerCurrentSum *float32 `protobuf:"fixed32,170,opt,name=bms_motor_controller_current_sum,json=bmsMotorControllerCurrentSum" json:"bms_motor_controller_current_sum,omitempty" structs:"bms_motor_controller_current_sum,indirect" csv:"bms_motor_controller_current_sum"`
+	// @inject_tag: structs:"packets_per_sec,indirect" csv:"packets_per_sec"
+	PacketsPerSec *float32 `protobuf:"fixed32,171,opt,name=packets_per_sec,json=packetsPerSec" json:"packets_per_sec,omitempty" structs:"packets_per_sec,indirect" csv:"packets_per_sec"`
+	// @inject_tag: structs:"-" csv:"time_collected" // Not in struct, b/c not data
+	TimeCollected    *int64 `protobuf:"varint,172,opt,name=time_collected,json=timeCollected" json:"time_collected,omitempty" structs:"-" csv:"time_collected" // Not in struct, b/c not data`
 	XXX_unrecognized []byte `json:"-"`
 }
 

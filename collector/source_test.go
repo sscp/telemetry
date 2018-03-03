@@ -17,7 +17,7 @@ func TestContextValues(t *testing.T) {
 		t.Errorf("Context (%v) without time should return zero time, but instead returned this: %v", ctx, tm)
 	}
 	nowTime := time.Now()
-	ctx = context.WithValue(ctx, contextKeyRecievedTime, nowTime)
+	ctx = ContextWithRecievedTime(ctx, nowTime)
 	tm, ok = RecievedTimeFromContext(ctx)
 	if ok && tm != nowTime {
 		t.Errorf("Context (%v) time (%v) should equal this: %v", ctx, tm, nowTime)

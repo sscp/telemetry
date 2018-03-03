@@ -79,7 +79,7 @@ func (ups *UDPPacketSource) readAndForwardPacket() {
 	} else {
 		recievedTime := time.Now()
 		// Create context with time of receiving packet
-		ctx := context.WithValue(context.Background(), contextKeyRecievedTime, recievedTime)
+		ctx := ContextWithRecievedTime(context.Background(), recievedTime)
 		ups.outChan <- &ContextPacket{
 			ctx:    ctx,
 			packet: packet,

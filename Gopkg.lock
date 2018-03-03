@@ -85,6 +85,22 @@
   version = "v1.0"
 
 [[projects]]
+  name = "github.com/influxdata/influxdb"
+  packages = [
+    "client/v2",
+    "models",
+    "pkg/escape"
+  ]
+  revision = "60d27e6995558f38a39e90b35a92cbac080310a3"
+  version = "v1.4.3"
+
+[[projects]]
+  name = "github.com/jackbeasley/structs"
+  packages = ["."]
+  revision = "a720dfa8df582c51dee1b36feabb906bde1588bd"
+  version = "v1.0"
+
+[[projects]]
   name = "github.com/magiconair/properties"
   packages = ["."]
   revision = "d419a98cdbed11a922bf76f257b7c4be79b50e73"
@@ -374,6 +390,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "0164557a3e82078628d4760395906fd6aec99ba7e4fe631255107d0504c1c99f"
+  inputs-digest = "0de0ae32fd66f4483c75ec5f0d35794ab16ce72f0bca17e891addb9b838943a0"
   solver-name = "gps-cdcl"
   solver-version = 1
