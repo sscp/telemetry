@@ -368,7 +368,7 @@ type DataMessage struct {
 	PacketsPerSec *float32 `protobuf:"fixed32,171,opt,name=packets_per_sec,json=packetsPerSec" json:"packets_per_sec,omitempty" structs:"packets_per_sec,indirect" csv:"packets_per_sec"`
 	// @inject_tag: structs:"-" csv:"time_collected" // Not in struct, b/c not data
 	TimeCollected    *int64 `protobuf:"varint,172,opt,name=time_collected,json=timeCollected" json:"time_collected,omitempty" structs:"-" csv:"time_collected" // Not in struct, b/c not data`
-	XXX_unrecognized []byte `json:"-"`
+	XXX_unrecognized []byte `json:"-" structs:"-" csv:"-"`
 }
 
 func (m *DataMessage) Reset()                    { *m = DataMessage{} }

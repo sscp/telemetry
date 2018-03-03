@@ -69,6 +69,7 @@ func buildRootTelemetryCmd() *cobra.Command {
 	registerServerCmd(rootCmd, config)
 	registerCallCmd(rootCmd, config)
 	registerCollectCmd(rootCmd, config)
+	registerUDPSendCmd(rootCmd, config)
 
 	return rootCmd
 }

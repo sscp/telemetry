@@ -2,14 +2,16 @@ package collector
 
 import (
 	"context"
-	"github.com/gocarina/gocsv"
-	"github.com/sergi/go-diff/diffmatchpatch"
-	sundaeproto "github.com/sscp/telemetry/collector/sundae"
 	"io/ioutil"
 	"os"
 	"strings"
 	"testing"
 	"time"
+
+	sundaeproto "github.com/sscp/telemetry/collector/sundae"
+
+	"github.com/gocarina/gocsv"
+	"github.com/sergi/go-diff/diffmatchpatch"
 )
 
 func BenchmarkCSVWriter(b *testing.B) {

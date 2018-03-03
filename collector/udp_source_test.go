@@ -1,10 +1,10 @@
 package collector
 
 import (
+	"context"
 	"math/rand"
 	"reflect"
 	"testing"
-	"time"
 )
 
 func TestUDPSendRecv(t *testing.T) {
@@ -13,9 +13,9 @@ func TestUDPSendRecv(t *testing.T) {
 		t.Errorf("Error creating packet source: %v", err)
 	}
 
-	packetChan := make(chan []byte)
+	packetChan := make(chan *ContextPacket)
 	// Send all the packets in the channel
-	go SendPacketsAsUDP(packetChan, 3000, time.Duration(0))
+	go SendPacketsAsUDP(packetChan, 3000)
 
 	// Listen for those same packets
 	src.Listen()
@@ -27,7 +27,7 @@ func TestUDPSendRecv(t *testing.T) {
 		rand.Read(packet)
 
 		// Packet sent to the send channel
-		packetChan <- packet
+		packetChan <- &ContextPacket{packet: packet, ctx: context.Background()}
 
 		// Listen for the packet on the recv channel
 		outPacket := <-src.Packets()

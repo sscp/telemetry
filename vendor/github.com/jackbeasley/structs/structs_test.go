@@ -113,6 +113,65 @@ func TestMap_Tag(t *testing.T) {
 
 }
 
+func TestMap_Indirect(t *testing.T) {
+	aVal := "a-value"
+	bVal := ""
+	cVal := 2
+	dVal := 0
+	eVal := true
+	var fVal *int
+	var T = struct {
+		A *string `structs:",indirect"`
+		B *string `structs:",indirect"` // Empty value should be included
+		C *int    `structs:",indirect"`
+		D *int    `structs:",indirect,omitempty"` // Empty value should be omitted
+		E *bool   `structs:",indirect"`
+		F *int    `structs:",indirect"` // nil pointer, should be omitted
+	}{
+		A: &aVal,
+		B: &bVal,
+		C: &cVal,
+		D: &dVal,
+		E: &eVal,
+		F: fVal,
+	}
+
+	a := Map(T)
+
+	inMap := func(val interface{}) bool {
+		for _, v := range a {
+			if reflect.DeepEqual(v, val) {
+				return true
+			}
+		}
+
+		return false
+	}
+
+	notInMap := func(val interface{}) bool {
+		for _, v := range a {
+			if reflect.DeepEqual(v, val) {
+				return false
+			}
+		}
+
+		return true
+	}
+
+	for _, val := range []interface{}{"a-value", "", 2, true} {
+		if !inMap(val) {
+			t.Errorf("Map should have the value %v", val)
+		}
+	}
+
+	for _, val := range []interface{}{0, fVal} {
+		if !notInMap(val) {
+			t.Errorf("Map should not have the value %v", val)
+		}
+	}
+
+}
+
 func TestMap_CustomTag(t *testing.T) {
 	var T = struct {
 		A string `json:"x"`
@@ -380,7 +439,7 @@ func TestMap_NestedMapWithSliceIntValues(t *testing.T) {
 
 	b := &B{
 		Foo: map[string][]int{
-			"example_key": []int{80},
+			"example_key": {80},
 		},
 	}
 
@@ -399,7 +458,7 @@ func TestMap_NestedMapWithSliceIntValues(t *testing.T) {
 
 	foo := in["Foo"].(map[string][]int)
 	if name := foo["example_key"]; name[0] != 80 {
-		t.Errorf("Map nested struct's name field should give example, got: %s", name)
+		t.Errorf("Map nested struct's name field should give example, got: %v", name)
 	}
 }
 
@@ -418,7 +477,7 @@ func TestMap_NestedMapWithSliceStructValues(t *testing.T) {
 
 	b := &B{
 		Foo: map[string][]address{
-			"example_key": []address{
+			"example_key": {
 				{Country: "Turkey"},
 			},
 		},
@@ -463,8 +522,8 @@ func TestMap_NestedSliceWithStructValues(t *testing.T) {
 	p := person{
 		Name: "test",
 		Addresses: []address{
-			address{Country: "England"},
-			address{Country: "Italy"},
+			{Country: "England"},
+			{Country: "Italy"},
 		},
 	}
 	mp := Map(p)
@@ -492,8 +551,8 @@ func TestMap_NestedSliceWithPointerOfStructValues(t *testing.T) {
 	p := person{
 		Name: "test",
 		Addresses: []*address{
-			&address{Country: "England"},
-			&address{Country: "Italy"},
+			{Country: "England"},
+			{Country: "Italy"},
 		},
 	}
 	mp := Map(p)
@@ -1430,14 +1489,14 @@ func TestPointer2Pointer(t *testing.T) {
 func TestMap_InterfaceTypeWithMapValue(t *testing.T) {
 	type A struct {
 		Name    string      `structs:"name"`
-		Ip      string      `structs:"ip"`
+		IP      string      `structs:"ip"`
 		Query   string      `structs:"query"`
 		Payload interface{} `structs:"payload"`
 	}
 
 	a := A{
 		Name:    "test",
-		Ip:      "127.0.0.1",
+		IP:      "127.0.0.1",
 		Query:   "",
 		Payload: map[string]string{"test_param": "test_param"},
 	}

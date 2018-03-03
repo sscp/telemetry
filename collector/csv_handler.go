@@ -30,9 +30,8 @@ type CSVWriter struct {
 	folderPath string
 	file       *os.File
 	buffer     *bufio.Writer
-	dataBuf    []*sundaeproto.DataMessage
-	bufIndex   int
 	csvWrite   *gocsv.SafeCSVWriter
+	dmBuffer   *DataMessageBuffer
 }
 
 // dataBufferSize is the default size of the queues that lead to each handler
@@ -73,8 +72,7 @@ func (cw *CSVWriter) createFile(runName string, startTime time.Time) {
 func (cw *CSVWriter) setupWriter() {
 	cw.buffer = bufio.NewWriter(cw.file)
 	cw.csvWrite = gocsv.DefaultCSVWriter(cw.buffer)
-	cw.dataBuf = make([]*sundaeproto.DataMessage, 10)
-	cw.bufIndex = 0
+	cw.dmBuffer = NewDataMessageBuffer(cw.writeData, 10)
 	// Write only the headers because all future data will be written
 	// without headers
 	empData := []*sundaeproto.DataMessage{}
@@ -83,12 +81,11 @@ func (cw *CSVWriter) setupWriter() {
 
 // flushDataBuffer writes all the data in the DataMessage buffer to the
 // buffered writer
-func (cw *CSVWriter) flushDataBuffer() {
+func (cw *CSVWriter) writeData(data []*sundaeproto.DataMessage) {
 	// Write all data up until the current index. We can't write all the
 	// data because there might be already written *DataMessages beyond the
 	// current index
-	gocsv.MarshalCSVWithoutHeaders(cw.dataBuf[0:cw.bufIndex], cw.csvWrite)
-	cw.bufIndex = 0
+	gocsv.MarshalCSVWithoutHeaders(data, cw.csvWrite)
 }
 
 // HandleData is called on every new DataMessage from the collector and adds
@@ -97,11 +94,7 @@ func (cw *CSVWriter) flushDataBuffer() {
 func (cw *CSVWriter) HandleData(ctx context.Context, data *sundaeproto.DataMessage) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "CSVWriter/HandleData")
 	defer span.Finish()
-	cw.dataBuf[cw.bufIndex] = data
-	cw.bufIndex++
-	if cw.bufIndex >= len(cw.dataBuf) {
-		cw.flushDataBuffer()
-	}
+	cw.dmBuffer.AddData(data)
 }
 
 // HandleDroppedData is called whenever CSVWriter falls behind and currently
@@ -116,7 +109,7 @@ func (cw *CSVWriter) HandleDroppedData(ctx context.Context) {
 // file. This must happen in the order of data buffer, buffered writer, file
 // close to ensure no data loss.
 func (cw *CSVWriter) HandleEndRun(ctx context.Context, endTime time.Time) {
-	cw.flushDataBuffer()
+	cw.dmBuffer.Flush()
 	cw.buffer.Flush()
 	cw.file.Close()
 }

@@ -95,10 +95,11 @@
   version = "v1.4.3"
 
 [[projects]]
+  branch = "master"
   name = "github.com/jackbeasley/structs"
   packages = ["."]
-  revision = "a720dfa8df582c51dee1b36feabb906bde1588bd"
-  version = "v1.0"
+  revision = "fbc39dc5fbad5a8e59cd0061d2776f26623706ce"
+  source = "github.com/jackbeasley/structs"
 
 [[projects]]
   name = "github.com/magiconair/properties"
@@ -390,6 +391,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "0de0ae32fd66f4483c75ec5f0d35794ab16ce72f0bca17e891addb9b838943a0"
+  inputs-digest = "6644cd87e04c0cf6728d2a2ede739f9d1682f22e477b9278fbecfecbc366d0c7"
   solver-name = "gps-cdcl"
   solver-version = 1

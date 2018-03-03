@@ -23,3 +23,8 @@
 [prune]
   non-go = true
 
+[[constraint]]
+  name = "github.com/jackbeasley/structs"
+  branch = "master"
+  source = "github.com/jackbeasley/structs"
+

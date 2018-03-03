@@ -52,6 +52,17 @@ func New(s interface{}) *Struct {
 //   // Map will panic if Animal does not implement String().
 //   Field *Animal `structs:"field,string"`
 //
+// A tag value with the content of "indirect" will dereference pointers to get
+// the value. Example:
+//
+//   // The value will be the int value that the *int points to.
+//   // If the *int is nil, it is ignored as if it also had omitempty.
+//   Field *int `structs:"field,indirect"`
+//
+//   // The value will be the int value that the *int points to.
+//   // If the int is 0 (zero value for type), it is ommitted by omitempty
+//   Field *int `structs:"field,indirect,omitempty"`
+//
 // A tag value with the option of "flatten" used in a struct field is to flatten its fields
 // in the output map. Example:
 //
@@ -102,6 +113,18 @@ func (s *Struct) FillMap(out map[string]interface{}) {
 		tagName, tagOpts := parseTag(field.Tag.Get(s.TagName))
 		if tagName != "" {
 			name = tagName
+		}
+
+		if tagOpts.Has("indirect") {
+			v := reflect.ValueOf(val.Interface())
+			// Only consider non-nil pointer variables
+			if v.Kind() == reflect.Ptr && !v.IsNil() {
+				// Dereferance pointer and treat as regular value
+				val = v.Elem()
+			} else if v.IsNil() {
+				// Ignore nil pointer values
+				continue
+			}
 		}
 
 		// if the value is a zero value and the field is marked as omitempty do
@@ -203,9 +226,7 @@ func (s *Struct) Values() []interface{} {
 		if IsStruct(val.Interface()) && !tagOpts.Has("omitnested") {
 			// look out for embedded structs, and convert them to a
 			// []interface{} to be added to the final values slice
-			for _, embeddedVal := range Values(val.Interface()) {
-				t = append(t, embeddedVal)
-			}
+			t = append(t, Values(val.Interface())...)
 		} else {
 			t = append(t, val.Interface())
 		}
@@ -573,7 +594,7 @@ func (s *Struct) nested(val reflect.Value) interface{} {
 			break
 		}
 
-		slices := make([]interface{}, val.Len(), val.Len())
+		slices := make([]interface{}, val.Len())
 		for x := 0; x < val.Len(); x++ {
 			slices[x] = s.nested(val.Index(x))
 		}
