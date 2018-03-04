@@ -7,7 +7,7 @@ message DataMessage { //1512 bytes constraint
   optional uint32 regen_command = 2;
 
   // @inject_tag: structs:"battery_power,indirect" csv:"battery_power"
-  optional float battery_power = 3;
+  optional uint32 battery_power = 3;
 
   // @inject_tag: structs:"array_power,indirect" csv:"array_power"
   optional float array_power = 4;

@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"math"
 	"time"
 
 	sundaeproto "github.com/sscp/telemetry/collector/sundae"
@@ -111,6 +112,19 @@ func (cw *InfluxWriter) writeData(data []*sundaeproto.DataMessage) {
 	for _, dm := range data {
 		// Convert struct to map[string]interface{}
 		dataFields := structs.Map(dm)
+		for key, value := range dataFields {
+			if val, ok := value.(float32); ok {
+				if math.IsNaN(float64(val)) {
+					delete(dataFields, key)
+				}
+			}
+			if val, ok := value.(float64); ok {
+				if math.IsNaN(val) {
+					delete(dataFields, key)
+				}
+			}
+
+		}
 		// Create a point and add to batch
 		tags := map[string]string{"run_name": cw.runName}
 		// TimeCollected is always set when deserialized by collector

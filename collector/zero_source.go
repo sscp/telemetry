@@ -128,7 +128,7 @@ func CreateZeroDataMessage() *sundaeproto.DataMessage {
 	zdm := sundaeproto.DataMessage{
 		RegenEnabled:                     zeroUInt32(),
 		RegenCommand:                     zeroUInt32(),
-		BatteryPower:                     zeroFloat32(),
+		BatteryPower:                     zeroUInt32(),
 		ArrayPower:                       zeroFloat32(),
 		ReverseOn:                        zeroUInt32(),
 		LowVoltPower:                     zeroFloat32(),
@@ -298,7 +298,7 @@ func CreateRandomDataMessage() *sundaeproto.DataMessage {
 	zdm := sundaeproto.DataMessage{
 		RegenEnabled:                     randUInt32(),
 		RegenCommand:                     randUInt32(),
-		BatteryPower:                     randFloat32(),
+		BatteryPower:                     randUInt32(),
 		ArrayPower:                       randFloat32(),
 		ReverseOn:                        randUInt32(),
 		LowVoltPower:                     randFloat32(),
