@@ -10,6 +10,7 @@ import (
 // UDPListenTimeout is the time to wait for the next packet
 const udpListenTimeout = 100 * time.Millisecond
 
+// UDPPacketSource is a PacketSource that reads from a UDP socket
 type UDPPacketSource struct {
 	port         int
 	outChan      chan *ContextPacket
@@ -18,6 +19,8 @@ type UDPPacketSource struct {
 	packetBuffer []byte
 }
 
+// NewUDPPacketSource constructs a UDPPacketSource that listens on the given
+// port for packets
 func NewUDPPacketSource(port int) (PacketSource, error) {
 	ups := &UDPPacketSource{
 		port:         port,
@@ -30,6 +33,9 @@ func NewUDPPacketSource(port int) (PacketSource, error) {
 	return ups, nil
 }
 
+// setupForListen creates the UDP connection, begins listening, and creates the
+// outChan and doneChan to send out received packets and notifies the goroutine
+// to stop listening when done
 func (ups *UDPPacketSource) setupForListen() error {
 	// Listen to the zero port for IPv4 to catch any packet to that port
 	// This will catch broadcast packets from the car
@@ -52,6 +58,8 @@ func (ups *UDPPacketSource) Packets() <-chan *ContextPacket {
 	return ups.outChan
 }
 
+// Listen spins up a goroutine that listens for packets until it receives a
+// signal on the doneChan, in which case it closes the connection and returns
 func (ups *UDPPacketSource) Listen() {
 
 	go func() {
@@ -103,6 +111,8 @@ func (ups *UDPPacketSource) readPacket() ([]byte, error) {
 	return packet, nil
 }
 
+// Close sends a done signal on doneChan, closes both doneChan, outChan, then
+// resets the UDPPacketSource so that it is ready to be reused
 func (ups *UDPPacketSource) Close() {
 	ups.doneChan <- true
 	close(ups.doneChan)

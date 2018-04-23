@@ -4,12 +4,12 @@ import (
 	"bufio"
 	"context"
 	"fmt"
-	"log"
 	"os"
 	"path/filepath"
 	"time"
 
 	sundaeproto "github.com/sscp/telemetry/collector/sundae"
+	"github.com/sscp/telemetry/log"
 
 	"github.com/gocarina/gocsv"
 	"github.com/opentracing/opentracing-go"
@@ -49,17 +49,17 @@ func NewCSVWriter(cfg CSVConfig) (DataHandler, error) {
 // HandleStartRun is called when collector starts recording a run and creates
 // the CSV file and sets up all buffers
 func (cw *CSVWriter) HandleStartRun(ctx context.Context, runName string, startTime time.Time) {
-	cw.createFile(runName, startTime)
+	cw.createFile(ctx, runName, startTime)
 	cw.setupWriter()
 }
 
 // createFile creates a .csv file to write to and log.Fatals if it errors (unlikely)
-func (cw *CSVWriter) createFile(runName string, startTime time.Time) {
+func (cw *CSVWriter) createFile(ctx context.Context, runName string, startTime time.Time) {
 	filename := GetCSVFileName(runName, startTime)
 	var err error
 	cw.file, err = os.Create(filepath.Join(cw.folderPath, filename))
 	if err != nil {
-		log.Fatal(err)
+		log.Error(ctx, err, "Could not create csv file")
 	}
 }
 
@@ -81,7 +81,7 @@ func (cw *CSVWriter) setupWriter() {
 
 // flushDataBuffer writes all the data in the DataMessage buffer to the
 // buffered writer
-func (cw *CSVWriter) writeData(data []*sundaeproto.DataMessage) {
+func (cw *CSVWriter) writeData(ctx context.Context, data []*sundaeproto.DataMessage) {
 	// Write all data up until the current index. We can't write all the
 	// data because there might be already written *DataMessages beyond the
 	// current index
@@ -94,7 +94,7 @@ func (cw *CSVWriter) writeData(data []*sundaeproto.DataMessage) {
 func (cw *CSVWriter) HandleData(ctx context.Context, data *sundaeproto.DataMessage) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "CSVWriter/HandleData")
 	defer span.Finish()
-	cw.dmBuffer.AddData(data)
+	cw.dmBuffer.AddData(ctx, data)
 }
 
 // HandleDroppedData is called whenever CSVWriter falls behind and currently
@@ -109,7 +109,7 @@ func (cw *CSVWriter) HandleDroppedData(ctx context.Context) {
 // file. This must happen in the order of data buffer, buffered writer, file
 // close to ensure no data loss.
 func (cw *CSVWriter) HandleEndRun(ctx context.Context, endTime time.Time) {
-	cw.dmBuffer.Flush()
+	cw.dmBuffer.Flush(ctx)
 	cw.buffer.Flush()
 	cw.file.Close()
 }

@@ -2,10 +2,11 @@ package collector
 
 import (
 	"context"
-	"github.com/sscp/telemetry/blog"
 	"io"
 	"log"
 	"time"
+
+	"github.com/sscp/telemetry/blog"
 )
 
 // BlogPacketSource is a PacketSource that reads from an io.Reader

@@ -15,6 +15,8 @@ var (
 	contextKeyRecievedTime = contextKey("recievedTime")
 )
 
+// ContextWithRecievedTime Adds time to the ctx and returns it, used to collect
+// the time the packet was received before it is deserialized
 func ContextWithRecievedTime(ctx context.Context, time time.Time) context.Context {
 	return context.WithValue(ctx, contextKeyRecievedTime, time)
 }

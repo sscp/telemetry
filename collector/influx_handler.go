@@ -3,11 +3,11 @@ package collector
 import (
 	"context"
 	"fmt"
-	"log"
 	"math"
 	"time"
 
 	sundaeproto "github.com/sscp/telemetry/collector/sundae"
+	"github.com/sscp/telemetry/log"
 
 	influx "github.com/influxdata/influxdb/client/v2"
 	"github.com/opentracing/opentracing-go"
@@ -69,20 +69,20 @@ func (cw *InfluxWriter) HandleStartRun(ctx context.Context, runName string, star
 		Password: cw.config.Password,
 	})
 	if err != nil {
-		log.Printf("Could not create influx client: %v", err)
+		log.Error(ctx, err, "Could not create influx client")
 		return
 	}
 
 	_, resp, err := cw.client.Ping(1 * time.Second)
 	if err != nil {
-		log.Printf("Could not ping influx: %v", err)
+		log.Error(ctx, err, "Could not ping influx")
 		return
 	}
-	log.Printf("Connected to Influx at %v, version: %v", cw.config.Addr, resp)
+	log.Event(ctx, fmt.Sprintf("Connected to Influx at %v, version: %v", cw.config.Addr, resp))
 
 	_, err = queryDB(cw.client, fmt.Sprintf("CREATE DATABASE %s", databaseName))
 	if err != nil {
-		log.Printf("Error creating database: %v", err)
+		log.Error(ctx, err, "Error creating influx database")
 		return
 	}
 
@@ -99,14 +99,14 @@ func (cw *InfluxWriter) setupWriter() error {
 
 // writeData writes all the data in the DataMessage buffer to influx as a
 // point batch
-func (cw *InfluxWriter) writeData(data []*sundaeproto.DataMessage) {
+func (cw *InfluxWriter) writeData(ctx context.Context, data []*sundaeproto.DataMessage) {
 	// Create a new point batch
 	bp, err := influx.NewBatchPoints(influx.BatchPointsConfig{
 		Database:  databaseName,
 		Precision: "ns",
 	})
 	if err != nil {
-		log.Printf("Error creating batch points: %v", err)
+		log.Error(ctx, err, "Error creating batch points")
 		return
 	}
 	for _, dm := range data {
@@ -130,14 +130,14 @@ func (cw *InfluxWriter) writeData(data []*sundaeproto.DataMessage) {
 		// TimeCollected is always set when deserialized by collector
 		pt, err := influx.NewPoint("car_state", tags, dataFields, time.Unix(0, dm.GetTimeCollected()))
 		if err != nil {
-			log.Printf("Error creating point: %v", err)
+			log.Error(ctx, err, "Error creating influx point")
 			return
 		}
 		bp.AddPoint(pt)
 	}
 	err = cw.client.Write(bp)
 	if err != nil {
-		log.Printf("Error writing batch: %v", err)
+		log.Error(ctx, err, "Error writing influx batch")
 		return
 	}
 }
@@ -148,7 +148,7 @@ func (cw *InfluxWriter) writeData(data []*sundaeproto.DataMessage) {
 func (cw *InfluxWriter) HandleData(ctx context.Context, data *sundaeproto.DataMessage) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "InfluxWriter/HandleData")
 	defer span.Finish()
-	cw.dmBuffer.AddData(data)
+	cw.dmBuffer.AddData(ctx, data)
 }
 
 // HandleDroppedData is called whenever InfluxWriter falls behind and currently
@@ -166,7 +166,7 @@ func (cw *InfluxWriter) HandleEndRun(ctx context.Context, endTime time.Time) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "InfluxWriter/HandleEndRun")
 	defer span.Finish()
 
-	cw.dmBuffer.Flush()
+	cw.dmBuffer.Flush(ctx)
 	cw.client.Close()
 	cw.runName = ""
 }

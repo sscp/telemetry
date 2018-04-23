@@ -4,12 +4,12 @@ import (
 	"bufio"
 	"context"
 	"fmt"
-	"log"
 	"os"
 	"path/filepath"
 	"time"
 
 	"github.com/sscp/telemetry/blog"
+	"github.com/sscp/telemetry/log"
 
 	"github.com/opentracing/opentracing-go"
 )
@@ -49,18 +49,18 @@ func (bw *BlogWriter) HandleStartRun(ctx context.Context, runName string, startT
 	span, ctx := opentracing.StartSpanFromContext(ctx, "BlogWriter/HandleStartRun")
 	defer span.Finish()
 
-	bw.createFile(runName, startTime)
+	bw.createFile(ctx, runName, startTime)
 	bw.buffer = bufio.NewWriter(bw.file)
 	bw.blogWriter = blog.NewWriter(bw.buffer)
 }
 
 // createFile simply creates a file in the current directory to write binary log data to
-func (bw *BlogWriter) createFile(runName string, startTime time.Time) {
+func (bw *BlogWriter) createFile(ctx context.Context, runName string, startTime time.Time) {
 	filename := GetBlogFileName(runName, startTime)
 	var err error
 	bw.file, err = os.Create(filepath.Join(bw.folderPath, filename))
 	if err != nil {
-		log.Fatal(err)
+		log.Error(ctx, err, "Could not create blog file")
 	}
 }
 

@@ -21,12 +21,12 @@ package collector
 
 import (
 	"context"
-	"log"
 	"runtime"
 	"sync"
 	"time"
 
 	sundaeproto "github.com/sscp/telemetry/collector/sundae"
+	"github.com/sscp/telemetry/log"
 
 	"github.com/golang/protobuf/proto"
 	"github.com/opentracing/opentracing-go"
@@ -55,9 +55,10 @@ type Collector struct {
 
 // CollectorConfig holds config values needed to create a collector
 type CollectorConfig struct {
-	Port   int
-	CSV    *CSVConfig
-	Blog   *BlogConfig
+	Port int
+	CSV  *CSVConfig
+	Blog *BlogConfig
+
 	Influx *InfluxConfig
 }
 
@@ -243,7 +244,7 @@ func (col *Collector) processPacket(ctx context.Context, packet []byte) {
 	dMsg := sundaeproto.DataMessage{}
 	err := proto.Unmarshal(packet, &dMsg)
 	if err != nil {
-		log.Print(err)
+		log.Error(ctx, err, "Could not deserialize protobuf")
 	}
 	// Unpack the receivedTime from the context and add it to the protobuf
 	t, ok := RecievedTimeFromContext(ctx)

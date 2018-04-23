@@ -1,6 +1,7 @@
 package collector
 
 import (
+	"context"
 	"reflect"
 	"testing"
 	"time"
@@ -20,16 +21,16 @@ func runDataMessageTest(t *testing.T, numItems int, bufferSize int) {
 	in := createTestDataMessages(numItems)
 	var out []*sundaeproto.DataMessage
 
-	dmb := NewDataMessageBuffer(func(data []*sundaeproto.DataMessage) {
+	dmb := NewDataMessageBuffer(func(ctx context.Context, data []*sundaeproto.DataMessage) {
 		for _, dm := range data {
 			out = append(out, dm)
 		}
 	}, bufferSize)
 
 	for _, dm := range in {
-		dmb.AddData(dm)
+		dmb.AddData(context.TODO(), dm)
 	}
-	dmb.Flush()
+	dmb.Flush(context.TODO())
 
 	if len(in) != len(out) {
 		t.Errorf("Not all data made it though. In: %v Out: %v", len(in), len(out))

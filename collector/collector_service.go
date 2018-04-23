@@ -7,6 +7,7 @@ import (
 	"net"
 
 	pb "github.com/sscp/telemetry/collector/serviceproto"
+	tracelog "github.com/sscp/telemetry/log"
 
 	"github.com/opentracing/opentracing-go"
 	"github.com/uber/jaeger-client-go"
@@ -21,17 +22,22 @@ import (
 
 const nilPort = 0
 
+// CollectorService is a server for telemetry that allows for controlling the
+// collector over GRPC
 type CollectorService struct {
 	collector     *Collector
 	collectorPort int32
 }
 
+// CollectorServiceConfig corresponds to the collector section of the telemetry
+// config file
 type CollectorServiceConfig struct {
 	Port       int32
 	Collector  CollectorConfig
 	JaegerAddr string
 }
 
+// NewCollectorService constructs a new Collector and a CollectorService for it
 func NewCollectorService(cfg CollectorServiceConfig) (*CollectorService, error) {
 	collector, err := NewUDPCollector(cfg.Collector)
 	if err != nil {
@@ -52,18 +58,20 @@ func (cs *CollectorService) getStatus() *pb.CollectorStatus {
 			PacketsRecorded: status.PacketsProcessed,
 			Port:            cs.collectorPort,
 		}
-	} else {
-		return &pb.CollectorStatus{
-			Collecting: false,
-		}
-
 	}
+	return &pb.CollectorStatus{
+		Collecting: false,
+	}
+
 }
 
+// StartCollecting is a GRPC endpoint that starts the collector on a new run
+// when called. If a run is ongoing, that run is stopped and replaced by a new
+// run with the new name.
 func (cs *CollectorService) StartCollecting(ctx context.Context, req *pb.StartRequest) (*pb.CollectorStatus, error) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "collectorService/StartCollecting")
 	defer span.Finish()
-	log.Printf("Starting collection: %v", req)
+	tracelog.Event(ctx, fmt.Sprintf("Starting collection: %v", req))
 
 	// We start a new run with new name if the collector is currently collecting
 	if cs.collector.GetStatus().Collecting {
@@ -74,11 +82,13 @@ func (cs *CollectorService) StartCollecting(ctx context.Context, req *pb.StartRe
 	return cs.getStatus(), nil
 }
 
+// StopCollecting is a GRPC endpoint that stops the collection and ends the
+// current run when called. If no run is ongoing, nothing happens.
 func (cs *CollectorService) StopCollecting(ctx context.Context, req *pb.StopRequest) (*pb.CollectorStatus, error) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "collectorService/StopCollecting")
 	defer span.Finish()
 
-	log.Print("Stopping collection")
+	tracelog.Event(ctx, "Stopping collection")
 	// Only call close if the collector is collecting
 	if cs.collector.GetStatus().Collecting {
 		cs.collector.Close(ctx)
@@ -87,6 +97,7 @@ func (cs *CollectorService) StopCollecting(ctx context.Context, req *pb.StopRequ
 	return cs.getStatus(), nil
 }
 
+// GetCollectorStatus simply returns the status of the Collector
 func (cs *CollectorService) GetCollectorStatus(ctx context.Context, req *pb.StatusRequest) (*pb.CollectorStatus, error) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "collectorService/GetCollectorStatus")
 	defer span.Finish()
@@ -94,6 +105,10 @@ func (cs *CollectorService) GetCollectorStatus(ctx context.Context, req *pb.Stat
 
 }
 
+// RunCollectionService starts the GRPC endpoint for CollectorService and the
+// accompanying jaeger tracing config. Jaeger allows for monitoring the health
+// of the collector service and looking at any erroring requests like
+// deserialization errors or write errors.
 func RunCollectionService(cfg CollectorServiceConfig) {
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", cfg.Port))
 	if err != nil {

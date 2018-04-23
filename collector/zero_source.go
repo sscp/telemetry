@@ -54,12 +54,16 @@ func (zps *ZeroPacketSource) Listen() {
 	}()
 }
 
+// Close sends a close signal on doneChan and closes both doneChan and outChan.
+// NOTE: this currently does not reset the ZeroPacketSource to listen again
 func (zps *ZeroPacketSource) Close() {
 	zps.doneChan <- true
 	close(zps.doneChan)
 	close(zps.outChan)
 }
 
+// NewZeroPacketSource constructs a new ZeroPacketSource that emits zeroed out
+// packets at packetsPerSecond
 func NewZeroPacketSource(packetsPerSecond int) PacketSource {
 	return &ZeroPacketSource{
 		outChan:  make(chan *ContextPacket),
@@ -69,6 +73,7 @@ func NewZeroPacketSource(packetsPerSecond int) PacketSource {
 	}
 }
 
+// CreateZeroPacket returns a zeroed protocol buffer marshaled to binary
 func CreateZeroPacket() ([]byte, error) {
 	zdm := CreateZeroDataMessage()
 	return proto.Marshal(zdm)
@@ -124,6 +129,8 @@ func randFloat32() *float32 {
 	return &z
 }
 
+// CreateZeroDataMessage fills a DataMessage with pointers to zero values of
+// each value
 func CreateZeroDataMessage() *sundaeproto.DataMessage {
 	zdm := sundaeproto.DataMessage{
 		RegenEnabled:                     zeroUInt32(),
@@ -294,6 +301,8 @@ func CreateZeroDataMessage() *sundaeproto.DataMessage {
 	return &zdm
 }
 
+// CreateRandomDataMessage fills a DataMessage with pointers to random values
+// for each entry in the DataMessage
 func CreateRandomDataMessage() *sundaeproto.DataMessage {
 	zdm := sundaeproto.DataMessage{
 		RegenEnabled:                     randUInt32(),
