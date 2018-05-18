@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/sscp/telemetry/collector"
+	"github.com/sscp/telemetry/collector/sources"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -30,8 +30,8 @@ func registerUDPSendCmd(rootCmd *cobra.Command, rootConfig *viper.Viper) {
 func createUDPSendFunc(rootConfig *viper.Viper) func(cmd *cobra.Command, args []string) {
 
 	return func(cmd *cobra.Command, args []string) {
-		zps := collector.NewZeroPacketSource(20)
-		go collector.SendPacketsAsUDP(zps.Packets(), 33333)
+		zps := sources.NewZeroPacketSource(20)
+		go sources.SendPacketsAsUDP(zps.Packets(), 33333)
 		zps.Listen()
 		fmt.Printf("Now sending packets on port %v\n", 33333)
 		buf := bufio.NewReader(os.Stdin)

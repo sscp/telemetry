@@ -19,9 +19,12 @@
 # [[override]]
 #  name = "github.com/x/y"
 #  version = "2.4.0"
+ignored = ["github.com/sscp/telemetry/sandbox"]
 
 [prune]
   non-go = true
+  go-tests = true
+  unused-packages = true
 
 [[constraint]]
   name = "github.com/jackbeasley/structs"

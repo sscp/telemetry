@@ -2,7 +2,10 @@ package collector
 
 import (
 	"github.com/golang/protobuf/proto"
-	sundaeproto "github.com/sscp/telemetry/collector/sundae"
+
+	"github.com/sscp/telemetry/collector/handlers"
+	internalproto "github.com/sscp/telemetry/collector/internalproto"
+	"github.com/sscp/telemetry/collector/sources"
 
 	"context"
 	//"github.com/opentracing/opentracing-go"
@@ -50,7 +53,7 @@ func (tbh *testBinaryHandler) HandleEndRun(ctx context.Context, endTime time.Tim
 }
 
 func (tbh *testBinaryHandler) HandlePacket(ctx context.Context, packet []byte) {
-	dm := sundaeproto.DataMessage{}
+	dm := internalproto.DataMessage{}
 	err := proto.Unmarshal(packet, &dm)
 	if err != nil {
 		tbh.t.Errorf("Expected no deserialiation error, instead got %v", err)
@@ -95,7 +98,7 @@ func (tdh *testDataHandler) HandleEndRun(ctx context.Context, endTime time.Time)
 	}
 }
 
-func (tbh *testDataHandler) HandleData(ctx context.Context, data *sundaeproto.DataMessage) {
+func (tbh *testDataHandler) HandleData(ctx context.Context, data *internalproto.DataMessage) {
 	time.Sleep(tbh.delay)
 	tbh.DeliveryCount++
 }
@@ -107,8 +110,8 @@ func (tbh *testDataHandler) HandleDroppedData(ctx context.Context) {
 func runCollectorTest(t *testing.T, test CollectorTest) {
 	bh := newTestBinaryHandler(t, test.BinaryHandlerDelay)
 	dh := newTestDataHandler(t, test.DataHandlerDelay)
-	zps := NewZeroPacketSource(test.PacketsPerSecond)
-	telem := NewCollector(zps, []BinaryHandler{BinaryHandler(bh)}, []DataHandler{DataHandler(dh)})
+	zps := sources.NewZeroPacketSource(test.PacketsPerSecond)
+	telem := NewCollector(zps, []handlers.BinaryHandler{handlers.BinaryHandler(bh)}, []handlers.DataHandler{handlers.DataHandler(dh)})
 	ctx := context.TODO()
 	telem.RecordRun(ctx, "test")
 	time.Sleep(test.TestTime)

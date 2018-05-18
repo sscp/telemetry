@@ -25,15 +25,17 @@ import (
 	"sync"
 	"time"
 
+	"github.com/sscp/telemetry/collector/handlers"
+	internalproto "github.com/sscp/telemetry/collector/internalproto"
+	"github.com/sscp/telemetry/collector/sources"
 	sundaeproto "github.com/sscp/telemetry/collector/sundae"
 	"github.com/sscp/telemetry/log"
 
-	"github.com/golang/protobuf/proto"
 	"github.com/opentracing/opentracing-go"
 )
 
-//go:generate protoc -I=sundae --go_out=sundae ./sundae/data_message.proto
-//go:generate protoc-go-inject-tag -input=./sundae/data_message.pb.go
+//go:generate protoc --go_out=internalproto ./internalproto/data_message.proto
+//go:generate protoc-go-inject-tag -input=./internalproto/data_message.pb.go
 
 const defaultBufferSize = 10
 
@@ -44,10 +46,10 @@ const defaultBufferSize = 10
 // DataHandler. A goroutine running processPackets handles the delivery of
 // packets and deserialized data to all of the handlers.
 type Collector struct {
-	packetSource   PacketSource
-	binaryHandlers []BinaryHandler
-	binaryChans    []chan ContextPacket
-	dataHandlers   []DataHandler
+	packetSource   sources.PacketSource
+	binaryHandlers []handlers.BinaryHandler
+	binaryChans    []chan sources.ContextPacket
+	dataHandlers   []handlers.DataHandler
 	dataChans      []chan ContextDataMessage
 	waitGroup      *sync.WaitGroup
 	status         CollectorStatus
@@ -56,10 +58,10 @@ type Collector struct {
 // CollectorConfig holds config values needed to create a collector
 type CollectorConfig struct {
 	Port int
-	CSV  *CSVConfig
-	Blog *BlogConfig
+	CSV  *handlers.CSVConfig
+	Blog *handlers.BlogConfig
 
-	Influx *InfluxConfig
+	Influx *handlers.InfluxConfig
 }
 
 // CollectorStatus holds variables that pertain to the current status of
@@ -77,22 +79,22 @@ type CollectorStatus struct {
 // though a channel along with the DataMessage pointer
 type ContextDataMessage struct {
 	ctx  context.Context
-	data *sundaeproto.DataMessage
+	data *internalproto.DataMessage
 }
 
 // NewUDPCollector creates a new Collector that listens on the UDP port
 // specified and writes .csv and .blog files
 func NewUDPCollector(cfg CollectorConfig) (*Collector, error) {
-	ps, err := NewUDPPacketSource(cfg.Port)
+	ps, err := sources.NewUDPPacketSource(cfg.Port)
 	if err != nil {
 		return nil, err
 	}
 
-	var binaryHandlers []BinaryHandler
-	var dataHandlers []DataHandler
+	var binaryHandlers []handlers.BinaryHandler
+	var dataHandlers []handlers.DataHandler
 
 	if cfg.CSV != nil {
-		csvHandler, err := NewCSVWriter(*cfg.CSV)
+		csvHandler, err := handlers.NewCSVWriter(*cfg.CSV)
 		if err != nil {
 			return nil, err
 		}
@@ -100,14 +102,14 @@ func NewUDPCollector(cfg CollectorConfig) (*Collector, error) {
 	}
 
 	if cfg.Blog != nil {
-		blogHandler, err := NewBlogWriter(*cfg.Blog)
+		blogHandler, err := handlers.NewBlogWriter(*cfg.Blog)
 		if err != nil {
 			return nil, err
 		}
 		binaryHandlers = append(binaryHandlers, blogHandler)
 	}
 	if cfg.Influx != nil {
-		influxHandler, err := NewInfluxWriter(*cfg.Influx)
+		influxHandler, err := handlers.NewInfluxWriter(*cfg.Influx)
 		if err != nil {
 			return nil, err
 		}
@@ -120,7 +122,7 @@ func NewUDPCollector(cfg CollectorConfig) (*Collector, error) {
 // NewCollector creates a new instance of Collector that reads packets from the
 // given PacketSource, and outputs data to the given BinaryHandlers and
 // Datahandlers. Channels are setup for each handler with the given bufferSize.
-func NewCollector(ps PacketSource, bh []BinaryHandler, dh []DataHandler) *Collector {
+func NewCollector(ps sources.PacketSource, bh []handlers.BinaryHandler, dh []handlers.DataHandler) *Collector {
 	col := &Collector{
 		packetSource:   ps,
 		binaryHandlers: bh,
@@ -175,9 +177,9 @@ func (col *Collector) Close(ctx context.Context) {
 // BinaryHandler in binaryHandlers and an array of channels for each
 // DataHandler in dataHandlers.
 func (col *Collector) createChannels(bufferSize int) {
-	col.binaryChans = make([]chan ContextPacket, len(col.binaryHandlers))
+	col.binaryChans = make([]chan sources.ContextPacket, len(col.binaryHandlers))
 	for i := 0; i < len(col.binaryChans); i++ {
-		col.binaryChans[i] = make(chan ContextPacket, bufferSize)
+		col.binaryChans[i] = make(chan sources.ContextPacket, bufferSize)
 	}
 	col.dataChans = make([]chan ContextDataMessage, len(col.dataHandlers))
 	for i := 0; i < len(col.dataChans); i++ {
@@ -231,9 +233,9 @@ func (col *Collector) processPacket(ctx context.Context, packet []byte) {
 	// Forward the binary packets first
 	for i := range col.binaryChans {
 		if len(col.binaryChans[i]) != cap(col.binaryChans[i]) {
-			col.binaryChans[i] <- ContextPacket{
-				ctx:    ctx,
-				packet: packet,
+			col.binaryChans[i] <- sources.ContextPacket{
+				Ctx:    ctx,
+				Packet: packet,
 			}
 		} else {
 			col.binaryHandlers[i].HandleDroppedPacket(ctx)
@@ -241,16 +243,10 @@ func (col *Collector) processPacket(ctx context.Context, packet []byte) {
 	}
 
 	// Deserialize ProtoBuf
-	dMsg := sundaeproto.DataMessage{}
-	err := proto.Unmarshal(packet, &dMsg)
+	dMsg, err := sundaeproto.Deserialize(ctx, packet)
 	if err != nil {
 		log.Error(ctx, err, "Could not deserialize protobuf")
-	}
-	// Unpack the receivedTime from the context and add it to the protobuf
-	t, ok := RecievedTimeFromContext(ctx)
-	if ok {
-		receivedTimeNanos := t.UnixNano()
-		dMsg.TimeCollected = &receivedTimeNanos
+		return
 	}
 
 	// Pass off deserialized data to channels
@@ -258,7 +254,7 @@ func (col *Collector) processPacket(ctx context.Context, packet []byte) {
 		if len(col.dataChans[i]) != cap(col.dataChans[i]) {
 			col.dataChans[i] <- ContextDataMessage{
 				ctx:  ctx,
-				data: &dMsg,
+				data: dMsg,
 			}
 		} else {
 			col.dataHandlers[i].HandleDroppedData(ctx)
@@ -270,7 +266,7 @@ func (col *Collector) processPacket(ctx context.Context, packet []byte) {
 // them
 func (col *Collector) processPackets() {
 	for ctxPacket := range col.packetSource.Packets() {
-		col.processPacket(ctxPacket.ctx, ctxPacket.packet)
+		col.processPacket(ctxPacket.Ctx, ctxPacket.Packet)
 		col.status.PacketsProcessed++
 	}
 	col.closeChannels()
@@ -280,12 +276,12 @@ func (col *Collector) processPackets() {
 // calls the BinaryHandler on each packet and context. One is added to the
 // given WaitGroup and when the goroutine exits, one is subtracted from the
 // WaitGroup.
-func wrapBinaryHandler(binaryFunc func(context.Context, []byte), packetChan <-chan ContextPacket, wg *sync.WaitGroup) {
+func wrapBinaryHandler(binaryFunc func(context.Context, []byte), packetChan <-chan sources.ContextPacket, wg *sync.WaitGroup) {
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
 		for packet := range packetChan {
-			binaryFunc(packet.ctx, packet.packet)
+			binaryFunc(packet.Ctx, packet.Packet)
 		}
 	}()
 }
@@ -294,7 +290,7 @@ func wrapBinaryHandler(binaryFunc func(context.Context, []byte), packetChan <-ch
 // calls the DataHandler on each packet and context. One is added to the
 // given WaitGroup and when the goroutine exits, one is subtracted from the
 // WaitGroup.
-func wrapDataHandler(dataFunc func(context.Context, *sundaeproto.DataMessage), dataMsgChan <-chan ContextDataMessage, wg *sync.WaitGroup) {
+func wrapDataHandler(dataFunc func(context.Context, *internalproto.DataMessage), dataMsgChan <-chan ContextDataMessage, wg *sync.WaitGroup) {
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
