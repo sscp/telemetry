@@ -6,14 +6,18 @@ import (
 	"math"
 
 	"github.com/sscp/telemetry/collector/contextkeys"
-	collectorproto "github.com/sscp/telemetry/collector/internalproto"
 	"github.com/sscp/telemetry/log"
 
 	"github.com/golang/protobuf/proto"
 	//"github.com/opentracing/opentracing-go"
+
+	// Fork of https://github.com/fatih/structs/ that adds an "indirect"
+	// option to dereference pointers to get values, not pointers in map
+	"github.com/jackbeasley/structs"
 )
 
 //go:generate protoc -I=. --go_out=. ./sundae.proto
+//go:generate protoc-go-inject-tag -input=./sundae.pb.go
 
 const tryToHandlePadding = false
 
@@ -181,7 +185,7 @@ func deserializeProto(ctx context.Context, packet []byte, handlePadding bool) (*
 }
 
 // Deserialize unpacks a sundae protobuf, verifies that the fields are valid, then derives any values as needed
-func Deserialize(ctx context.Context, packet []byte) (*collectorproto.DataMessage, error) {
+func Deserialize(ctx context.Context, packet []byte) (map[string]interface{}, error) {
 
 	dMsg, err := deserializeProto(ctx, packet, tryToHandlePadding)
 	if err != nil {
@@ -191,184 +195,11 @@ func Deserialize(ctx context.Context, packet []byte) (*collectorproto.DataMessag
 	// Verify the the proto and clean up data
 	VerifyFloatValues(ctx, dMsg)
 
-	// Unpack the receivedTime from the context and add it to the protobuf
-	t, ok := contextkeys.RecievedTimeFromContext(ctx)
-	var timeCollected *int64
-	if ok {
-		receivedTimeNanos := t.UnixNano()
-		timeCollected = &receivedTimeNanos
-	} else {
-		timeCollected = nil
+	dataFields := structs.Map(dMsg)
+	// Unpack the receivedTime from the context and add it to the output map
+	if t, ok := contextkeys.RecievedTimeFromContext(ctx); ok {
+		dataFields["time_collected"] = t.UnixNano()
 	}
 
-	// Transfer to internal collector proto, derriving values as needed
-	// Currently quite boring as no values are derrived
-	collectorDm := collectorproto.DataMessage{
-		RegenEnabled:                     dMsg.RegenEnabled,
-		RegenCommand:                     dMsg.RegenCommand,
-		BatteryPower:                     dMsg.BatteryPower,
-		ArrayPower:                       dMsg.ArrayPower,
-		ReverseOn:                        dMsg.ReverseOn,
-		LowVoltPower:                     dMsg.LowVoltPower,
-		HazardLightsOn:                   dMsg.HazardLightsOn,
-		BatteryVoltage:                   dMsg.BatteryVoltage,
-		Ltc6804Badpec:                    dMsg.Ltc6804Badpec,
-		BmsState:                         dMsg.BmsState,
-		ChargeEnabled:                    dMsg.ChargeEnabled,
-		DischargeEnabled:                 dMsg.DischargeEnabled,
-		HighsideContactorOn:              dMsg.HighsideContactorOn,
-		LowsideContactorOn:               dMsg.LowsideContactorOn,
-		PrechargeOn:                      dMsg.PrechargeOn,
-		LowVoltBusOn:                     dMsg.LowVoltBusOn,
-		BatteryTemp_1:                    dMsg.BatteryTemp_1,
-		BatteryTemp_2:                    dMsg.BatteryTemp_2,
-		BatteryTemp_3:                    dMsg.BatteryTemp_3,
-		BatteryTemp_4:                    dMsg.BatteryTemp_4,
-		BatteryTemp_5:                    dMsg.BatteryTemp_5,
-		BatteryTemp_6:                    dMsg.BatteryTemp_6,
-		BmsPrechargeBatteryAdc:           dMsg.BmsPrechargeBatteryAdc,
-		BmsPrechargeCarAdc:               dMsg.BmsPrechargeCarAdc,
-		LowVoltOutputCurrent:             dMsg.LowVoltOutputCurrent,
-		BatteryCurrent:                   dMsg.BatteryCurrent,
-		RightMotorControllerPower:        dMsg.RightMotorControllerPower,
-		AmpHours:                         dMsg.AmpHours,
-		HeadLightsOn:                     dMsg.HeadLightsOn,
-		BrakeLightsOn:                    dMsg.BrakeLightsOn,
-		RightBlinkerOn:                   dMsg.RightBlinkerOn,
-		LeftBlinkerOn:                    dMsg.LeftBlinkerOn,
-		BrakePressed:                     dMsg.BrakePressed,
-		ThrottlePressed:                  dMsg.ThrottlePressed,
-		DriveMode:                        dMsg.DriveMode,
-		MotorControllerEnabled:           dMsg.MotorControllerEnabled,
-		MotorControllerSpeed:             dMsg.MotorControllerSpeed,
-		MotorControllerRpm:               dMsg.MotorControllerRpm,
-		AvgOdometer:                      dMsg.AvgOdometer,
-		LeftMotorTemp:                    dMsg.LeftMotorTemp,
-		RightMotorTemp:                   dMsg.RightMotorTemp,
-		LeftMotorControllerTemp:          dMsg.LeftMotorControllerTemp,
-		RightMotorControllerTemp:         dMsg.RightMotorControllerTemp,
-		LeftMotorControllerAlive:         dMsg.LeftMotorControllerAlive,
-		RightMotorControllerAlive:        dMsg.RightMotorControllerAlive,
-		LeftMotorControllerCurrent:       dMsg.LeftMotorControllerCurrent,
-		RightMotorControllerCurrent:      dMsg.RightMotorControllerCurrent,
-		MotorControllerCurrentDiff:       dMsg.MotorControllerCurrentDiff,
-		LeftMotorControllerError:         dMsg.LeftMotorControllerError,
-		RightMotorControllerError:        dMsg.RightMotorControllerError,
-		LeftMotorControllerLimit:         dMsg.LeftMotorControllerLimit,
-		RightMotorControllerLimit:        dMsg.RightMotorControllerLimit,
-		LeftMotorControllerRxErrorCount:  dMsg.LeftMotorControllerRxErrorCount,
-		RightMotorControllerRxErrorCount: dMsg.RightMotorControllerRxErrorCount,
-		LeftMotorControllerTxErrorCount:  dMsg.LeftMotorControllerTxErrorCount,
-		RightMotorControllerTxErrorCount: dMsg.RightMotorControllerTxErrorCount,
-		LeftMotorControllerBusVoltage:    dMsg.LeftMotorControllerBusVoltage,
-		RightMotorControllerBusVoltage:   dMsg.RightMotorControllerBusVoltage,
-		LeftMotorController_15VVoltage:   dMsg.LeftMotorController_15VVoltage,
-		RightMotorController_15VVoltage:  dMsg.RightMotorController_15VVoltage,
-		LeftMotorController_3V3Voltage:   dMsg.LeftMotorController_3V3Voltage,
-		RightMotorController_3V3Voltage:  dMsg.RightMotorController_3V3Voltage,
-		LeftMotorController_1V9Voltage:   dMsg.LeftMotorController_1V9Voltage,
-		RightMotorController_1V9Voltage:  dMsg.RightMotorController_1V9Voltage,
-		LeftMotorControllerDspTemp:       dMsg.LeftMotorControllerDspTemp,
-		RightMotorControllerDspTemp:      dMsg.RightMotorControllerDspTemp,
-		LeftMotorControllerPhaseCurrent:  dMsg.LeftMotorControllerPhaseCurrent,
-		RightMotorControllerPhaseCurrent: dMsg.RightMotorControllerPhaseCurrent,
-		LeftMotorRpmCommand:              dMsg.LeftMotorRpmCommand,
-		RightMotorRpmCommand:             dMsg.RightMotorRpmCommand,
-		LeftMotorCurrentCommand:          dMsg.LeftMotorCurrentCommand,
-		RightMotorCurrentCommand:         dMsg.RightMotorCurrentCommand,
-		GpsTime:                          dMsg.GpsTime,
-		GpsLatitude:                      dMsg.GpsLatitude,
-		GpsLongitude:                     dMsg.GpsLongitude,
-		GpsSpeed:                         dMsg.GpsSpeed,
-		GpsAltitude:                      dMsg.GpsAltitude,
-		GpsBearing:                       dMsg.GpsBearing,
-		LedState:                         dMsg.LedState,
-		MpptArrayPower:                   dMsg.MpptArrayPower,
-		Mppt_A0VoltIn:                    dMsg.Mppt_A0VoltIn,
-		Mppt_A0VoltOut:                   dMsg.Mppt_A0VoltOut,
-		Mppt_A0Current:                   dMsg.Mppt_A0Current,
-		Mppt_A0Temp:                      dMsg.Mppt_A0Temp,
-		Mppt_A1VoltIn:                    dMsg.Mppt_A1VoltIn,
-		Mppt_A1VoltOut:                   dMsg.Mppt_A1VoltOut,
-		Mppt_A1Current:                   dMsg.Mppt_A1Current,
-		Mppt_A1Temp:                      dMsg.Mppt_A1Temp,
-		Mppt_B0VoltIn:                    dMsg.Mppt_B0VoltIn,
-		Mppt_B0VoltOut:                   dMsg.Mppt_B0VoltOut,
-		Mppt_B0Current:                   dMsg.Mppt_B0Current,
-		Mppt_B0Temp:                      dMsg.Mppt_B0Temp,
-		Mppt_B1VoltIn:                    dMsg.Mppt_B1VoltIn,
-		Mppt_B1VoltOut:                   dMsg.Mppt_B1VoltOut,
-		Mppt_B1Current:                   dMsg.Mppt_B1Current,
-		Mppt_B1Temp:                      dMsg.Mppt_B1Temp,
-		Mppt_C0VoltIn:                    dMsg.Mppt_C0VoltIn,
-		Mppt_C0VoltOut:                   dMsg.Mppt_C0VoltOut,
-		Mppt_C0Current:                   dMsg.Mppt_C0Current,
-		Mppt_C0Temp:                      dMsg.Mppt_C0Temp,
-		Mppt_C1VoltIn:                    dMsg.Mppt_C1VoltIn,
-		Mppt_C1VoltOut:                   dMsg.Mppt_C1VoltOut,
-		Mppt_C1Current:                   dMsg.Mppt_C1Current,
-		Mppt_C1Temp:                      dMsg.Mppt_C1Temp,
-		Mppt_D0VoltIn:                    dMsg.Mppt_D0VoltIn,
-		Mppt_D0VoltOut:                   dMsg.Mppt_D0VoltOut,
-		Mppt_D0Current:                   dMsg.Mppt_D0Current,
-		Mppt_D0Temp:                      dMsg.Mppt_D0Temp,
-		Mppt_D1VoltIn:                    dMsg.Mppt_D1VoltIn,
-		Mppt_D1VoltOut:                   dMsg.Mppt_D1VoltOut,
-		Mppt_D1Current:                   dMsg.Mppt_D1Current,
-		Mppt_D1Temp:                      dMsg.Mppt_D1Temp,
-		CellVolt_1:                       dMsg.CellVolt_1,
-		CellVolt_2:                       dMsg.CellVolt_2,
-		CellVolt_3:                       dMsg.CellVolt_3,
-		CellVolt_4:                       dMsg.CellVolt_4,
-		CellVolt_5:                       dMsg.CellVolt_5,
-		CellVolt_6:                       dMsg.CellVolt_6,
-		CellVolt_7:                       dMsg.CellVolt_7,
-		CellVolt_8:                       dMsg.CellVolt_8,
-		CellVolt_9:                       dMsg.CellVolt_9,
-		CellVolt_10:                      dMsg.CellVolt_10,
-		CellVolt_11:                      dMsg.CellVolt_11,
-		CellVolt_12:                      dMsg.CellVolt_12,
-		CellVolt_13:                      dMsg.CellVolt_13,
-		CellVolt_14:                      dMsg.CellVolt_14,
-		CellVolt_15:                      dMsg.CellVolt_15,
-		CellVolt_16:                      dMsg.CellVolt_16,
-		CellVolt_17:                      dMsg.CellVolt_17,
-		CellVolt_18:                      dMsg.CellVolt_18,
-		CellVolt_19:                      dMsg.CellVolt_19,
-		CellVolt_20:                      dMsg.CellVolt_20,
-		CellVolt_21:                      dMsg.CellVolt_21,
-		CellVolt_22:                      dMsg.CellVolt_22,
-		CellVolt_23:                      dMsg.CellVolt_23,
-		CellVolt_24:                      dMsg.CellVolt_24,
-		CellVolt_25:                      dMsg.CellVolt_25,
-		CellVolt_26:                      dMsg.CellVolt_26,
-		CellVolt_27:                      dMsg.CellVolt_27,
-		CellVolt_28:                      dMsg.CellVolt_28,
-		CellVolt_29:                      dMsg.CellVolt_29,
-		CellVolt_30:                      dMsg.CellVolt_30,
-		CellVolt_31:                      dMsg.CellVolt_31,
-		CellVoltMin:                      dMsg.CellVoltMin,
-		CellVoltMax:                      dMsg.CellVoltMax,
-		CellVoltAvg:                      dMsg.CellVoltAvg,
-		CellVoltDiff:                     dMsg.CellVoltDiff,
-		PowerSaveOn:                      dMsg.PowerSaveOn,
-		RearviewOn:                       dMsg.RearviewOn,
-		MicEnabled:                       dMsg.MicEnabled,
-		ImuTemp:                          dMsg.ImuTemp,
-		ImuMagnetX:                       dMsg.ImuMagnetX,
-		ImuMagnetY:                       dMsg.ImuMagnetY,
-		ImuMagnetZ:                       dMsg.ImuMagnetZ,
-		ImuGyroX:                         dMsg.ImuGyroX,
-		ImuGyroY:                         dMsg.ImuGyroY,
-		ImuGyroZ:                         dMsg.ImuGyroZ,
-		ImuAccelX:                        dMsg.ImuAccelX,
-		ImuAccelY:                        dMsg.ImuAccelY,
-		ImuAccelZ:                        dMsg.ImuAccelZ,
-		BmsLeftMotorControllerCurrent:    dMsg.BmsLeftMotorControllerCurrent,
-		BmsRightMotorControllerCurrent:   dMsg.BmsRightMotorControllerCurrent,
-		BmsMotorControllerCurrentSum:     dMsg.BmsMotorControllerCurrentSum,
-		PacketsPerSec:                    dMsg.PacketsPerSec,
-		TimeCollected:                    timeCollected,
-	}
-	return &collectorDm, nil
+	return dataFields, nil
 }

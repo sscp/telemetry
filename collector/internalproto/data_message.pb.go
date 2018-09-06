@@ -367,7 +367,7 @@ type DataMessage struct {
 	// @inject_tag: structs:"packets_per_sec,indirect" csv:"packets_per_sec"
 	PacketsPerSec *float32 `protobuf:"fixed32,171,opt,name=packets_per_sec,json=packetsPerSec" json:"packets_per_sec,omitempty" structs:"packets_per_sec,indirect" csv:"packets_per_sec" structs:"packets_per_sec,indirect" csv:"packets_per_sec"`
 	// @inject_tag: structs:"-" csv:"time_collected" // Not in struct, b/c not data
-	TimeCollected    *int64 `protobuf:"varint,172,opt,name=time_collected,json=timeCollected" json:"time_collected,omitempty" structs:"-" csv:"time_collected" // Not in struct, b/c not data structs:"-" csv:"time_collected" // Not in struct, b/c not data`
+	TimeCollected    *int64 `protobuf:"varint,172,opt,name=time_collected,json=timeCollected" json:"time_collected,omitempty" structs:"-" csv:"time_collected" structs:"-" csv:"time_collected"`
 	XXX_unrecognized []byte `json:"-" structs:"-" csv:"-"`
 }
 
