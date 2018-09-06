@@ -25,17 +25,13 @@ import (
 	"sync"
 	"time"
 
+	"github.com/sscp/telemetry/cars"
 	"github.com/sscp/telemetry/collector/handlers"
-	internalproto "github.com/sscp/telemetry/collector/internalproto"
 	"github.com/sscp/telemetry/collector/sources"
-	sundaeproto "github.com/sscp/telemetry/collector/sundae"
 	"github.com/sscp/telemetry/log"
 
 	"github.com/opentracing/opentracing-go"
 )
-
-//go:generate protoc --go_out=internalproto ./internalproto/data_message.proto
-//go:generate protoc-go-inject-tag -input=./internalproto/data_message.pb.go
 
 const defaultBufferSize = 10
 
@@ -79,7 +75,7 @@ type CollectorStatus struct {
 // though a channel along with the DataMessage pointer
 type ContextDataMessage struct {
 	ctx  context.Context
-	data *internalproto.DataMessage
+	data map[string]interface{}
 }
 
 // NewUDPCollector creates a new Collector that listens on the UDP port
@@ -243,7 +239,7 @@ func (col *Collector) processPacket(ctx context.Context, packet []byte) {
 	}
 
 	// Deserialize ProtoBuf
-	dMsg, err := sundaeproto.Deserialize(ctx, packet)
+	dataMap, err := cars.GetCarDeserializer(cars.Sundae)(ctx, packet)
 	if err != nil {
 		log.Error(ctx, err, "Could not deserialize protobuf")
 		return
@@ -254,7 +250,7 @@ func (col *Collector) processPacket(ctx context.Context, packet []byte) {
 		if len(col.dataChans[i]) != cap(col.dataChans[i]) {
 			col.dataChans[i] <- ContextDataMessage{
 				ctx:  ctx,
-				data: dMsg,
+				data: dataMap,
 			}
 		} else {
 			col.dataHandlers[i].HandleDroppedData(ctx)
@@ -290,7 +286,7 @@ func wrapBinaryHandler(binaryFunc func(context.Context, []byte), packetChan <-ch
 // calls the DataHandler on each packet and context. One is added to the
 // given WaitGroup and when the goroutine exits, one is subtracted from the
 // WaitGroup.
-func wrapDataHandler(dataFunc func(context.Context, *internalproto.DataMessage), dataMsgChan <-chan ContextDataMessage, wg *sync.WaitGroup) {
+func wrapDataHandler(dataFunc func(context.Context, map[string]interface{}), dataMsgChan <-chan ContextDataMessage, wg *sync.WaitGroup) {
 	wg.Add(1)
 	go func() {
 		defer wg.Done()

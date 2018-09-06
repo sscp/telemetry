@@ -2,16 +2,17 @@ package cars
 
 import (
 	"context"
+
 	"github.com/sscp/telemetry/cars/sundae"
 )
 
 //go:generate enumer -type=Car -json -text -output=gen_cars.go
 
-// A car
+// Car refers to a car-specific deserialization routine.
 type Car int
 
 const (
-	// Sundae
+	// Sundae is sscp's 2017 WSC car
 	Sundae Car = iota
 )
 
@@ -19,7 +20,7 @@ func stubCarSupport(ctx context.Context, packet []byte) (map[string]interface{},
 	return make(map[string]interface{}, 0), nil
 }
 
-func GetCarSupport(car Car) func(ctx context.Context, packet []byte) (map[string]interface{}, error) {
+func GetCarDeserializer(car Car) func(ctx context.Context, packet []byte) (map[string]interface{}, error) {
 
 	switch car {
 	case Sundae:

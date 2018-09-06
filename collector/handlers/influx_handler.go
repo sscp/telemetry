@@ -6,15 +6,10 @@ import (
 	"math"
 	"time"
 
-	internalproto "github.com/sscp/telemetry/collector/internalproto"
 	"github.com/sscp/telemetry/log"
 
 	influx "github.com/influxdata/influxdb/client/v2"
 	"github.com/opentracing/opentracing-go"
-
-	// Fork of https://github.com/fatih/structs/ that adds an "indirect"
-	// option to dereference pointers to get values, not pointers in map
-	"github.com/jackbeasley/structs"
 )
 
 const databaseName = "sundae"
@@ -86,7 +81,7 @@ func (cw *InfluxWriter) HandleStartRun(ctx context.Context, runName string, star
 		return
 	}
 
-	cw.dmBuffer = NewDataMessageBuffer(cw.writeData, 10)
+	cw.dmBuffer = NewDataMapBuffer(cw.writeData, 10)
 	cw.runName = runName
 }
 
@@ -99,7 +94,7 @@ func (cw *InfluxWriter) setupWriter() error {
 
 // writeData writes all the data in the DataMessage buffer to influx as a
 // point batch
-func (cw *InfluxWriter) writeData(ctx context.Context, data []*internalproto.DataMessage) {
+func (cw *InfluxWriter) writeData(ctx context.Context, data []map[string]interface{}) {
 	// Create a new point batch
 	bp, err := influx.NewBatchPoints(influx.BatchPointsConfig{
 		Database:  databaseName,
@@ -110,17 +105,15 @@ func (cw *InfluxWriter) writeData(ctx context.Context, data []*internalproto.Dat
 		return
 	}
 	for _, dm := range data {
-		// Convert struct to map[string]interface{}
-		dataFields := structs.Map(dm)
-		for key, value := range dataFields {
+		for key, value := range dm {
 			if val, ok := value.(float32); ok {
 				if math.IsNaN(float64(val)) {
-					delete(dataFields, key)
+					delete(dm, key)
 				}
 			}
 			if val, ok := value.(float64); ok {
 				if math.IsNaN(val) {
-					delete(dataFields, key)
+					delete(dm, key)
 				}
 			}
 
@@ -128,7 +121,7 @@ func (cw *InfluxWriter) writeData(ctx context.Context, data []*internalproto.Dat
 		// Create a point and add to batch
 		tags := map[string]string{"run_name": cw.runName}
 		// TimeCollected is always set when deserialized by collector
-		pt, err := influx.NewPoint("car_state", tags, dataFields, time.Unix(0, dm.GetTimeCollected()))
+		pt, err := influx.NewPoint("car_state", tags, dm, time.Unix(0, dm.GetTimeCollected()))
 		if err != nil {
 			log.Error(ctx, err, "Error creating influx point")
 			return
@@ -145,7 +138,7 @@ func (cw *InfluxWriter) writeData(ctx context.Context, data []*internalproto.Dat
 // HandleData is called on every new DataMessage from the collector and adds
 // the new DataMessage to the buffer of DataMessages and flushes the buffer if
 // it is full
-func (cw *InfluxWriter) HandleData(ctx context.Context, data *internalproto.DataMessage) {
+func (cw *InfluxWriter) HandleData(ctx context.Context, data map[string]interface{}) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "InfluxWriter/HandleData")
 	defer span.Finish()
 	cw.dmBuffer.AddData(ctx, data)

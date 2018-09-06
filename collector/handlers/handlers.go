@@ -3,7 +3,6 @@ package handlers
 import (
 	"context"
 	"fmt"
-	internalproto "github.com/sscp/telemetry/collector/internalproto"
 	"time"
 )
 
@@ -26,7 +25,7 @@ type DataHandler interface {
 	// method is performance critical, so if it is slow, the DataHandler
 	// will not recieve every packet from collector. This method should be
 	// benchmarked to verify that it is fast enough to recieve all data.
-	HandleData(context.Context, *internalproto.DataMessage)
+	HandleData(context.Context, map[string]interface{})
 
 	// HandleDroppedData is called by collector whenever the DataHandler
 	// falls behind and misses a packet. This is a performance critical
