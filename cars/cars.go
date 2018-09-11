@@ -18,12 +18,14 @@ const (
 	Sundae Car = iota
 )
 
-func stubCarSupport(ctx context.Context, packet []byte) (map[string]interface{}, error) {
-	return make(map[string]interface{}, 0), nil
+func stubCarSupport(ctx context.Context, event events.RawEvent) (events.DataEvent, error) {
+	return events.DataEvent{
+		EventMeta: event.EventMeta,
+		Data:      make(map[string]interface{}, 0),
+	}, nil
 }
 
-func GetCarDeserializer(car Car) func(ctx context.Context, events.RawDataEvent) (events.DataEvent, error) {
-
+func GetCarDeserializer(car Car) func(ctx context.Context, rawEvent events.RawEvent) (events.DataEvent, error) {
 	switch car {
 	case Sundae:
 		return sundae.Deserialize

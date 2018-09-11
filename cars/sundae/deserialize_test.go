@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/sscp/telemetry/blog"
+	"github.com/sscp/telemetry/events"
 )
 
 func runTestOnDataFile(t *testing.T, filename string) {
@@ -29,7 +30,7 @@ func runTestOnDataFile(t *testing.T, filename string) {
 			t.Errorf("Error reading blog file: %v", err)
 		}
 		ctx := context.Background()
-		_, err = Deserialize(ctx, packet)
+		_, err = Deserialize(ctx, events.NewRawDataEvent(packet))
 		if err != nil {
 			t.Errorf("Could not deserialize packet: %v", err)
 		}
