@@ -1,83 +1,15 @@
-package sources
+package sundae
 
 import (
-	"context"
-	"fmt"
 	"math/rand"
-	"time"
-
-	"github.com/sscp/telemetry/collector/contextkeys"
-	internalproto "github.com/sscp/telemetry/collector/internalproto"
 
 	"github.com/golang/protobuf/proto"
-	"golang.org/x/time/rate"
 )
-
-// ZeroPacketSource is a PacketSource that returns only zeroed out DataMessages
-// at a given rate
-type ZeroPacketSource struct {
-	outChan  chan *ContextPacket
-	doneChan chan bool
-	limiter  *rate.Limiter
-}
-
-// Packets is the stream of zeroed binary packets
-// It is simply a reference to outChan
-func (zps *ZeroPacketSource) Packets() <-chan *ContextPacket {
-	return zps.outChan
-}
-
-// Listen begins sending zeroed packets to the Packets channel.
-// It launches a gorountine that sen
-func (zps *ZeroPacketSource) Listen() {
-	go func() {
-		for {
-			select {
-			case <-zps.doneChan:
-				return
-			default:
-				err := zps.limiter.Wait(context.TODO())
-				if err == nil {
-					zPacket, _ := CreateZeroPacket()
-					recievedTime := time.Now()
-					// Create context with time of receiving packet
-					ctx := contextkeys.ContextWithRecievedTime(context.Background(), recievedTime)
-
-					zps.outChan <- &ContextPacket{
-						Ctx:    ctx,
-						Packet: zPacket,
-					}
-				} else {
-					fmt.Println("too fast")
-				}
-			}
-		}
-	}()
-}
-
-// Close sends a close signal on doneChan and closes both doneChan and outChan.
-// NOTE: this currently does not reset the ZeroPacketSource to listen again
-func (zps *ZeroPacketSource) Close() {
-	zps.doneChan <- true
-	close(zps.doneChan)
-	close(zps.outChan)
-}
-
-// NewZeroPacketSource constructs a new ZeroPacketSource that emits zeroed out
-// packets at packetsPerSecond
-func NewZeroPacketSource(packetsPerSecond int) PacketSource {
-	return &ZeroPacketSource{
-		outChan:  make(chan *ContextPacket),
-		doneChan: make(chan bool),
-		// Only allow one packet out at a time
-		limiter: rate.NewLimiter(rate.Limit(packetsPerSecond), 1),
-	}
-}
 
 // CreateZeroPacket returns a zeroed protocol buffer marshaled to binary
 func CreateZeroPacket() ([]byte, error) {
 	zdm := CreateZeroDataMessage()
-	return proto.Marshal(zdm)
+	return proto.Marshal(&zdm)
 }
 
 func zeroUInt32() *uint32 {
@@ -132,8 +64,8 @@ func randFloat32() *float32 {
 
 // CreateZeroDataMessage fills a DataMessage with pointers to zero values of
 // each value
-func CreateZeroDataMessage() *internalproto.DataMessage {
-	zdm := internalproto.DataMessage{
+func CreateZeroDataMessage() SundaeDataMessage {
+	zdm := SundaeDataMessage{
 		RegenEnabled:                     zeroUInt32(),
 		RegenCommand:                     zeroUInt32(),
 		BatteryPower:                     zeroUInt32(),
@@ -299,13 +231,13 @@ func CreateZeroDataMessage() *internalproto.DataMessage {
 		BmsMotorControllerCurrentSum:     zeroFloat32(),
 		PacketsPerSec:                    zeroFloat32(),
 	}
-	return &zdm
+	return zdm
 }
 
 // CreateRandomDataMessage fills a DataMessage with pointers to random values
 // for each entry in the DataMessage
-func CreateRandomDataMessage() *internalproto.DataMessage {
-	zdm := internalproto.DataMessage{
+func CreateRandomDataMessage() SundaeDataMessage {
+	zdm := SundaeDataMessage{
 		RegenEnabled:                     randUInt32(),
 		RegenCommand:                     randUInt32(),
 		BatteryPower:                     randUInt32(),
@@ -471,5 +403,5 @@ func CreateRandomDataMessage() *internalproto.DataMessage {
 		BmsMotorControllerCurrentSum:     randFloat32(),
 		PacketsPerSec:                    randFloat32(),
 	}
-	return &zdm
+	return zdm
 }

@@ -5,15 +5,15 @@ import (
 	"fmt"
 	"math"
 
-	"github.com/sscp/telemetry/collector/contextkeys"
-	"github.com/sscp/telemetry/log"
-
 	"github.com/golang/protobuf/proto"
 	//"github.com/opentracing/opentracing-go"
 
 	// Fork of https://github.com/fatih/structs/ that adds an "indirect"
 	// option to dereference pointers to get values, not pointers in map
 	"github.com/jackbeasley/structs"
+
+	"github.com/sscp/telemetry/events"
+	"github.com/sscp/telemetry/log"
 )
 
 //go:generate protoc -I=. --go_out=. ./sundae.proto
@@ -185,21 +185,20 @@ func deserializeProto(ctx context.Context, packet []byte, handlePadding bool) (*
 }
 
 // Deserialize unpacks a sundae protobuf, verifies that the fields are valid, then derives any values as needed
-func Deserialize(ctx context.Context, packet []byte) (map[string]interface{}, error) {
+func Deserialize(ctx context.Context, rawEvent events.RawEvent) (events.DataEvent, error) {
 
-	dMsg, err := deserializeProto(ctx, packet, tryToHandlePadding)
+	dMsg, err := deserializeProto(ctx, rawEvent.Data, tryToHandlePadding)
 	if err != nil {
 		log.Error(ctx, err, "Could not deserialize protobuf")
-		return nil, err
+		return events.DataEvent{}, err
 	}
 	// Verify the the proto and clean up data
 	VerifyFloatValues(ctx, dMsg)
 
 	dataFields := structs.Map(dMsg)
-	// Unpack the receivedTime from the context and add it to the output map
-	if t, ok := contextkeys.RecievedTimeFromContext(ctx); ok {
-		dataFields["time_collected"] = t.UnixNano()
-	}
 
-	return dataFields, nil
+	return events.DataEvent{
+		EventMeta: rawEvent.EventMeta,
+		Data:      dataFields,
+	}, nil
 }

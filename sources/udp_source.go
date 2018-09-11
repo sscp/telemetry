@@ -6,7 +6,7 @@ import (
 	"net"
 	"time"
 
-	"github.com/sscp/telemetry/collector/contextkeys"
+	"github.com/sscp/telemetry/events"
 )
 
 // UDPListenTimeout is the time to wait for the next packet
@@ -15,7 +15,7 @@ const udpListenTimeout = 100 * time.Millisecond
 // UDPPacketSource is a PacketSource that reads from a UDP socket
 type UDPPacketSource struct {
 	port         int
-	outChan      chan *ContextPacket
+	outChan      chan *ContextEvent
 	doneChan     chan bool
 	conn         *net.UDPConn
 	packetBuffer []byte
@@ -49,33 +49,30 @@ func (ups *UDPPacketSource) setupForListen() error {
 	if err != nil {
 		return err
 	}
-	ups.outChan = make(chan *ContextPacket)
+	ups.outChan = make(chan *ContextEvent)
 	ups.doneChan = make(chan bool)
 	return nil
 }
 
 // Packets is the stream of packets received from UDP
 // It is simply a reference to outChan
-func (ups *UDPPacketSource) Packets() <-chan *ContextPacket {
+func (ups *UDPPacketSource) Packets() <-chan *ContextEvent {
 	return ups.outChan
 }
 
 // Listen spins up a goroutine that listens for packets until it receives a
 // signal on the doneChan, in which case it closes the connection and returns
 func (ups *UDPPacketSource) Listen() {
-
-	go func() {
-		for {
-			select {
-			case <-ups.doneChan:
-				// Close Conn and shutdown goroutine
-				ups.conn.Close()
-				return
-			default:
-				ups.readAndForwardPacket()
-			}
+	for {
+		select {
+		case <-ups.doneChan:
+			// Close Conn and shutdown goroutine
+			ups.conn.Close()
+			return
+		default:
+			ups.readAndForwardPacket()
 		}
-	}()
+	}
 }
 
 func (ups *UDPPacketSource) readAndForwardPacket() {
@@ -87,12 +84,9 @@ func (ups *UDPPacketSource) readAndForwardPacket() {
 			log.Fatal(err)
 		}
 	} else {
-		recievedTime := time.Now()
-		// Create context with time of receiving packet
-		ctx := contextkeys.ContextWithRecievedTime(context.Background(), recievedTime)
-		ups.outChan <- &ContextPacket{
-			Ctx:    ctx,
-			Packet: packet,
+		ups.outChan <- &ContextEvent{
+			Context:  context.Background(),
+			RawEvent: events.NewRawDataEvent(packet),
 		}
 	}
 
@@ -125,7 +119,7 @@ func (ups *UDPPacketSource) Close() {
 
 // SendPacketsAsUDP sends all the packets from the dataSource to the broadcast
 // ip on the given port. Packets are spaced by the given delay duration.
-func SendPacketsAsUDP(packetChan <-chan *ContextPacket, port int) {
+func SendPacketsAsUDP(packetChan <-chan []byte, port int) {
 	conn, err := net.DialUDP("udp4", nil, &net.UDPAddr{
 		IP:   net.IPv4bcast,
 		Port: port,
@@ -136,6 +130,6 @@ func SendPacketsAsUDP(packetChan <-chan *ContextPacket, port int) {
 	defer conn.Close()
 
 	for packet := range packetChan {
-		conn.Write(packet.Packet)
+		conn.Write(packet)
 	}
 }

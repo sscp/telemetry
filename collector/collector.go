@@ -26,9 +26,9 @@ import (
 	"time"
 
 	"github.com/sscp/telemetry/cars"
-	"github.com/sscp/telemetry/collector/handlers"
-	"github.com/sscp/telemetry/collector/sources"
+	"github.com/sscp/telemetry/handlers"
 	"github.com/sscp/telemetry/log"
+	"github.com/sscp/telemetry/sources"
 
 	"github.com/opentracing/opentracing-go"
 )
@@ -75,7 +75,7 @@ type CollectorStatus struct {
 // though a channel along with the DataMessage pointer
 type ContextDataMessage struct {
 	ctx  context.Context
-	data map[string]interface{}
+	data events.Event
 }
 
 // NewUDPCollector creates a new Collector that listens on the UDP port
@@ -286,7 +286,7 @@ func wrapBinaryHandler(binaryFunc func(context.Context, []byte), packetChan <-ch
 // calls the DataHandler on each packet and context. One is added to the
 // given WaitGroup and when the goroutine exits, one is subtracted from the
 // WaitGroup.
-func wrapDataHandler(dataFunc func(context.Context, map[string]interface{}), dataMsgChan <-chan ContextDataMessage, wg *sync.WaitGroup) {
+func wrapDataHandler(dataFunc func(context.Context, Event), dataMsgChan <-chan ContextDataMessage, wg *sync.WaitGroup) {
 	wg.Add(1)
 	go func() {
 		defer wg.Done()

@@ -4,6 +4,8 @@ import (
 	"context"
 
 	"github.com/sscp/telemetry/cars/sundae"
+
+	"github.com/sscp/telemetry/events"
 )
 
 //go:generate enumer -type=Car -json -text -output=gen_cars.go
@@ -20,7 +22,7 @@ func stubCarSupport(ctx context.Context, packet []byte) (map[string]interface{},
 	return make(map[string]interface{}, 0), nil
 }
 
-func GetCarDeserializer(car Car) func(ctx context.Context, packet []byte) (map[string]interface{}, error) {
+func GetCarDeserializer(car Car) func(ctx context.Context, events.RawDataEvent) (events.DataEvent, error) {
 
 	switch car {
 	case Sundae:

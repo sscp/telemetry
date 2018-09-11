@@ -2,10 +2,11 @@ package sources
 
 import (
 	"bytes"
-	"github.com/sscp/telemetry/blog"
 	"reflect"
 	"testing"
 	"time"
+
+	"github.com/sscp/telemetry/blog"
 )
 
 type BlogReaderSourceTest struct {
@@ -30,6 +31,7 @@ func testBlogReaderSource(t *testing.T) {
 
 		bufRead := bytes.NewReader(buf.Bytes())
 		bps := NewBlogPacketSource(bufRead, blogTest.Delay)
+		go bps.Listen()
 
 		var i int = 0
 		for packet := range bps.Packets() {

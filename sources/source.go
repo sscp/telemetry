@@ -2,12 +2,14 @@ package sources
 
 import (
 	"context"
+
+	"github.com/sscp/telemetry/events"
 )
 
-// ContextPacket holds context from
-type ContextPacket struct {
-	Ctx    context.Context
-	Packet []byte
+// ContextEvent holds context from
+type ContextEvent struct {
+	context.Context
+	events.RawEvent
 }
 
 // PacketSource abstracts over a source of data packets, can be a file or
@@ -19,7 +21,7 @@ type ContextPacket struct {
 type PacketSource interface {
 	// Packets returns a reference to the output channel of packets
 	// produced by the DataSource
-	Packets() <-chan *ContextPacket
+	Packets() <-chan *ContextEvent
 
 	// Listen begins collecting packets and putting them on the output
 	// channel.

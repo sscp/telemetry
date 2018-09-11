@@ -3,6 +3,7 @@ package handlers
 import (
 	"bufio"
 	"context"
+	"encoding/csv"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -10,7 +11,6 @@ import (
 
 	"github.com/sscp/telemetry/log"
 
-	"github.com/gocarina/gocsv"
 	"github.com/opentracing/opentracing-go"
 )
 
@@ -29,8 +29,9 @@ type CSVWriter struct {
 	folderPath string
 	file       *os.File
 	buffer     *bufio.Writer
-	csvWrite   *gocsv.SafeCSVWriter
+	csvWrite   *csv.Writer
 	dmBuffer   *DataMapBuffer
+	keyToIndex map[string]interface{}
 }
 
 // dataBufferSize is the default size of the queues that lead to each handler
@@ -70,29 +71,36 @@ func (cw *CSVWriter) createFile(ctx context.Context, runName string, startTime t
 // simply append rows of data without headers.
 func (cw *CSVWriter) setupWriter() {
 	cw.buffer = bufio.NewWriter(cw.file)
-	cw.csvWrite = gocsv.DefaultCSVWriter(cw.buffer)
+	cw.csvWrite = csv.NewWriter(cw.buffer)
 	cw.dmBuffer = NewDataMessageBuffer(cw.writeData, 10)
-	// Write only the headers because all future data will be written
-	// without headers
-	empData := []*internalproto.DataMessage{}
-	gocsv.MarshalCSV(&empData, cw.csvWrite)
 }
 
 // flushDataBuffer writes all the data in the DataMessage buffer to the
 // buffered writer
-func (cw *CSVWriter) writeData(ctx context.Context, data []*internalproto.DataMessage) {
-	// Write all data up until the current index. We can't write all the
-	// data because there might be already written *DataMessages beyond the
-	// current index
-	gocsv.MarshalCSVWithoutHeaders(data, cw.csvWrite)
+func (cw *CSVWriter) writeData(ctx context.Context, data []map[string]interface{}) {
+	if len(data) > 0 && (cw.keys == nil || len(cw.keys) == 0) {
+		cw.keyToIndex = make(map[string]int, len(data[0]))
+	}
+	for _, dataMap := range data {
+		csvLine := make([]string, len(dataMap))
+		for key, value := range dataMap {
+			index, ok := cw.keyToIndex[key]
+			if !ok {
+				cw.keyToIndex[key] = len(cw.keyToIndex)
+			}
+			csvLine[index] = value.String()
+		}
+		cw.csvWrite.Marshall(csvLine)
+	}
 }
 
 // HandleData is called on every new DataMessage from the collector and adds
 // the new DataMessage to the buffer of DataMessages and flushes the buffer if
 // it is full
-func (cw *CSVWriter) HandleData(ctx context.Context, data *internalproto.DataMessage) {
+func (cw *CSVWriter) HandleData(ctx context.Context, data map[string]interface{}) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "CSVWriter/HandleData")
 	defer span.Finish()
+
 	cw.dmBuffer.AddData(ctx, data)
 }
 
@@ -110,5 +118,12 @@ func (cw *CSVWriter) HandleDroppedData(ctx context.Context) {
 func (cw *CSVWriter) HandleEndRun(ctx context.Context, endTime time.Time) {
 	cw.dmBuffer.Flush(ctx)
 	cw.buffer.Flush()
+
+	csvLine := make([]string, len(cw.keyToIndex))
+	for key, index := range keyToIndex {
+		csvLine[index] = key
+	}
+	cw.csvWrite.Marshall(csvLine)
+
 	cw.file.Close()
 }

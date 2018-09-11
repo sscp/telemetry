@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/sscp/telemetry/blog"
-	"github.com/sscp/telemetry/collector/contextkeys"
+	"github.com/sscp/telemetry/events"
 )
 
 // BlogPacketSource is a PacketSource that reads from an io.Reader
@@ -15,7 +15,7 @@ import (
 type BlogPacketSource struct {
 	reader   io.Reader
 	doneChan chan bool
-	outChan  chan *ContextPacket
+	outChan  chan *ContextEvent
 }
 
 // NewBlogPacketSource instantiates a BlogPacketSource
@@ -25,39 +25,35 @@ func NewBlogPacketSource(r io.Reader, d time.Duration) PacketSource {
 	return &BlogPacketSource{
 		reader:   r,
 		doneChan: make(chan bool),
-		outChan:  make(chan *ContextPacket),
+		outChan:  make(chan *ContextEvent),
 	}
 }
 
 // Listen reads packets from the file sequentially until the file is empty, then calls Close
 func (bps *BlogPacketSource) Listen() {
 	rdr := blog.NewReader(bps.reader)
-	go func() {
-		for {
-			readPacket, err := rdr.NextPacket()
-			if err != nil {
-				if err == io.EOF {
-					bps.Close()
-					bps.doneChan <- true
-					break
-				} else {
-					log.Fatal(err)
-				}
-			}
-			recievedTime := time.Now()
-			// Create context with time of receiving packet
-			ctx := contextkeys.ContextWithRecievedTime(context.Background(), recievedTime)
-
-			bps.outChan <- &ContextPacket{
-				Ctx:    ctx,
-				Packet: readPacket,
+	for {
+		readPacket, err := rdr.NextPacket()
+		if err != nil {
+			if err == io.EOF {
+				bps.Close()
+				bps.doneChan <- true
+				break
+			} else {
+				log.Fatal(err)
 			}
 		}
-	}()
+		// TODO: NewRawDataEvent sets CollectedTimeNanos to
+		// current time, maybe try to pull from blog?
+		bps.outChan <- &ContextEvent{
+			Context:  context.Background(),
+			RawEvent: events.NewRawDataEvent(readPacket),
+		}
+	}
 }
 
 // Packets returns the channel into which all the read packets are placed
-func (bps *BlogPacketSource) Packets() <-chan *ContextPacket {
+func (bps *BlogPacketSource) Packets() <-chan *ContextEvent {
 	return bps.outChan
 }
 
