@@ -30,9 +30,9 @@ func TestUDPSendRecv(t *testing.T) {
 		packetChan <- packet
 
 		// Listen for the packet on the recv channel
-		outPacket := <-src.Packets()
+		rawEvent := <-src.RawEvents()
 
 		// Check that everything made it
-		assert.Equal(t, packet, outPacket.RawEvent.Data)
+		assert.Equal(t, packet, rawEvent.Data)
 	}
 }

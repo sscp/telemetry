@@ -13,18 +13,18 @@ import (
 // ZeroPacketSource is a PacketSource that returns only zeroed out DataMessages
 // at a given rate
 type ZeroPacketSource struct {
-	outChan  chan *ContextEvent
+	outChan  chan *events.ContextRawEvent
 	doneChan chan bool
 	limiter  *rate.Limiter
 }
 
-// Packets is the stream of zeroed binary packets
+// RawEvents is the stream of zeroed binary packets
 // It is simply a reference to outChan
-func (zps *ZeroPacketSource) Packets() <-chan *ContextEvent {
+func (zps *ZeroPacketSource) RawEvents() <-chan *events.ContextRawEvent {
 	return zps.outChan
 }
 
-// Listen begins sending zeroed packets to the Packets channel.
+// Listen begins sending zeroed packets to the RawEvents channel.
 // It launches a gorountine that sen
 func (zps *ZeroPacketSource) Listen() {
 	for {
@@ -40,9 +40,9 @@ func (zps *ZeroPacketSource) Listen() {
 			}
 			zPacket, _ := sundae.CreateZeroPacket()
 
-			zps.outChan <- &ContextEvent{
+			zps.outChan <- &events.ContextRawEvent{
 				Context:  context.Background(),
-				RawEvent: events.NewRawDataEvent(zPacket),
+				RawEvent: events.NewRawEventNow(zPacket),
 			}
 		}
 	}
@@ -61,7 +61,7 @@ func (zps *ZeroPacketSource) Close() {
 // packets at packetsPerSecond
 func NewZeroPacketSource(packetsPerSecond int) PacketSource {
 	return &ZeroPacketSource{
-		outChan:  make(chan *ContextEvent),
+		outChan:  make(chan *events.ContextRawEvent),
 		doneChan: make(chan bool, 1),
 		// Only allow one packet out at a time
 		limiter: rate.NewLimiter(rate.Limit(packetsPerSecond), 1),

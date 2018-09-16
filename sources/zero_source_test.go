@@ -14,8 +14,8 @@ func TestZeroPacketSource(t *testing.T) {
 	go zps.Listen()
 
 	for i := 0; i < 10; i++ {
-		ctxEvent := <-zps.Packets()
-		dataEvent, err := sundae.Deserialize(ctxEvent.Context, ctxEvent.RawEvent)
+		rawEvent := <-zps.RawEvents()
+		dataEvent, err := sundae.Deserialize(rawEvent.Context, rawEvent.RawEvent)
 		assert.Nil(t, err)
 		assert.Equal(
 			t, dataEvent.Data["motor_controller_speed"], float32(0.0),

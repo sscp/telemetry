@@ -1,6 +1,7 @@
 package events
 
 import (
+	"context"
 	"time"
 )
 
@@ -17,12 +18,24 @@ type DataEvent struct {
 	Data map[string]interface{}
 }
 
+// ContextDataEvent adds context to a RawEvent to hold request-scopped info
+type ContextDataEvent struct {
+	context.Context
+	DataEvent
+}
+
+// ContextRawEvent adds context to a RawEvent to hold request-scopped info
+type ContextRawEvent struct {
+	context.Context
+	RawEvent
+}
+
 type RawEvent struct {
 	EventMeta
 	Data []byte
 }
 
-func NewRawDataEvent(packet []byte) RawEvent {
+func NewRawEventNow(packet []byte) RawEvent {
 	return RawEvent{
 		EventMeta: EventMeta{
 			CollectedTimeNanos: time.Now().UnixNano(),

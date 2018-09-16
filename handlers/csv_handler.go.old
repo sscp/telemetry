@@ -30,7 +30,7 @@ type CSVWriter struct {
 	file       *os.File
 	buffer     *bufio.Writer
 	csvWrite   *csv.Writer
-	dmBuffer   *DataMapBuffer
+	dmBuffer   *DataEventBuffer
 	keyToIndex map[string]interface{}
 }
 
@@ -72,7 +72,7 @@ func (cw *CSVWriter) createFile(ctx context.Context, runName string, startTime t
 func (cw *CSVWriter) setupWriter() {
 	cw.buffer = bufio.NewWriter(cw.file)
 	cw.csvWrite = csv.NewWriter(cw.buffer)
-	cw.dmBuffer = NewDataMessageBuffer(cw.writeData, 10)
+	cw.dmBuffer = NewDataEventBuffer(cw.writeData, 10)
 }
 
 // flushDataBuffer writes all the data in the DataMessage buffer to the

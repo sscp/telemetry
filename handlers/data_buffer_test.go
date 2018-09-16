@@ -2,27 +2,27 @@ package handlers
 
 import (
 	"context"
-	"reflect"
 	"testing"
 	"time"
 
-	internalproto "github.com/sscp/telemetry/collector/internalproto"
-	"github.com/sscp/telemetry/collector/sources"
+	"github.com/stretchr/testify/assert"
+
+	"github.com/sscp/telemetry/events"
 )
 
-func TestDataMessageBuffer(t *testing.T) {
-	runDataMessageTest(t, 20, 10)
-	runDataMessageTest(t, 20, 1)
-	runDataMessageTest(t, 20, 2)
-	runDataMessageTest(t, 20, 5)
+func TestDataEventBuffer(t *testing.T) {
+	runDataEventBufferTest(t, 20, 10)
+	runDataEventBufferTest(t, 20, 1)
+	runDataEventBufferTest(t, 20, 2)
+	runDataEventBufferTest(t, 20, 5)
 }
 
-func runDataMessageTest(t *testing.T, numItems int, bufferSize int) {
+func runDataEventBufferTest(t *testing.T, numItems int, bufferSize int) {
 
-	in := createTestDataMessages(numItems)
-	var out []*internalproto.DataMessage
+	in := createTestDataEvents(numItems)
+	var out []events.DataEvent
 
-	dmb := NewDataMessageBuffer(func(ctx context.Context, data []*internalproto.DataMessage) {
+	dmb := NewDataEventBuffer(func(ctx context.Context, data []events.DataEvent) {
 		for _, dm := range data {
 			out = append(out, dm)
 		}
@@ -33,48 +33,25 @@ func runDataMessageTest(t *testing.T, numItems int, bufferSize int) {
 	}
 	dmb.Flush(context.TODO())
 
-	if len(in) != len(out) {
-		t.Errorf("Not all data made it though. In: %v Out: %v", len(in), len(out))
-	}
-	inIndices := getIndexList(in)
-	outIndices := getIndexList(out)
-	if !reflect.DeepEqual(inIndices, outIndices) {
-		t.Errorf("Buffer corrupted data. In: %v Out: %v", inIndices, outIndices)
-	}
-
-	inTimes := getTimeList(in)
-	outTimes := getTimeList(out)
-	if !reflect.DeepEqual(inTimes, outTimes) {
-		t.Errorf("Buffer corrupted data. In: %v Out: %v", inTimes, outTimes)
-	}
-
+	assert.Equal(t, in, out, "Buffer should output the exact same data input")
 }
 
-func createTestDataMessages(numItems int) []*internalproto.DataMessage {
-	var arr []*internalproto.DataMessage
+func createTestDataEvents(numItems int) []events.DataEvent {
+	testEvents := make([]events.DataEvent, numItems)
 	for i := 0; i < numItems; i++ {
-		zdm := sources.CreateZeroDataMessage()
-		time := time.Now().UnixNano()
-		zdm.TimeCollected = &time
-		index := uint32(i)
-		zdm.RegenEnabled = &index
-		arr = append(arr, zdm)
+		testEvents[i] = createTestDataEvent()
 	}
-	return arr
+	return testEvents
 }
 
-func getTimeList(dms []*internalproto.DataMessage) []int64 {
-	times := make([]int64, len(dms))
-	for i, dm := range dms {
-		times[i] = dm.GetTimeCollected()
+func createTestDataEvent() events.DataEvent {
+	return events.DataEvent{
+		EventMeta: events.EventMeta{
+			CollectedTimeNanos: time.Now().UnixNano(),
+		},
+		Data: map[string]interface{}{
+			"test_uint32_data_point": uint32(32),
+		},
 	}
-	return times
-}
 
-func getIndexList(dms []*internalproto.DataMessage) []uint32 {
-	indies := make([]uint32, len(dms))
-	for i, dm := range dms {
-		indies[i] = dm.GetRegenEnabled()
-	}
-	return indies
 }

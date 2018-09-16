@@ -6,10 +6,11 @@ import (
 	"math"
 	"time"
 
-	"github.com/sscp/telemetry/log"
-
 	influx "github.com/influxdata/influxdb/client/v2"
 	"github.com/opentracing/opentracing-go"
+
+	"github.com/sscp/telemetry/events"
+	"github.com/sscp/telemetry/log"
 )
 
 const databaseName = "sundae"
@@ -43,7 +44,7 @@ type InfluxWriter struct {
 	config   InfluxConfig
 	runName  string
 	client   influx.Client
-	dmBuffer *DataMessageBuffer
+	deBuffer *DataEventBuffer
 }
 
 // NewInfluxWriter returns an instantiated InfluxWriter as a DataHandler interface
@@ -81,7 +82,7 @@ func (cw *InfluxWriter) HandleStartRun(ctx context.Context, runName string, star
 		return
 	}
 
-	cw.dmBuffer = NewDataMapBuffer(cw.writeData, 10)
+	cw.deBuffer = NewDataEventBuffer(cw.writeData, 10)
 	cw.runName = runName
 }
 
@@ -94,7 +95,7 @@ func (cw *InfluxWriter) setupWriter() error {
 
 // writeData writes all the data in the DataMessage buffer to influx as a
 // point batch
-func (cw *InfluxWriter) writeData(ctx context.Context, data []map[string]interface{}) {
+func (cw *InfluxWriter) writeData(ctx context.Context, data []events.DataEvent) {
 	// Create a new point batch
 	bp, err := influx.NewBatchPoints(influx.BatchPointsConfig{
 		Database:  databaseName,
@@ -104,16 +105,16 @@ func (cw *InfluxWriter) writeData(ctx context.Context, data []map[string]interfa
 		log.Error(ctx, err, "Error creating batch points")
 		return
 	}
-	for _, dm := range data {
-		for key, value := range dm {
+	for _, dataEvent := range data {
+		for key, value := range dataEvent.Data {
 			if val, ok := value.(float32); ok {
 				if math.IsNaN(float64(val)) {
-					delete(dm, key)
+					delete(dataEvent.Data, key)
 				}
 			}
 			if val, ok := value.(float64); ok {
 				if math.IsNaN(val) {
-					delete(dm, key)
+					delete(dataEvent.Data, key)
 				}
 			}
 
@@ -121,7 +122,7 @@ func (cw *InfluxWriter) writeData(ctx context.Context, data []map[string]interfa
 		// Create a point and add to batch
 		tags := map[string]string{"run_name": cw.runName}
 		// TimeCollected is always set when deserialized by collector
-		pt, err := influx.NewPoint("car_state", tags, dm, time.Unix(0, dm.GetTimeCollected()))
+		pt, err := influx.NewPoint("car_state", tags, dataEvent.Data, dataEvent.GetCollectedTime())
 		if err != nil {
 			log.Error(ctx, err, "Error creating influx point")
 			return
@@ -135,13 +136,13 @@ func (cw *InfluxWriter) writeData(ctx context.Context, data []map[string]interfa
 	}
 }
 
-// HandleData is called on every new DataMessage from the collector and adds
+// HandleDataEvent is called on every new DataMessage from the collector and adds
 // the new DataMessage to the buffer of DataMessages and flushes the buffer if
 // it is full
-func (cw *InfluxWriter) HandleData(ctx context.Context, data map[string]interface{}) {
-	span, ctx := opentracing.StartSpanFromContext(ctx, "InfluxWriter/HandleData")
+func (cw *InfluxWriter) HandleDataEvent(ctx context.Context, dataEvent events.DataEvent) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "InfluxWriter/HandleDataEvent")
 	defer span.Finish()
-	cw.dmBuffer.AddData(ctx, data)
+	cw.deBuffer.AddData(ctx, dataEvent)
 }
 
 // HandleDroppedData is called whenever InfluxWriter falls behind and currently
@@ -159,7 +160,7 @@ func (cw *InfluxWriter) HandleEndRun(ctx context.Context, endTime time.Time) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "InfluxWriter/HandleEndRun")
 	defer span.Finish()
 
-	cw.dmBuffer.Flush(ctx)
+	cw.deBuffer.Flush(ctx)
 	cw.client.Close()
 	cw.runName = ""
 }

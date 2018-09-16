@@ -15,7 +15,7 @@ const udpListenTimeout = 100 * time.Millisecond
 // UDPPacketSource is a PacketSource that reads from a UDP socket
 type UDPPacketSource struct {
 	port         int
-	outChan      chan *ContextEvent
+	outChan      chan *events.ContextRawEvent
 	doneChan     chan bool
 	conn         *net.UDPConn
 	packetBuffer []byte
@@ -49,14 +49,14 @@ func (ups *UDPPacketSource) setupForListen() error {
 	if err != nil {
 		return err
 	}
-	ups.outChan = make(chan *ContextEvent)
+	ups.outChan = make(chan *events.ContextRawEvent)
 	ups.doneChan = make(chan bool)
 	return nil
 }
 
-// Packets is the stream of packets received from UDP
+// RawEvents is the stream of packets received from UDP
 // It is simply a reference to outChan
-func (ups *UDPPacketSource) Packets() <-chan *ContextEvent {
+func (ups *UDPPacketSource) RawEvents() <-chan *events.ContextRawEvent {
 	return ups.outChan
 }
 
@@ -84,9 +84,9 @@ func (ups *UDPPacketSource) readAndForwardPacket() {
 			log.Fatal(err)
 		}
 	} else {
-		ups.outChan <- &ContextEvent{
+		ups.outChan <- &events.ContextRawEvent{
 			Context:  context.Background(),
-			RawEvent: events.NewRawDataEvent(packet),
+			RawEvent: events.NewRawEventNow(packet),
 		}
 	}
 

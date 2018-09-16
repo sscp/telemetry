@@ -34,7 +34,7 @@ func testBlogReaderSource(t *testing.T) {
 		go bps.Listen()
 
 		var i int = 0
-		for packet := range bps.Packets() {
+		for packet := range bps.RawEvents() {
 			if !reflect.DeepEqual(blogTest.Packets[i], packet) {
 				t.Errorf("Output packet, %v, does not match input packet %s", packet, blogTest.Packets[i])
 			}

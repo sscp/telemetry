@@ -3,9 +3,8 @@ package collector
 import (
 	"github.com/golang/protobuf/proto"
 
-	"github.com/sscp/telemetry/collector/handlers"
-	internalproto "github.com/sscp/telemetry/collector/internalproto"
-	"github.com/sscp/telemetry/collector/sources"
+	"github.com/sscp/telemetry/handlers"
+	"github.com/sscp/telemetry/sources"
 
 	"context"
 	//"github.com/opentracing/opentracing-go"
@@ -53,7 +52,6 @@ func (tbh *testBinaryHandler) HandleEndRun(ctx context.Context, endTime time.Tim
 }
 
 func (tbh *testBinaryHandler) HandlePacket(ctx context.Context, packet []byte) {
-	dm := internalproto.DataMessage{}
 	err := proto.Unmarshal(packet, &dm)
 	if err != nil {
 		tbh.t.Errorf("Expected no deserialiation error, instead got %v", err)

@@ -25,12 +25,13 @@ import (
 	"sync"
 	"time"
 
+	"github.com/opentracing/opentracing-go"
+
 	"github.com/sscp/telemetry/cars"
+	"github.com/sscp/telemetry/events"
 	"github.com/sscp/telemetry/handlers"
 	"github.com/sscp/telemetry/log"
 	"github.com/sscp/telemetry/sources"
-
-	"github.com/opentracing/opentracing-go"
 )
 
 const defaultBufferSize = 10
@@ -44,9 +45,9 @@ const defaultBufferSize = 10
 type Collector struct {
 	packetSource   sources.PacketSource
 	binaryHandlers []handlers.BinaryHandler
-	binaryChans    []chan sources.ContextPacket
+	binaryChans    []chan *events.ContextRawEvent
 	dataHandlers   []handlers.DataHandler
-	dataChans      []chan ContextDataMessage
+	dataChans      []chan *events.ContextDataEvent
 	waitGroup      *sync.WaitGroup
 	status         CollectorStatus
 }
@@ -54,7 +55,7 @@ type Collector struct {
 // CollectorConfig holds config values needed to create a collector
 type CollectorConfig struct {
 	Port int
-	CSV  *handlers.CSVConfig
+	//CSV  *handlers.CSVConfig
 	Blog *handlers.BlogConfig
 
 	Influx *handlers.InfluxConfig
@@ -71,13 +72,6 @@ type CollectorStatus struct {
 	PacketsProcessed int64
 }
 
-// ContextDataMessage is an internal type for passing packet-scoped context
-// though a channel along with the DataMessage pointer
-type ContextDataMessage struct {
-	ctx  context.Context
-	data events.Event
-}
-
 // NewUDPCollector creates a new Collector that listens on the UDP port
 // specified and writes .csv and .blog files
 func NewUDPCollector(cfg CollectorConfig) (*Collector, error) {
@@ -89,13 +83,13 @@ func NewUDPCollector(cfg CollectorConfig) (*Collector, error) {
 	var binaryHandlers []handlers.BinaryHandler
 	var dataHandlers []handlers.DataHandler
 
-	if cfg.CSV != nil {
-		csvHandler, err := handlers.NewCSVWriter(*cfg.CSV)
-		if err != nil {
-			return nil, err
-		}
-		dataHandlers = append(dataHandlers, csvHandler)
-	}
+	//if cfg.CSV != nil {
+	//	csvHandler, err := handlers.NewCSVWriter(*cfg.CSV)
+	//	if err != nil {
+	//		return nil, err
+	//	}
+	//	dataHandlers = append(dataHandlers, csvHandler)
+	//}
 
 	if cfg.Blog != nil {
 		blogHandler, err := handlers.NewBlogWriter(*cfg.Blog)
@@ -173,13 +167,13 @@ func (col *Collector) Close(ctx context.Context) {
 // BinaryHandler in binaryHandlers and an array of channels for each
 // DataHandler in dataHandlers.
 func (col *Collector) createChannels(bufferSize int) {
-	col.binaryChans = make([]chan sources.ContextPacket, len(col.binaryHandlers))
+	col.binaryChans = make([]chan *events.ContextRawEvent, len(col.binaryHandlers))
 	for i := 0; i < len(col.binaryChans); i++ {
-		col.binaryChans[i] = make(chan sources.ContextPacket, bufferSize)
+		col.binaryChans[i] = make(chan *events.ContextRawEvent, bufferSize)
 	}
-	col.dataChans = make([]chan ContextDataMessage, len(col.dataHandlers))
+	col.dataChans = make([]chan *events.ContextDataEvent, len(col.dataHandlers))
 	for i := 0; i < len(col.dataChans); i++ {
-		col.dataChans[i] = make(chan ContextDataMessage, bufferSize)
+		col.dataChans[i] = make(chan *events.ContextDataEvent, bufferSize)
 	}
 }
 
@@ -211,35 +205,35 @@ func (col *Collector) stopHandlers(ctx context.Context, endTime time.Time) {
 // dataChans. To be called after the channels are created by createChannels.
 func (col *Collector) startHandlers(ctx context.Context, runName string, startTime time.Time) {
 	for i, handler := range col.binaryHandlers {
-		wrapBinaryHandler(handler.HandlePacket, col.binaryChans[i], col.waitGroup)
+		wrapBinaryHandler(handler.HandleRawEvent, col.binaryChans[i], col.waitGroup)
 		handler.HandleStartRun(ctx, runName, startTime)
 	}
 	for i, handler := range col.dataHandlers {
-		wrapDataHandler(handler.HandleData, col.dataChans[i], col.waitGroup)
+		wrapDataHandler(handler.HandleDataEvent, col.dataChans[i], col.waitGroup)
 		handler.HandleStartRun(ctx, runName, startTime)
 	}
 }
 
 // processPacket sends a single packet to all binaryChans in binary form and to
 // all dataChans in deserialized form
-func (col *Collector) processPacket(ctx context.Context, packet []byte) {
+func (col *Collector) processPacket(ctx context.Context, rawEvent events.RawEvent) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "collector/processPacket")
 	defer span.Finish()
 
 	// Forward the binary packets first
 	for i := range col.binaryChans {
 		if len(col.binaryChans[i]) != cap(col.binaryChans[i]) {
-			col.binaryChans[i] <- sources.ContextPacket{
-				Ctx:    ctx,
-				Packet: packet,
+			col.binaryChans[i] <- &events.ContextRawEvent{
+				Context:  ctx,
+				RawEvent: rawEvent,
 			}
 		} else {
 			col.binaryHandlers[i].HandleDroppedPacket(ctx)
 		}
 	}
 
-	// Deserialize ProtoBuf
-	dataMap, err := cars.GetCarDeserializer(cars.Sundae)(ctx, packet)
+	// Deserialize rawEvent
+	dataEvent, err := cars.GetCarDeserializer(cars.Sundae)(ctx, rawEvent)
 	if err != nil {
 		log.Error(ctx, err, "Could not deserialize protobuf")
 		return
@@ -248,9 +242,9 @@ func (col *Collector) processPacket(ctx context.Context, packet []byte) {
 	// Pass off deserialized data to channels
 	for i := 0; i < len(col.dataChans); i++ {
 		if len(col.dataChans[i]) != cap(col.dataChans[i]) {
-			col.dataChans[i] <- ContextDataMessage{
-				ctx:  ctx,
-				data: dataMap,
+			col.dataChans[i] <- &events.ContextDataEvent{
+				Context:   ctx,
+				DataEvent: dataEvent,
 			}
 		} else {
 			col.dataHandlers[i].HandleDroppedData(ctx)
@@ -261,8 +255,8 @@ func (col *Collector) processPacket(ctx context.Context, packet []byte) {
 // Listens to the incomming packets on the DataSource's channel and processes
 // them
 func (col *Collector) processPackets() {
-	for ctxPacket := range col.packetSource.Packets() {
-		col.processPacket(ctxPacket.Ctx, ctxPacket.Packet)
+	for ctxRawEvent := range col.packetSource.RawEvents() {
+		col.processPacket(ctxRawEvent.Context, ctxRawEvent.RawEvent)
 		col.status.PacketsProcessed++
 	}
 	col.closeChannels()
@@ -272,12 +266,12 @@ func (col *Collector) processPackets() {
 // calls the BinaryHandler on each packet and context. One is added to the
 // given WaitGroup and when the goroutine exits, one is subtracted from the
 // WaitGroup.
-func wrapBinaryHandler(binaryFunc func(context.Context, []byte), packetChan <-chan sources.ContextPacket, wg *sync.WaitGroup) {
+func wrapBinaryHandler(binaryFunc func(context.Context, events.RawEvent), packetChan <-chan *events.ContextRawEvent, wg *sync.WaitGroup) {
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
 		for packet := range packetChan {
-			binaryFunc(packet.Ctx, packet.Packet)
+			binaryFunc(packet.Context, packet.RawEvent)
 		}
 	}()
 }
@@ -286,12 +280,12 @@ func wrapBinaryHandler(binaryFunc func(context.Context, []byte), packetChan <-ch
 // calls the DataHandler on each packet and context. One is added to the
 // given WaitGroup and when the goroutine exits, one is subtracted from the
 // WaitGroup.
-func wrapDataHandler(dataFunc func(context.Context, Event), dataMsgChan <-chan ContextDataMessage, wg *sync.WaitGroup) {
+func wrapDataHandler(dataFunc func(context.Context, events.DataEvent), dataEventChan <-chan *events.ContextDataEvent, wg *sync.WaitGroup) {
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		for dataMsg := range dataMsgChan {
-			dataFunc(dataMsg.ctx, dataMsg.data)
+		for dataEvent := range dataEventChan {
+			dataFunc(dataEvent.Context, dataEvent.DataEvent)
 		}
 	}()
 }

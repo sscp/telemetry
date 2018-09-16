@@ -15,7 +15,7 @@ import (
 type BlogPacketSource struct {
 	reader   io.Reader
 	doneChan chan bool
-	outChan  chan *ContextEvent
+	outChan  chan *events.ContextRawEvent
 }
 
 // NewBlogPacketSource instantiates a BlogPacketSource
@@ -25,7 +25,7 @@ func NewBlogPacketSource(r io.Reader, d time.Duration) PacketSource {
 	return &BlogPacketSource{
 		reader:   r,
 		doneChan: make(chan bool),
-		outChan:  make(chan *ContextEvent),
+		outChan:  make(chan *events.ContextRawEvent),
 	}
 }
 
@@ -45,19 +45,19 @@ func (bps *BlogPacketSource) Listen() {
 		}
 		// TODO: NewRawDataEvent sets CollectedTimeNanos to
 		// current time, maybe try to pull from blog?
-		bps.outChan <- &ContextEvent{
+		bps.outChan <- &events.ContextRawEvent{
 			Context:  context.Background(),
-			RawEvent: events.NewRawDataEvent(readPacket),
+			RawEvent: events.NewRawEventNow(readPacket),
 		}
 	}
 }
 
-// Packets returns the channel into which all the read packets are placed
-func (bps *BlogPacketSource) Packets() <-chan *ContextEvent {
+// RawEvents returns the channel into which all the read packets are placed
+func (bps *BlogPacketSource) RawEvents() <-chan *events.ContextRawEvent {
 	return bps.outChan
 }
 
-// Close closes the Packets channel
+// Close closes the RawEvents channel
 //
 // This is called when the end of the stream is reached to wait until the
 // goroutine exits and there are no more packets

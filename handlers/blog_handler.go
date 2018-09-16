@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/sscp/telemetry/blog"
+	"github.com/sscp/telemetry/events"
 	"github.com/sscp/telemetry/log"
 
 	"github.com/opentracing/opentracing-go"
@@ -64,12 +65,12 @@ func (bw *BlogWriter) createFile(ctx context.Context, runName string, startTime 
 	}
 }
 
-// HandlePacket is called when collector passes off a packet to BlogWriter and
+// HandleRawEvent is called when collector passes off a packet to BlogWriter and
 // simply writes the packet the blogWriter
-func (bw *BlogWriter) HandlePacket(ctx context.Context, packet []byte) {
+func (bw *BlogWriter) HandleRawEvent(ctx context.Context, rawEvent events.RawEvent) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "BlogWriter/HandleData")
 	defer span.Finish()
-	bw.blogWriter.Write(packet)
+	bw.blogWriter.Write(rawEvent.Data)
 }
 
 // HandleDroppedPacket is called when BlogWriter falls behind and cannot

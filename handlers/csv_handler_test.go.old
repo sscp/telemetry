@@ -8,8 +8,7 @@ import (
 	"testing"
 	"time"
 
-	internalproto "github.com/sscp/telemetry/collector/internalproto"
-	"github.com/sscp/telemetry/collector/sources"
+	"github.com/sscp/telemetry/sources"
 
 	"github.com/gocarina/gocsv"
 	"github.com/sergi/go-diff/diffmatchpatch"

@@ -4,7 +4,11 @@ import (
 	"context"
 	"fmt"
 	"time"
+
+	"github.com/sscp/telemetry/events"
 )
+
+// TODO: update doc
 
 // DataHandler is a sink for DataMessages from the collector.
 //
@@ -21,11 +25,11 @@ type DataHandler interface {
 	// file and setting up buffers.
 	HandleStartRun(context.Context, string, time.Time)
 
-	// HandleData is called by collector on every incomming packet. This
+	// HandleDataEvent is called by collector on every incomming packet. This
 	// method is performance critical, so if it is slow, the DataHandler
 	// will not recieve every packet from collector. This method should be
 	// benchmarked to verify that it is fast enough to recieve all data.
-	HandleData(context.Context, map[string]interface{})
+	HandleDataEvent(context.Context, events.DataEvent)
 
 	// HandleDroppedData is called by collector whenever the DataHandler
 	// falls behind and misses a packet. This is a performance critical
@@ -56,7 +60,7 @@ type BinaryHandler interface {
 	// method is performance critical, so if it is slow, the BinaryHandler
 	// will not recieve every packet from collector. This method should be
 	// benchmarked to verify that it is fast enough to recieve all data.
-	HandlePacket(context.Context, []byte)
+	HandleRawEvent(context.Context, events.RawEvent)
 
 	// HandleDroppedPacket is called by collector whenever the
 	// BinaryHandler falls behind and misses a packet. This is a

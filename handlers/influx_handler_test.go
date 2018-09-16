@@ -4,8 +4,6 @@ import (
 	"context"
 	"testing"
 	"time"
-
-	"github.com/sscp/telemetry/collector/sources"
 )
 
 func BenchmarkInfluxWriter(b *testing.B) {
@@ -23,12 +21,12 @@ func BenchmarkInfluxWriter(b *testing.B) {
 	iw.HandleStartRun(ctx, runName, runStart)
 	defer iw.HandleEndRun(ctx, time.Now())
 	b.ResetTimer()
+
+	testEvents := createTestDataEvents(b.N)
+
 	// run b.N times
 	for n := 0; n < b.N; n++ {
-		zdm := sources.CreateRandomDataMessage()
-		time := time.Now().UnixNano()
-		zdm.TimeCollected = &time
-		iw.HandleData(ctx, zdm)
+		iw.HandleDataEvent(ctx, testEvents[n])
 	}
 	b.StopTimer()
 }
