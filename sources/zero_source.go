@@ -28,18 +28,17 @@ func (zps *ZeroPacketSource) RawEvents() <-chan *events.ContextRawEvent {
 // It launches a gorountine that sen
 func (zps *ZeroPacketSource) Listen() {
 	for {
+		err := zps.limiter.Wait(context.TODO())
+		if err != nil {
+			fmt.Println("too fast")
+			continue
+		}
+		zPacket, _ := sundae.CreateZeroPacket()
+
 		select {
 		case <-zps.doneChan:
-			fmt.Println("done")
 			return
 		default:
-			err := zps.limiter.Wait(context.TODO())
-			if err != nil {
-				fmt.Println("too fast")
-				continue
-			}
-			zPacket, _ := sundae.CreateZeroPacket()
-
 			zps.outChan <- &events.ContextRawEvent{
 				Context:  context.Background(),
 				RawEvent: events.NewRawEventNow(zPacket),
@@ -52,9 +51,8 @@ func (zps *ZeroPacketSource) Listen() {
 // NOTE: this currently does not reset the ZeroPacketSource to listen again
 func (zps *ZeroPacketSource) Close() {
 	zps.doneChan <- true
-	<-zps.outChan
-	close(zps.doneChan)
 	close(zps.outChan)
+	close(zps.doneChan)
 }
 
 // NewZeroPacketSource constructs a new ZeroPacketSource that emits zeroed out

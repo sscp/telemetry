@@ -138,7 +138,7 @@ func (col *Collector) RecordRun(ctx context.Context, runName string) {
 	col.status.RunName = runName
 	col.status.Collecting = true
 
-	col.packetSource.Listen()
+	go col.packetSource.Listen()
 }
 
 // GetStatus returns the status struct for the collector
@@ -153,6 +153,7 @@ func (col *Collector) Close(ctx context.Context) {
 	defer span.Finish()
 
 	col.packetSource.Close()
+
 	currentTime := time.Now() // Get time after we stop recording, not processing
 	col.waitGroup.Wait()
 	col.stopHandlers(ctx, currentTime)
