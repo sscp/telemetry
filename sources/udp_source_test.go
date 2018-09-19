@@ -1,10 +1,13 @@
 package sources
 
 import (
+	"context"
 	"math/rand"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+
+	"github.com/sscp/telemetry/events"
 )
 
 func TestUDPSendRecv(t *testing.T) {
@@ -13,9 +16,9 @@ func TestUDPSendRecv(t *testing.T) {
 		t.Errorf("Error creating packet source: %v", err)
 	}
 
-	packetChan := make(chan []byte)
+	eventChan := make(chan *events.ContextRawEvent)
 	// Send all the packets in the channel
-	go SendPacketsAsUDP(packetChan, 3000)
+	go SendEventsAsUDP(eventChan, 3000)
 
 	// Listen for those same packets
 	go src.Listen()
@@ -27,7 +30,10 @@ func TestUDPSendRecv(t *testing.T) {
 		rand.Read(packet)
 
 		// Packet sent to the send channel
-		packetChan <- packet
+		eventChan <- &events.ContextRawEvent{
+			Context:  context.Background(),
+			RawEvent: events.NewRawEventNow(packet),
+		}
 
 		// Listen for the packet on the recv channel
 		rawEvent := <-src.RawEvents()

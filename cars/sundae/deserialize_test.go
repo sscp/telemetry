@@ -30,7 +30,7 @@ func runTestOnDataFile(t *testing.T, filename string) {
 			t.Errorf("Error reading blog file: %v", err)
 		}
 		ctx := context.Background()
-		_, err = Deserialize(ctx, events.NewRawDataEvent(packet))
+		_, err = Deserialize(ctx, events.NewRawEventNow(packet))
 		if err != nil {
 			t.Errorf("Could not deserialize packet: %v", err)
 		}
