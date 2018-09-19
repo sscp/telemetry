@@ -100,8 +100,8 @@
     "pkg/escape",
   ]
   pruneopts = "NUT"
-  revision = "7adf7f9d14ef38517d4bb19301b7f8d9a26d19dd"
-  version = "v1.6.2"
+  revision = "389de31c961831de0a9f4172173337d4a6193909"
+  version = "v1.6.3"
 
 [[projects]]
   branch = "master"
@@ -181,12 +181,12 @@
   version = "v1.0.0"
 
 [[projects]]
-  digest = "1:4e5a9cf82174cea34d2a04859fa7c22444d0f597c6666ebe32397d648c03c60a"
+  branch = "master"
+  digest = "1:d9afa09f6a45f68ec50047f8187c9d273b1fbf507858a104064bb6d9eb2e2795"
   name = "github.com/russross/blackfriday"
   packages = ["."]
   pruneopts = "NUT"
-  revision = "cadec560ec52d93835bf2f15bd794700d3a2473b"
-  version = "v2.0.0"
+  revision = "05f3235734ad95d0016f6a23902f06461fcf567a"
 
 [[projects]]
   digest = "1:d917313f309bda80d27274d53985bc65651f81a5b66b820749ac7f8ef061fd04"
@@ -389,15 +389,15 @@
     "trace",
   ]
   pruneopts = "NUT"
-  revision = "161cd47e91fd58ac17490ef4d742dc98bb4cf60e"
+  revision = "26e67e76b6c3f6ce91f7c52def5af501b4e0f3a2"
 
 [[projects]]
   branch = "master"
-  digest = "1:5c2d57086d29bf60bf5fc8a1e6550650034f8b26177dced9b16d1f673311ab40"
+  digest = "1:e87594335f7fc5df850c2673c46896af42963d497be3e2a358d43e5b1163e852"
   name = "golang.org/x/sys"
   packages = ["unix"]
   pruneopts = "NUT"
-  revision = "d0be0721c37eeb5299f245a996a483160fc36940"
+  revision = "ee1b12c67af419cf5a9be3bdbeea7fc1c5f32f11"
 
 [[projects]]
   digest = "1:e7071ed636b5422cc51c0e3a6cebc229d6c9fffc528814b519a980641422d619"
@@ -432,14 +432,14 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:077c1c599507b3b3e9156d17d36e1e61928ee9b53a5b420f10f28ebd4a0b275c"
+  digest = "1:56b0bca90b7e5d1facf5fbdacba23e4e0ce069d25381b8e2f70ef1e7ebfb9c1a"
   name = "google.golang.org/genproto"
   packages = ["googleapis/rpc/status"]
   pruneopts = "NUT"
-  revision = "11092d34479b07829b72e10713b159248caf5dad"
+  revision = "c3f76f3b92d1ffa4c58a9ff842a58b8877655e0f"
 
 [[projects]]
-  digest = "1:9b0340b5befd6c99a69affff1ac35003690e3c5d5886e531c09285f6d9445aa9"
+  digest = "1:88e363aac7a4308ba0aa1fa3c77abee900bbc7d0131417f0a7adde0a01371fa3"
   name = "google.golang.org/grpc"
   packages = [
     ".",
@@ -472,8 +472,8 @@
     "tap",
   ]
   pruneopts = "NUT"
-  revision = "32fb0ac620c32ba40a4626ddf94d90d12cce3455"
-  version = "v1.14.0"
+  revision = "8dea3dc473e90c8179e519d91302d0597c0ca1d1"
+  version = "v1.15.0"
 
 [[projects]]
   digest = "1:7c95b35057a0ff2e19f707173cc1a947fa43a6eb5c4d300d196ece0334046082"
@@ -495,6 +495,7 @@
     "github.com/opentracing/opentracing-go",
     "github.com/opentracing/opentracing-go/ext",
     "github.com/opentracing/opentracing-go/log",
+    "github.com/russross/blackfriday",
     "github.com/shurcooL/github_flavored_markdown",
     "github.com/spf13/cobra",
     "github.com/spf13/viper",
