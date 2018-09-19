@@ -120,7 +120,7 @@ func (ups *UDPPacketSource) Close() {
 // SendEventsAsUDP sends all the events from the dataSource to the broadcast
 // ip on the given port. Packets are spaced by the given delay duration.
 func SendEventsAsUDP(eventChan <-chan *events.ContextRawEvent, port int) {
-	conn, err := net.ListenUDP("udp4", &net.UDPAddr{
+	conn, err := net.DialUDP("udp4", nil, &net.UDPAddr{
 		IP:   net.IPv4bcast,
 		Port: port,
 	})
