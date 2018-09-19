@@ -8,8 +8,8 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestZeroPacketSource(t *testing.T) {
-	zps := NewZeroPacketSource(1000)
+func TestZeroRawEventSource(t *testing.T) {
+	zps := NewZeroRawEventSource(1000)
 	defer zps.Close()
 	go zps.Listen()
 

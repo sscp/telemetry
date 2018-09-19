@@ -2,10 +2,10 @@
 // car data stream. There are three primary concepts in addition to the core
 // collector defined below:
 //
-// PacketSource (defined in source.go) which collects packets from UDP or
-// some other source and passes them to the core collector. Implementations of a
-// UDPPacketSource and a BlogPacketSource can be found in udp_source.go and
-// blog_source.go respectively.
+// RawEventSource (defined in sources/source.go) which collects packets from
+// UDP or some other source and passes them to the core collector.
+// Implementations of a UDPRawEventSource and a BlogRawEventSource can be found in
+// udp_source.go and blog_source.go respectively.
 //
 // DataHandler (defined in handlers.go) is a sink for deserialized data in
 // the form of DataMessage. The implementation of a CSVWriter can be found in
@@ -43,7 +43,7 @@ const defaultBufferSize = 10
 // DataHandler. A goroutine running processPackets handles the delivery of
 // packets and deserialized data to all of the handlers.
 type Collector struct {
-	packetSource   sources.PacketSource
+	packetSource   sources.RawEventSource
 	binaryHandlers []handlers.BinaryHandler
 	binaryChans    []chan *events.ContextRawEvent
 	dataHandlers   []handlers.DataHandler
@@ -75,7 +75,7 @@ type CollectorStatus struct {
 // NewUDPCollector creates a new Collector that listens on the UDP port
 // specified and writes .csv and .blog files
 func NewUDPCollector(cfg CollectorConfig) (*Collector, error) {
-	ps, err := sources.NewUDPPacketSource(cfg.Port)
+	ps, err := sources.NewUDPRawEventSource(cfg.Port)
 	if err != nil {
 		return nil, err
 	}
@@ -112,7 +112,7 @@ func NewUDPCollector(cfg CollectorConfig) (*Collector, error) {
 // NewCollector creates a new instance of Collector that reads packets from the
 // given PacketSource, and outputs data to the given BinaryHandlers and
 // Datahandlers. Channels are setup for each handler with the given bufferSize.
-func NewCollector(ps sources.PacketSource, bh []handlers.BinaryHandler, dh []handlers.DataHandler) *Collector {
+func NewCollector(ps sources.RawEventSource, bh []handlers.BinaryHandler, dh []handlers.DataHandler) *Collector {
 	col := &Collector{
 		packetSource:   ps,
 		binaryHandlers: bh,
@@ -124,7 +124,7 @@ func NewCollector(ps sources.PacketSource, bh []handlers.BinaryHandler, dh []han
 }
 
 // RecordRun starts listening for and processing packets from the
-// PacketSource
+// RawEventSource
 func (col *Collector) RecordRun(ctx context.Context, runName string) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "collector/RecordRun")
 	defer span.Finish()

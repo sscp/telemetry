@@ -99,7 +99,7 @@ func (cs *CollectorService) StopCollecting(ctx context.Context, req *pb.StopRequ
 
 // GetCollectorStatus simply returns the status of the Collector
 func (cs *CollectorService) GetCollectorStatus(ctx context.Context, req *pb.StatusRequest) (*pb.CollectorStatus, error) {
-	span, ctx := opentracing.StartSpanFromContext(ctx, "collectorService/GetCollectorStatus")
+	span, _ := opentracing.StartSpanFromContext(ctx, "collectorService/GetCollectorStatus")
 	defer span.Finish()
 	return cs.getStatus(), nil
 

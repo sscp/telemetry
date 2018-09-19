@@ -10,9 +10,9 @@ import (
 	"golang.org/x/time/rate"
 )
 
-// ZeroPacketSource is a PacketSource that returns only zeroed out DataMessages
+// ZeroRawEventSource is a RawEventSource that returns only zeroed out DataMessages
 // at a given rate
-type ZeroPacketSource struct {
+type ZeroRawEventSource struct {
 	outChan  chan *events.ContextRawEvent
 	doneChan chan bool
 	limiter  *rate.Limiter
@@ -20,13 +20,13 @@ type ZeroPacketSource struct {
 
 // RawEvents is the stream of zeroed binary packets
 // It is simply a reference to outChan
-func (zps *ZeroPacketSource) RawEvents() <-chan *events.ContextRawEvent {
+func (zps *ZeroRawEventSource) RawEvents() <-chan *events.ContextRawEvent {
 	return zps.outChan
 }
 
 // Listen begins sending zeroed packets to the RawEvents channel.
 // It launches a gorountine that sen
-func (zps *ZeroPacketSource) Listen() {
+func (zps *ZeroRawEventSource) Listen() {
 	for {
 		err := zps.limiter.Wait(context.TODO())
 		if err != nil {
@@ -48,17 +48,18 @@ func (zps *ZeroPacketSource) Listen() {
 }
 
 // Close sends a close signal on doneChan and closes both doneChan and outChan.
-// NOTE: this currently does not reset the ZeroPacketSource to listen again
-func (zps *ZeroPacketSource) Close() {
+// NOTE: this currently does not reset the ZeroRawEventSource to listen again
+func (zps *ZeroRawEventSource) Close() error {
 	zps.doneChan <- true
 	close(zps.outChan)
 	close(zps.doneChan)
+	return nil
 }
 
-// NewZeroPacketSource constructs a new ZeroPacketSource that emits zeroed out
+// NewZeroRawEventSource constructs a new ZeroRawEventSource that emits zeroed out
 // packets at packetsPerSecond
-func NewZeroPacketSource(packetsPerSecond int) PacketSource {
-	return &ZeroPacketSource{
+func NewZeroRawEventSource(packetsPerSecond int) RawEventSource {
+	return &ZeroRawEventSource{
 		outChan:  make(chan *events.ContextRawEvent),
 		doneChan: make(chan bool, 1),
 		// Only allow one packet out at a time

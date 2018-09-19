@@ -30,7 +30,7 @@ func registerUDPSendCmd(rootCmd *cobra.Command, rootConfig *viper.Viper) {
 func createUDPSendFunc(rootConfig *viper.Viper) func(cmd *cobra.Command, args []string) {
 
 	return func(cmd *cobra.Command, args []string) {
-		zps := sources.NewZeroPacketSource(20)
+		zps := sources.NewZeroRawEventSource(20)
 		go sources.SendEventsAsUDP(zps.RawEvents(), 33333)
 		zps.Listen()
 		fmt.Printf("Now sending packets on port %v\n", 33333)

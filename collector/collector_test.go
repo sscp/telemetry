@@ -5,6 +5,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/stretchr/testify/assert"
+
 	"github.com/sscp/telemetry/events"
 	"github.com/sscp/telemetry/handlers"
 	"github.com/sscp/telemetry/sources"
@@ -168,7 +170,7 @@ func TestCollector(t *testing.T) {
 	for _, test := range specs {
 		bh := newTestBinaryHandler(t, test.BinaryHandlerDelay)
 		dh := newTestDataHandler(t, test.DataHandlerDelay)
-		zps := sources.NewZeroPacketSource(test.PacketsPerSecond)
+		zps := sources.NewZeroRawEventSource(test.PacketsPerSecond)
 		telem := NewCollector(zps, []handlers.BinaryHandler{handlers.BinaryHandler(bh)}, []handlers.DataHandler{handlers.DataHandler(dh)})
 		ctx := context.TODO()
 

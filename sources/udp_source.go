@@ -12,8 +12,8 @@ import (
 // UDPListenTimeout is the time to wait for the next packet
 const udpListenTimeout = 100 * time.Millisecond
 
-// UDPPacketSource is a PacketSource that reads from a UDP socket
-type UDPPacketSource struct {
+// UDPRawEventSource is a RawEventSource that reads from a UDP socket
+type UDPRawEventSource struct {
 	port         int
 	outChan      chan *events.ContextRawEvent
 	doneChan     chan bool
@@ -21,10 +21,10 @@ type UDPPacketSource struct {
 	packetBuffer []byte
 }
 
-// NewUDPPacketSource constructs a UDPPacketSource that listens on the given
+// NewUDPRawEventSource constructs a UDPRawEventSource that listens on the given
 // port for packets
-func NewUDPPacketSource(port int) (PacketSource, error) {
-	ups := &UDPPacketSource{
+func NewUDPRawEventSource(port int) (RawEventSource, error) {
+	ups := &UDPRawEventSource{
 		port:         port,
 		packetBuffer: make([]byte, 2000), // Max packet size is ~1000
 	}
@@ -38,7 +38,7 @@ func NewUDPPacketSource(port int) (PacketSource, error) {
 // setupForListen creates the UDP connection, begins listening, and creates the
 // outChan and doneChan to send out received packets and notifies the goroutine
 // to stop listening when done
-func (ups *UDPPacketSource) setupForListen() error {
+func (ups *UDPRawEventSource) setupForListen() error {
 	// Listen to the zero port for IPv4 to catch any packet to that port
 	// This will catch broadcast packets from the car
 	var err error
@@ -56,13 +56,13 @@ func (ups *UDPPacketSource) setupForListen() error {
 
 // RawEvents is the stream of packets received from UDP
 // It is simply a reference to outChan
-func (ups *UDPPacketSource) RawEvents() <-chan *events.ContextRawEvent {
+func (ups *UDPRawEventSource) RawEvents() <-chan *events.ContextRawEvent {
 	return ups.outChan
 }
 
 // Listen spins up a goroutine that listens for packets until it receives a
 // signal on the doneChan, in which case it closes the connection and returns
-func (ups *UDPPacketSource) Listen() {
+func (ups *UDPRawEventSource) Listen() {
 	for {
 		select {
 		case <-ups.doneChan:
@@ -70,12 +70,12 @@ func (ups *UDPPacketSource) Listen() {
 			ups.conn.Close()
 			return
 		default:
-			ups.readAndForwardPacket()
+			ups.readAndForwardRawEvent()
 		}
 	}
 }
 
-func (ups *UDPPacketSource) readAndForwardPacket() {
+func (ups *UDPRawEventSource) readAndForwardRawEvent() {
 	packet, err := ups.readPacket()
 	if netError, ok := err.(net.Error); ok {
 		// If timeout error, keep looping
@@ -94,8 +94,11 @@ func (ups *UDPPacketSource) readAndForwardPacket() {
 
 // readPacket reads a single packet into the packetBuffer, then copies the exact
 // packet into a new byte array and returns it.
-func (ups *UDPPacketSource) readPacket() ([]byte, error) {
-	ups.conn.SetDeadline(time.Now().Add(udpListenTimeout))
+func (ups *UDPRawEventSource) readPacket() ([]byte, error) {
+	err := ups.conn.SetDeadline(time.Now().Add(udpListenTimeout))
+	if err != nil {
+		return nil, err
+	}
 	numBytes, _, err := ups.conn.ReadFromUDP(ups.packetBuffer)
 	if err != nil {
 		return nil, err
@@ -108,17 +111,23 @@ func (ups *UDPPacketSource) readPacket() ([]byte, error) {
 }
 
 // Close sends a done signal on doneChan, closes both doneChan, outChan, then
-// resets the UDPPacketSource so that it is ready to be reused
-func (ups *UDPPacketSource) Close() {
+// resets the UDPRawEventSource so that it is ready to be reused
+func (ups *UDPRawEventSource) Close() error {
 	ups.doneChan <- true
 	close(ups.doneChan)
 	close(ups.outChan)
+	if err := ups.conn.Close(); err != nil {
+		return err
+	}
 	// Reset
-	ups.setupForListen()
+	if err := ups.setupForListen(); err != nil {
+		return err
+	}
+	return nil
 }
 
 // SendEventsAsUDP sends all the events from the dataSource to the broadcast
-// ip on the given port. Packets are spaced by the given delay duration.
+// ip on the given port.
 func SendEventsAsUDP(eventChan <-chan *events.ContextRawEvent, port int) {
 	conn, err := net.DialUDP("udp4", nil, &net.UDPAddr{
 		IP:   net.IPv4bcast,

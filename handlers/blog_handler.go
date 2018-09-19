@@ -68,7 +68,7 @@ func (bw *BlogWriter) createFile(ctx context.Context, runName string, startTime 
 // HandleRawEvent is called when collector passes off a packet to BlogWriter and
 // simply writes the packet the blogWriter
 func (bw *BlogWriter) HandleRawEvent(ctx context.Context, rawEvent events.RawEvent) {
-	span, ctx := opentracing.StartSpanFromContext(ctx, "BlogWriter/HandleData")
+	span, _ := opentracing.StartSpanFromContext(ctx, "BlogWriter/HandleData")
 	defer span.Finish()
 	bw.blogWriter.Write(rawEvent.Data)
 }
@@ -76,16 +76,15 @@ func (bw *BlogWriter) HandleRawEvent(ctx context.Context, rawEvent events.RawEve
 // HandleDroppedPacket is called when BlogWriter falls behind and cannot
 // process an incomming packet, it currently does nothing
 func (bw *BlogWriter) HandleDroppedPacket(ctx context.Context) {
-	span, ctx := opentracing.StartSpanFromContext(ctx, "BlogWriter/HandleDroppedPacket")
+	span, _ := opentracing.StartSpanFromContext(ctx, "BlogWriter/HandleDroppedPacket")
 	defer span.Finish()
-
 }
 
 // HandleEndRun flushes the buffers and closes the file and is called when the
 // collector stops recording packets and BlogWriter has cleared its input
 // channel of packets.
 func (bw *BlogWriter) HandleEndRun(ctx context.Context, endTime time.Time) {
-	span, ctx := opentracing.StartSpanFromContext(ctx, "BlogWriter/HandleEndRun")
+	span, _ := opentracing.StartSpanFromContext(ctx, "BlogWriter/HandleEndRun")
 	defer span.Finish()
 	bw.buffer.Flush()
 	bw.file.Close()

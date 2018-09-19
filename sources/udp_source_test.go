@@ -13,7 +13,7 @@ import (
 )
 
 func TestUDPSendRecv(t *testing.T) {
-	src, err := NewUDPPacketSource(3000)
+	src, err := NewUDPRawEventSource(3000)
 	if err != nil {
 		t.Errorf("Error creating packet source: %v", err)
 	}

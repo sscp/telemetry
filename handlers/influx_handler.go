@@ -148,7 +148,7 @@ func (cw *InfluxWriter) HandleDataEvent(ctx context.Context, dataEvent events.Da
 // HandleDroppedData is called whenever InfluxWriter falls behind and currently
 // does nothing other than report a span to tracing
 func (cw *InfluxWriter) HandleDroppedData(ctx context.Context) {
-	span, ctx := opentracing.StartSpanFromContext(ctx, "InfluxWriter/HandleDroppedPacket")
+	span, _ := opentracing.StartSpanFromContext(ctx, "InfluxWriter/HandleDroppedPacket")
 	defer span.Finish()
 }
 

@@ -17,11 +17,6 @@ func zeroUInt32() *uint32 {
 	return &z
 }
 
-func zeroUInt64() *uint64 {
-	z := uint64(0)
-	return &z
-}
-
 func zeroInt32() *int32 {
 	z := int32(0)
 	return &z
@@ -39,11 +34,6 @@ func zeroFloat32() *float32 {
 
 func randUInt32() *uint32 {
 	z := uint32(rand.Intn(100))
-	return &z
-}
-
-func randUInt64() *uint64 {
-	z := uint64(rand.Intn(100))
 	return &z
 }
 

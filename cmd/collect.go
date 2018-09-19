@@ -8,6 +8,7 @@ import (
 	"github.com/sscp/telemetry/collector"
 
 	"context"
+
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -33,6 +34,9 @@ func createRunCollectorFunc(rootConfig *viper.Viper) func(cmd *cobra.Command, ar
 	return func(cmd *cobra.Command, args []string) error {
 		config := collector.CollectorConfig{}
 		err := rootConfig.UnmarshalKey("collector", &config)
+		if err != nil {
+			return err
+		}
 
 		col, err := collector.NewUDPCollector(config)
 		if err != nil {

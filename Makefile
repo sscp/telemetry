@@ -4,9 +4,14 @@ BINARY_NAME=telemetry
 # Installs tools to generate code/work with the repo
 .PHONY: install-tools
 install-tools:
+	curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | bash -s v1.10.2
 	go get -u github.com/golang/protobuf/{proto,protoc-gen-go} 
 	go get -u github.com/favadi/protoc-go-inject-tag
 	go get -u google.golang.org/grpc
+
+.PHONY: lint 
+lint:
+	./bin/golangci-lint run ./...
 
 .PHONY: generate
 generate:
