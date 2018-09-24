@@ -1,3 +1,0 @@
-[submodule "influx-sandbox"]
-	path = sandbox
-	url = https://github.com/influxdata/sandbox
