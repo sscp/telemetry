@@ -5,8 +5,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/stretchr/testify/assert"
-
 	"github.com/sscp/telemetry/events"
 	"github.com/sscp/telemetry/handlers"
 	"github.com/sscp/telemetry/sources"

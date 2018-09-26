@@ -15,15 +15,19 @@ import (
 
 func readConfAndConnect(rootConfig *viper.Viper) *collector.CollectorClient {
 	cfg := collector.CollectorClientConfig{}
-	rootConfig.UnmarshalKey("client", &cfg)
+	err := rootConfig.UnmarshalKey("client", &cfg)
+	if err != nil {
+		log.Fatalf("invalid config: %v", err)
+		return nil
+	}
 	addr := net.JoinHostPort(cfg.Hostname, strconv.FormatInt(int64(cfg.Port), 10))
 	fmt.Printf("Connecting to collector at: %v\n", addr)
 	client, err := collector.NewCollectorClient(cfg)
 	if err != nil {
 		log.Fatalf("Could not connect to collector: %v", err)
+		return nil
 	}
 	return client
-
 }
 
 func printCollectorStatus(status *pb.CollectorStatus) {
@@ -85,7 +89,10 @@ func createCallStart(rootConfig *viper.Viper) func(cmd *cobra.Command, args []st
 	return func(cmd *cobra.Command, args []string) {
 		runName := args[0]
 		config := collector.CollectorClientConfig{}
-		rootConfig.UnmarshalKey("client", &config)
+		err := rootConfig.UnmarshalKey("client", &config)
+		if err != nil {
+			log.Fatalf("invalid config: %v", err)
+		}
 
 		client := readConfAndConnect(rootConfig)
 		defer client.Close()
@@ -103,7 +110,10 @@ func createCallStart(rootConfig *viper.Viper) func(cmd *cobra.Command, args []st
 func createCallStop(rootConfig *viper.Viper) func(cmd *cobra.Command, args []string) {
 	return func(cmd *cobra.Command, args []string) {
 		config := collector.CollectorClientConfig{}
-		rootConfig.UnmarshalKey("client", &config)
+		err := rootConfig.UnmarshalKey("client", &config)
+		if err != nil {
+			log.Fatalf("invalid config: %v", err)
+		}
 
 		client := readConfAndConnect(rootConfig)
 		defer client.Close()
@@ -120,7 +130,10 @@ func createCallStop(rootConfig *viper.Viper) func(cmd *cobra.Command, args []str
 func createCallStatus(rootConfig *viper.Viper) func(cmd *cobra.Command, args []string) {
 	return func(cmd *cobra.Command, args []string) {
 		config := collector.CollectorClientConfig{}
-		rootConfig.UnmarshalKey("client", &config)
+		err := rootConfig.UnmarshalKey("client", &config)
+		if err != nil {
+			log.Fatalf("invalid config: %v", err)
+		}
 
 		client := readConfAndConnect(rootConfig)
 		defer client.Close()

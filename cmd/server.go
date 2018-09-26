@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/sscp/telemetry/collector"
 
@@ -28,7 +29,10 @@ func registerServerCmd(rootCmd *cobra.Command, rootConfig *viper.Viper) {
 func createRunServerFunc(rootConfig *viper.Viper) func(cmd *cobra.Command, args []string) {
 	return func(cmd *cobra.Command, args []string) {
 		config := collector.CollectorServiceConfig{}
-		rootConfig.UnmarshalKey("server", &config)
+		err := rootConfig.UnmarshalKey("server", &config)
+		if err != nil {
+			log.Fatalf("invalid config: %v", err)
+		}
 
 		fmt.Printf("Starting server on port %v, collector listening on port %v\n", config.Port, config.Collector.Port)
 		collector.RunCollectionService(config)

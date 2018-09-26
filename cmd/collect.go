@@ -47,7 +47,10 @@ func createRunCollectorFunc(rootConfig *viper.Viper) func(cmd *cobra.Command, ar
 		col.RecordRun(context.TODO(), args[0])
 		buf := bufio.NewReader(os.Stdin)
 		fmt.Print("Press any key to end")
-		buf.ReadBytes('\n')
+		_, err = buf.ReadBytes('\n')
+		if err != nil {
+			return err
+		}
 		return nil
 	}
 

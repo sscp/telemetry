@@ -7,6 +7,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/stretchr/testify/assert"
+
 	"github.com/sscp/telemetry/events"
 )
 
@@ -26,7 +28,8 @@ func BenchmarkBlogWriter(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		// Make a random packet
 		testPackets[i] = make([]byte, 1500)
-		rand.Read(testPackets[i])
+		_, err := rand.Read(testPackets[i])
+		assert.NoError(b, err)
 	}
 	b.ResetTimer()
 	// run b.N times

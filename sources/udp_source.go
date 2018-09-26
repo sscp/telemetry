@@ -139,6 +139,9 @@ func SendEventsAsUDP(eventChan <-chan *events.ContextRawEvent, port int) {
 	defer conn.Close()
 
 	for event := range eventChan {
-		conn.Write(event.Data)
+		_, err := conn.Write(event.Data)
+		if err != nil {
+			log.Printf("could not write packet: %v", err)
+		}
 	}
 }

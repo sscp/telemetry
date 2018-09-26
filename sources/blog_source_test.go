@@ -11,11 +11,13 @@ import (
 )
 
 func TestBlogReaderSource(t *testing.T) {
-	specs := struct {
+	specs := []struct {
 		Packets [][]byte
 		Delay   time.Duration
 	}{
-		Packets: [][]byte{[]byte("hello"), []byte("i am a packet"), []byte("im another packet")},
+		{
+			Packets: [][]byte{[]byte("hello"), []byte("i am a packet"), []byte("im another packet")},
+		},
 	}
 
 	for _, tt := range specs {
@@ -23,7 +25,8 @@ func TestBlogReaderSource(t *testing.T) {
 
 		writer := blog.NewWriter(buf)
 		for _, s := range tt.Packets {
-			writer.Write(s)
+			_, err := writer.Write(s)
+			assert.NoError(t, err)
 		}
 
 		bufRead := bytes.NewReader(buf.Bytes())

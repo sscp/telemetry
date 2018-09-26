@@ -70,7 +70,10 @@ func (bw *BlogWriter) createFile(ctx context.Context, runName string, startTime 
 func (bw *BlogWriter) HandleRawEvent(ctx context.Context, rawEvent events.RawEvent) {
 	span, _ := opentracing.StartSpanFromContext(ctx, "BlogWriter/HandleData")
 	defer span.Finish()
-	bw.blogWriter.Write(rawEvent.Data)
+	_, err := bw.blogWriter.Write(rawEvent.Data)
+	if err != nil {
+		log.Error(ctx, err, "could not write to blog")
+	}
 }
 
 // HandleDroppedPacket is called when BlogWriter falls behind and cannot

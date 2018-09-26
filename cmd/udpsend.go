@@ -36,8 +36,12 @@ func createUDPSendFunc(rootConfig *viper.Viper) func(cmd *cobra.Command, args []
 		fmt.Printf("Now sending packets on port %v\n", 33333)
 		buf := bufio.NewReader(os.Stdin)
 		fmt.Print("Press any key to end")
-		buf.ReadBytes('\n')
-		zps.Close()
+		_, err := buf.ReadBytes('\n')
+		if err != nil {
+			zps.Close()
+		} else {
+			zps.Close()
+		}
 
 	}
 
