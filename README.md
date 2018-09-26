@@ -1,5 +1,8 @@
 # telemetry
-This repo contains the car data processing server that collects [ProtocolBuffer](https://developers.google.com/protocol-buffers/) data over UDP and logs it to CSVs, binary log files and influxdb for monitoring and data exploration. Currently built for Sundae and expected to be updated for sunrise.
+This repo contains the car data processing server that collects [ProtocolBuffer](https://developers.google.com/protocol-buffers/) data over UDP and logs it to CSVs, binary log files and influxdb for monitoring and data exploration. Currently built for Sundae and expected to be updated for future cars.
+
+## Open source
+This software is open sourced with the idea that it could save work for other solar car teams in getting data collection up and running. It can collect data at a fairly high rate (~20 packets/sec on a slow laptop), output that data to InfluxDB, CSV and a binary log and it is designed to be modified to support different transfer protocols and wire formats, though some work will be required to add code that can deserialize the specific data send by a car. If you are a member of a solar car team considering using this software, please create an issue on this repo explaining what you want to use this for and fork the repo to add support for your car. The issue will help us understand how teams use telemetry and track issues related to adding support for your car. Note that this repo is licensed under the GPL, so if you fork the repo, that fork must also be open sourced and licensed with a GPL-compatible license.
 
 ## Requirements
 ### Running
