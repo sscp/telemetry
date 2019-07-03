@@ -20,8 +20,6 @@ import (
 
 //go:generate protoc -I serviceproto collector_service.proto --go_out=plugins=grpc:serviceproto
 
-const nilPort = 0
-
 // CollectorService is a server for telemetry that allows for controlling the
 // collector over GRPC
 type CollectorService struct {
@@ -99,7 +97,7 @@ func (cs *CollectorService) StopCollecting(ctx context.Context, req *pb.StopRequ
 
 // GetCollectorStatus simply returns the status of the Collector
 func (cs *CollectorService) GetCollectorStatus(ctx context.Context, req *pb.StatusRequest) (*pb.CollectorStatus, error) {
-	span, ctx := opentracing.StartSpanFromContext(ctx, "collectorService/GetCollectorStatus")
+	span, _ := opentracing.StartSpanFromContext(ctx, "collectorService/GetCollectorStatus")
 	defer span.Finish()
 	return cs.getStatus(), nil
 
@@ -158,6 +156,9 @@ func RunCollectionService(cfg CollectorServiceConfig) {
 
 	}
 
-	grpcServer.Serve(lis)
+	err = grpcServer.Serve(lis)
+	if err != nil {
+		log.Fatalf("failed to start collector service: %v", err)
+	}
 
 }

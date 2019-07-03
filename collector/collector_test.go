@@ -1,16 +1,13 @@
 package collector
 
 import (
-	"github.com/golang/protobuf/proto"
-
-	"github.com/sscp/telemetry/collector/handlers"
-	internalproto "github.com/sscp/telemetry/collector/internalproto"
-	"github.com/sscp/telemetry/collector/sources"
-
 	"context"
-	//"github.com/opentracing/opentracing-go"
 	"testing"
 	"time"
+
+	"github.com/sscp/telemetry/events"
+	"github.com/sscp/telemetry/handlers"
+	"github.com/sscp/telemetry/sources"
 )
 
 type CollectorTest struct {
@@ -52,15 +49,7 @@ func (tbh *testBinaryHandler) HandleEndRun(ctx context.Context, endTime time.Tim
 	}
 }
 
-func (tbh *testBinaryHandler) HandlePacket(ctx context.Context, packet []byte) {
-	dm := internalproto.DataMessage{}
-	err := proto.Unmarshal(packet, &dm)
-	if err != nil {
-		tbh.t.Errorf("Expected no deserialiation error, instead got %v", err)
-	}
-	if dm.GetMotorControllerSpeed() != float32(0.0) {
-		tbh.t.Errorf("Expected struct to be zeroed but got for motor speed %v instead", dm.GetMotorControllerSpeed())
-	}
+func (tbh *testBinaryHandler) HandleRawEvent(ctx context.Context, rawEvent events.RawEvent) {
 	time.Sleep(tbh.delay)
 	tbh.DeliveryCount++
 }
@@ -98,7 +87,7 @@ func (tdh *testDataHandler) HandleEndRun(ctx context.Context, endTime time.Time)
 	}
 }
 
-func (tbh *testDataHandler) HandleData(ctx context.Context, data *internalproto.DataMessage) {
+func (tbh *testDataHandler) HandleDataEvent(ctx context.Context, dataEvent events.DataEvent) {
 	time.Sleep(tbh.delay)
 	tbh.DeliveryCount++
 }
@@ -107,113 +96,118 @@ func (tbh *testDataHandler) HandleDroppedData(ctx context.Context) {
 	tbh.DroppedPackets++
 }
 
-func runCollectorTest(t *testing.T, test CollectorTest) {
-	bh := newTestBinaryHandler(t, test.BinaryHandlerDelay)
-	dh := newTestDataHandler(t, test.DataHandlerDelay)
-	zps := sources.NewZeroPacketSource(test.PacketsPerSecond)
-	telem := NewCollector(zps, []handlers.BinaryHandler{handlers.BinaryHandler(bh)}, []handlers.DataHandler{handlers.DataHandler(dh)})
-	ctx := context.TODO()
-	telem.RecordRun(ctx, "test")
-	time.Sleep(test.TestTime)
-	telem.Close(ctx)
-	expectedPackets := int64(float64(test.PacketsPerSecond) * test.TestTime.Seconds())
-	if telem.GetStatus().PacketsProcessed < expectedPackets {
-		t.Errorf("Expected to process %v packets, but collector only processed %v packets", expectedPackets, telem.GetStatus().PacketsProcessed)
-	}
-	if test.BinaryReceiveAll {
-		if bh.DeliveryCount < telem.GetStatus().PacketsProcessed {
-			t.Errorf("Expected all packets to be delivered to binary handler, but %v packets were processed and %v delivered", telem.GetStatus().PacketsProcessed, bh.DeliveryCount)
-		}
-	} else {
-		if bh.DeliveryCount == telem.GetStatus().PacketsProcessed {
-			t.Errorf("Expected binary handler to fall behind, but %v packets were processed and %v delivered", telem.GetStatus().PacketsProcessed, bh.DeliveryCount)
-
-		}
-
-	}
-
-	if test.DataReceiveAll {
-		if dh.DeliveryCount < telem.GetStatus().PacketsProcessed {
-			t.Errorf("Expected all packets to be delivered to data handler, but %v packets were processed and %v delivered", telem.GetStatus().PacketsProcessed, dh.DeliveryCount)
-		}
-	} else {
-		if dh.DeliveryCount == telem.GetStatus().PacketsProcessed {
-			t.Errorf("Expected data handler to fall behind, but %v packets were processed and %v delivered", telem.GetStatus().PacketsProcessed, dh.DeliveryCount)
-
-		}
-
-	}
-}
-
-var collectorTests []CollectorTest = []CollectorTest{
-	CollectorTest{
-		PacketsPerSecond:   100,
-		BufferSize:         1,
-		TestTime:           500 * time.Millisecond,
-		BinaryHandlerDelay: 5 * time.Millisecond,
-		DataHandlerDelay:   5 * time.Millisecond,
-		BinaryReceiveAll:   true,
-		DataReceiveAll:     true,
-	},
-	CollectorTest{
-		PacketsPerSecond:   100,
-		BufferSize:         1,
-		TestTime:           500 * time.Millisecond,
-		BinaryHandlerDelay: 100 * time.Millisecond,
-		DataHandlerDelay:   5 * time.Millisecond,
-		BinaryReceiveAll:   false,
-		DataReceiveAll:     true,
-	},
-	CollectorTest{
-		PacketsPerSecond:   100,
-		BufferSize:         1,
-		TestTime:           500 * time.Millisecond,
-		BinaryHandlerDelay: 5 * time.Millisecond,
-		DataHandlerDelay:   100 * time.Millisecond,
-		BinaryReceiveAll:   true,
-		DataReceiveAll:     false,
-	},
-
-	CollectorTest{
-		PacketsPerSecond:   100,
-		BufferSize:         10,
-		TestTime:           500 * time.Millisecond,
-		BinaryHandlerDelay: 5 * time.Millisecond,
-		DataHandlerDelay:   5 * time.Millisecond,
-		BinaryReceiveAll:   true,
-		DataReceiveAll:     true,
-	},
-	CollectorTest{
-		PacketsPerSecond:   250,
-		BufferSize:         10,
-		TestTime:           500 * time.Millisecond,
-		BinaryHandlerDelay: 1 * time.Millisecond,
-		DataHandlerDelay:   1 * time.Millisecond,
-		BinaryReceiveAll:   true,
-		DataReceiveAll:     true,
-	},
-	CollectorTest{
-		PacketsPerSecond:   250,
-		BufferSize:         10,
-		TestTime:           500 * time.Millisecond,
-		BinaryHandlerDelay: 0 * time.Millisecond,
-		DataHandlerDelay:   0 * time.Millisecond,
-		BinaryReceiveAll:   true,
-		DataReceiveAll:     true,
-	},
-	CollectorTest{
-		PacketsPerSecond:   250,
-		BufferSize:         10,
-		TestTime:           500 * time.Millisecond,
-		BinaryHandlerDelay: 10 * time.Millisecond,
-		DataHandlerDelay:   10 * time.Millisecond,
-		BinaryReceiveAll:   false,
-		DataReceiveAll:     false,
-	},
-}
-
 func TestCollector(t *testing.T) {
-	for _, test := range collectorTests {
-		runCollectorTest(t, test)
+
+	specs := []CollectorTest{
+		CollectorTest{
+			PacketsPerSecond:   100,
+			BufferSize:         1,
+			TestTime:           500 * time.Millisecond,
+			BinaryHandlerDelay: 5 * time.Millisecond,
+			DataHandlerDelay:   5 * time.Millisecond,
+			BinaryReceiveAll:   true,
+			DataReceiveAll:     true,
+		},
+		CollectorTest{
+			PacketsPerSecond:   100,
+			BufferSize:         1,
+			TestTime:           500 * time.Millisecond,
+			BinaryHandlerDelay: 100 * time.Millisecond,
+			DataHandlerDelay:   5 * time.Millisecond,
+			BinaryReceiveAll:   false,
+			DataReceiveAll:     true,
+		},
+		CollectorTest{
+			PacketsPerSecond:   100,
+			BufferSize:         1,
+			TestTime:           500 * time.Millisecond,
+			BinaryHandlerDelay: 5 * time.Millisecond,
+			DataHandlerDelay:   100 * time.Millisecond,
+			BinaryReceiveAll:   true,
+			DataReceiveAll:     false,
+		},
+
+		CollectorTest{
+			PacketsPerSecond:   100,
+			BufferSize:         10,
+			TestTime:           500 * time.Millisecond,
+			BinaryHandlerDelay: 5 * time.Millisecond,
+			DataHandlerDelay:   5 * time.Millisecond,
+			BinaryReceiveAll:   true,
+			DataReceiveAll:     true,
+		},
+		CollectorTest{
+			PacketsPerSecond:   250,
+			BufferSize:         10,
+			TestTime:           500 * time.Millisecond,
+			BinaryHandlerDelay: 1 * time.Millisecond,
+			DataHandlerDelay:   1 * time.Millisecond,
+			BinaryReceiveAll:   true,
+			DataReceiveAll:     true,
+		},
+		CollectorTest{
+			PacketsPerSecond:   250,
+			BufferSize:         10,
+			TestTime:           500 * time.Millisecond,
+			BinaryHandlerDelay: 0 * time.Millisecond,
+			DataHandlerDelay:   0 * time.Millisecond,
+			BinaryReceiveAll:   true,
+			DataReceiveAll:     true,
+		},
+		CollectorTest{
+			PacketsPerSecond:   250,
+			BufferSize:         10,
+			TestTime:           500 * time.Millisecond,
+			BinaryHandlerDelay: 10 * time.Millisecond,
+			DataHandlerDelay:   10 * time.Millisecond,
+			BinaryReceiveAll:   false,
+			DataReceiveAll:     false,
+		},
+	}
+
+	for _, test := range specs {
+		bh := newTestBinaryHandler(t, test.BinaryHandlerDelay)
+		dh := newTestDataHandler(t, test.DataHandlerDelay)
+		zps := sources.NewZeroRawEventSource(test.PacketsPerSecond)
+		telem := NewCollector(zps, []handlers.BinaryHandler{handlers.BinaryHandler(bh)}, []handlers.DataHandler{handlers.DataHandler(dh)})
+		ctx := context.TODO()
+
+		telem.RecordRun(ctx, "test")
+
+		time.Sleep(test.TestTime)
+
+		telem.Close(ctx)
+
+		expectedPackets := int64(float64(test.PacketsPerSecond) * test.TestTime.Seconds())
+
+		if telem.GetStatus().PacketsProcessed < expectedPackets {
+			t.Errorf("Expected to process %v packets, but collector only processed %v packets", expectedPackets, telem.GetStatus().PacketsProcessed)
+		} else {
+
+		}
+		if test.BinaryReceiveAll {
+			if bh.DeliveryCount < telem.GetStatus().PacketsProcessed {
+				t.Errorf("Expected all packets to be delivered to binary handler, but %v packets were processed and %v delivered", telem.GetStatus().PacketsProcessed, bh.DeliveryCount)
+			}
+		} else {
+			if bh.DeliveryCount == telem.GetStatus().PacketsProcessed {
+				t.Errorf("Expected binary handler to fall behind, but %v packets were processed and %v delivered", telem.GetStatus().PacketsProcessed, bh.DeliveryCount)
+
+			}
+
+		}
+
+		if test.DataReceiveAll {
+			if dh.DeliveryCount < telem.GetStatus().PacketsProcessed {
+				t.Errorf("Expected all packets to be delivered to data handler, but %v packets were processed and %v delivered", telem.GetStatus().PacketsProcessed, dh.DeliveryCount)
+			}
+		} else {
+			if dh.DeliveryCount == telem.GetStatus().PacketsProcessed {
+				t.Errorf("Expected data handler to fall behind, but %v packets were processed and %v delivered", telem.GetStatus().PacketsProcessed, dh.DeliveryCount)
+
+			}
+
+		}
+
 	}
 }

@@ -6,6 +6,8 @@ import (
 	"io/ioutil"
 	"reflect"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 type BlogTest struct {
@@ -25,7 +27,8 @@ func TestBlog(t *testing.T) {
 
 		writer := NewWriter(buf)
 		for _, s := range blogTest.Packets {
-			writer.Write(s)
+			_, err := writer.Write(s)
+			assert.NoError(t, err)
 		}
 
 		bufRead := bytes.NewReader(buf.Bytes())
@@ -51,7 +54,8 @@ func TestBlog(t *testing.T) {
 		}
 
 		// Reset reader
-		bufRead.Seek(0, io.SeekStart)
+		_, err := bufRead.Seek(0, io.SeekStart)
+		assert.NoError(t, err)
 
 		for i := 0; i < len(blogTest.Packets)+1; i++ {
 			packet, err := rdr.NextPacket()
@@ -78,7 +82,8 @@ func TestBlogReadZero(t *testing.T) {
 
 	writer := NewWriter(buf)
 	for _, s := range BlogTests[0].Packets {
-		writer.Write(s)
+		_, err := writer.Write(s)
+		assert.NoError(t, err)
 	}
 
 	bufRead := bytes.NewReader(buf.Bytes())
